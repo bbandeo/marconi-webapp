@@ -17,6 +17,10 @@ const config = {
       screens: {
         "2xl": "1400px",
       },
+      maxWidth: {
+        '8xl': '88rem',
+        '9xl': '96rem',
+      },
     },
     extend: {
       fontFamily: {

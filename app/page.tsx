@@ -163,14 +163,14 @@ export default function HomePage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
-                  className="mb-8 md:mb-12"
+                  className="mb-8 md:mb-16 lg:mb-20"
                 >
                   <Image
                     src="/assets/impact_text/noesperesmas_logo.svg"
                     alt="No esperes más"
                     width={2000}
                     height={500}
-                    className="w-full max-w-7xl h-auto"
+                    className="w-full max-w-4xl md:max-w-6xl lg:max-w-8xl xl:max-w-[120rem] h-auto"
                     priority
                   />
                 </motion.div>
@@ -179,14 +179,14 @@ export default function HomePage() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
-                  className="mb-8 md:mb-12"
+                  className="mb-8 md:mb-16 lg:mb-20"
                 >
                   <Image
                     src="/assets/logos/logocasa.svg"
                     alt="Logo Casa"
                     width={120}
                     height={120}
-                    className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28"
+                    className="w-16 h-16 md:w-32 md:h-32 lg:w-40 lg:h-40 xl:w-48 xl:h-48"
                   />
                 </motion.div>
               </div>
@@ -205,9 +205,9 @@ export default function HomePage() {
               <Image
                 src="/assets/logos/marconi_title.svg"
                 alt="Marconi Inmobiliaria"
-                width={300}
-                height={80}
-                className="h-16 md:h-20 lg:h-24 w-auto mx-auto mb-4"
+                width={400}
+                height={120}
+                className="h-16 md:h-28 lg:h-36 xl:h-40 w-auto mx-auto mb-4"
               />
             </div>
           </motion.div>
