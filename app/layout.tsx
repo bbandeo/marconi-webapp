@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} ${playfairDisplay.variable} font-sans`}>
+      <body className={`${inter.variable} ${playfairDisplay.variable} font-museo`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           {children}
           <Toaster />
