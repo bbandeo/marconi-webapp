@@ -132,7 +132,7 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-screen flex flex-col">
+      <section className="relative h-[calc(100vh-5rem)] flex flex-col">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -150,6 +150,10 @@ export default function HomePage() {
           />
           {/* Subtle dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/40" />
+          
+          {/* Bottom blur effect inspired by office aesthetic */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/60 via-50% to-transparent to-70%" />
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent backdrop-blur-[2px]" />
         </div>
 
         {/* Content */}
