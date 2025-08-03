@@ -10,6 +10,7 @@
   font-style: normal;
   font-display: swap;
 }
+/* Usage: Apply font-museo class or font-family: 'Museo Sans' in CSS */
 
 @layer base {
   :root {

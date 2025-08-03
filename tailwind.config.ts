@@ -30,10 +30,6 @@ const config = {
       },
       colors: {
         "brand-orange": "#F97316",
-        "brand-gold": "#D4AF37",
-        "brand-red": "#DC2626",
-        "brand-dark": "#1A1A1A",
-        "brand-light": "#F8F8F8",
         gray: {
           750: "#374151",
           850: "#1f2937",
@@ -92,21 +88,13 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       spacing: {
-        xs: "0.5rem",
-        sm: "1rem",
-        md: "1.5rem",
-        lg: "2rem",
-        xl: "3rem",
-        "2xl": "4rem",
-        "3xl": "6rem",
-      },
-      boxShadow: {
-        'modern': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        'glow': '0 0 20px rgba(212, 175, 55, 0.3)',
-        'red-glow': '0 0 20px rgba(220, 38, 38, 0.3)',
-      },
-      backdropBlur: {
-        'xs': '2px',
+        xs: "0.5rem", // 8px
+        sm: "1rem", // 16px
+        md: "1.5rem", // 24px
+        lg: "2rem", // 32px
+        xl: "3rem", // 48px
+        "2xl": "4rem", // 64px
+        "3xl": "6rem", // 96px
       },
     },
   },
