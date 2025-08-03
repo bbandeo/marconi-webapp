@@ -1,3 +1,4 @@
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
@@ -9,6 +10,12 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Configuración adicional para desarrollo
+  experimental: {
+    serverComponentsExternalPackages: [],
+  },
+  // Mejorar tiempo de compilación
+  swcMinify: true,
 }
 
 export default nextConfig
