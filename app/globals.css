@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Museo Sans 500 - Custom font for headings and important text */
+@font-face {
+  font-family: 'Museo Sans';
+  src: url('/fonts/museo-sans-500.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+/* Usage: Apply font-museo class or font-family: 'Museo Sans' in CSS */
+
 @layer base {
   :root {
     --background: 0 0% 100%;

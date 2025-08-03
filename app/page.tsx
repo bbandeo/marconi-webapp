@@ -115,11 +115,19 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
+      <header className="bg-gray-900 border-b border-gray-800">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
+              <Image
+                src="/assets/logos/logocasa.svg"
+                alt="Logo Casa"
+                width={32}
+                height={32}
+                className="h-8 w-8 md:h-10 md:w-10"
+                priority
+              />
               <Image
                 src="/assets/logos/marconi_title.svg"
                 alt="Marconi Inmobiliaria"
@@ -179,102 +187,49 @@ export default function HomePage() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center px-4 pt-20 md:pt-0">
+        <div className="relative z-10 h-full flex flex-col justify-center items-center px-4">
           <div className="container mx-auto text-center max-w-6xl">
             {/* Main Impactful Text */}
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
-              className="mb-16 md:mb-24"
+              className="mt-16 md:mt-24"
             >
               <div className="flex flex-col items-center">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
-                  className="mb-6 md:mb-8"
+                  className="mb-8 md:mb-12"
                 >
                   <Image
                     src="/assets/impact_text/noesperesmas_logo.svg"
                     alt="No esperes más"
-                    width={800}
-                    height={200}
-                    className="w-full max-w-4xl h-auto"
+                    width={2000}
+                    height={500}
+                    className="w-full max-w-7xl h-auto"
                     priority
+                  />
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8, duration: 0.8 }}
+                  className="mb-8 md:mb-12"
+                >
+                  <Image
+                    src="/assets/logos/logocasa.svg"
+                    alt="Logo Casa"
+                    width={120}
+                    height={120}
+                    className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28"
                   />
                 </motion.div>
               </div>
             </motion.div>
 
-            {/* Desktop Search Bar - Minimalist Design */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.4, duration: 0.8 }}
-              className="hidden lg:block mb-16"
-            >
-              <div className="bg-white/10 backdrop-blur-md rounded-lg p-8 border border-white/20 max-w-4xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className="md:col-span-2">
-                    <div className="relative">
-                      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-300" />
-                      <Input
-                        placeholder="Buscar propiedades por dirección, barrio..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-12 h-14 bg-white/10 border-white/20 text-white placeholder:text-gray-300 focus:border-white/40 focus:bg-white/15"
-                      />
-                    </div>
-                  </div>
-
-                  <Select value={operationType} onValueChange={setOperationType}>
-                    <SelectTrigger className="h-14 bg-white/10 border-white/20 text-white focus:border-white/40">
-                      <SelectValue placeholder="Operación" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
-                      <SelectItem value="sale" className="text-white hover:bg-gray-700 focus:bg-gray-700">
-                        Venta
-                      </SelectItem>
-                      <SelectItem value="rent" className="text-white hover:bg-gray-700 focus:bg-gray-700">
-                        Alquiler
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select value={propertyType} onValueChange={setPropertyType}>
-                    <SelectTrigger className="h-14 bg-white/10 border-white/20 text-white focus:border-white/40">
-                      <SelectValue placeholder="Tipo" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
-                      <SelectItem value="house" className="text-white hover:bg-gray-700 focus:bg-gray-700">
-                        Casa
-                      </SelectItem>
-                      <SelectItem value="apartment" className="text-white hover:bg-gray-700 focus:bg-gray-700">
-                        Departamento
-                      </SelectItem>
-                      <SelectItem value="commercial" className="text-white hover:bg-gray-700 focus:bg-gray-700">
-                        Comercial
-                      </SelectItem>
-                      <SelectItem value="land" className="text-white hover:bg-gray-700 focus:bg-gray-700">
-                        Terreno
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="mt-6 flex justify-center">
-                  <Button
-                    onClick={handleSearch}
-                    size="lg"
-                    className="bg-white/20 hover:bg-white/30 text-white border border-white/30 hover:border-white/40 px-12 h-14 text-lg font-light backdrop-blur-sm"
-                  >
-                    <Search className="mr-3 h-5 w-5" />
-                    Buscar
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
           </div>
 
           {/* Company Branding at Bottom - Minimalist */}
@@ -323,7 +278,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-4xl font-bold text-white mb-4">Propiedades Destacadas</h2>
+            <h2 className="text-4xl font-museo font-medium text-white mb-4">Propiedades Destacadas</h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
               Descubre las mejores oportunidades inmobiliarias en Reconquista
             </p>
@@ -453,7 +408,7 @@ export default function HomePage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-4">
                   <stat.icon className="h-8 w-8 text-brand-orange" />
                 </div>
-                <div className="text-3xl font-bold text-white mb-2">{stat.number}</div>
+                <div className="text-3xl font-museo font-medium text-white mb-2">{stat.number}</div>
                 <div className="text-gray-400">{stat.label}</div>
               </motion.div>
             ))}
@@ -470,7 +425,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="max-w-3xl mx-auto"
           >
-            <h2 className="text-4xl font-bold text-white mb-6">¿Listo para encontrar tu próximo hogar?</h2>
+            <h2 className="text-4xl font-museo font-medium text-white mb-6">¿Listo para encontrar tu próximo hogar?</h2>
             <p className="text-xl text-orange-100 mb-8">
               Nuestro equipo de expertos está aquí para ayudarte en cada paso del camino
             </p>

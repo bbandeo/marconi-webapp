@@ -22,6 +22,7 @@ const config = {
       fontFamily: {
         sans: ["var(--font-inter)"],
         serif: ["var(--font-playfair-display)"],
+        museo: ["Museo Sans", "sans-serif"],
       },
       colors: {
         "brand-orange": "#F97316",
