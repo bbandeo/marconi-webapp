@@ -150,28 +150,20 @@ export default function HomePage() {
           />
           {/* Subtle dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/30" />
-
-          {/* Smooth gradient overlay with very soft transitions */}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-gray-900/20 via-45% to-transparent to-90% z-10" />
-
-          {/* Multi-layered soft blur effect with ultra-gradual transition */}
-          <div className="absolute bottom-0 left-0 right-0 h-96 z-20">
-            {/* First layer - extremely subtle blur with smooth fade */}
-            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 via-gray-900/15 via-70% via-gray-900/8 via-85% to-transparent backdrop-blur-sm" />
-
-            {/* Second layer - gentle blur with extended soft edges */}
-            <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-gray-900/55 via-gray-900/25 via-60% via-gray-900/12 via-80% to-transparent backdrop-blur-md" />
-
-            {/* Third layer - concentrated blur at bottom with smooth transition */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-900/70 via-gray-900/30 via-75% to-transparent backdrop-blur-lg" />
-
-            {/* Fourth layer - final subtle enhancement at very bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-900/50 via-gray-900/20 via-80% to-transparent backdrop-blur-sm" />
+          
+          {/* Glass morphism blur effects inspired by office aesthetic */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/40 via-50% to-transparent to-70% z-10" />
+          
+          {/* Bottom glass effect with visible backdrop blur */}
+          <div className="absolute bottom-0 left-0 right-0 h-64 z-20">
+            <div className="h-full bg-gradient-to-t from-gray-900/90 via-gray-900/60 via-40% to-transparent backdrop-blur-2xl border-t border-white/10 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-800/50 to-transparent" />
+            </div>
           </div>
 
-          {/* Subtle frosted glass panels for modern office look */}
-          <div className="absolute bottom-20 left-8 w-32 h-32 bg-white/2 backdrop-blur-sm rounded-2xl border border-white/3 z-15 hidden md:block opacity-40" />
-          <div className="absolute bottom-32 right-12 w-24 h-40 bg-white/1 backdrop-blur-sm rounded-xl border border-white/2 z-15 hidden lg:block opacity-30" />
+          {/* Additional frosted glass panels for modern office look */}
+          <div className="absolute bottom-20 left-8 w-32 h-32 bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 z-15 hidden md:block" />
+          <div className="absolute bottom-32 right-12 w-24 h-40 bg-white/3 backdrop-blur-lg rounded-xl border border-white/5 z-15 hidden lg:block" />
         </div>
 
         {/* Content */}
@@ -200,7 +192,7 @@ export default function HomePage() {
                     priority
                   />
                 </motion.div>
-
+                
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -266,7 +258,7 @@ export default function HomePage() {
           <div className="absolute bottom-40 left-1/4 w-40 h-40 bg-gradient-to-br from-brand-orange/18 to-orange-500/18 rounded-full blur-3xl" />
           <div className="absolute top-1/3 right-1/3 w-24 h-24 bg-gradient-to-br from-orange-400/12 to-brand-orange/12 rounded-full blur-2xl animate-pulse" />
         </div>
-
+        
         <div className="container mx-auto px-4 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -325,7 +317,7 @@ export default function HomePage() {
                   {/* Enhanced Glow effect */}
                   <div className="absolute -inset-1 bg-gradient-to-r from-brand-orange/30 to-orange-500/30 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
                   <div className="absolute -inset-2 bg-gradient-to-r from-brand-orange/10 to-orange-500/10 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-700" />
-
+                  
                   <Card className="relative bg-gray-750/80 backdrop-blur-xl border border-gray-600/50 hover:border-brand-orange/50 hover:shadow-2xl hover:shadow-brand-orange/20 transition-all duration-500 overflow-hidden rounded-2xl">
                     <div className="relative">
                       <div className="aspect-video relative overflow-hidden rounded-t-2xl">
@@ -345,7 +337,7 @@ export default function HomePage() {
                           className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
+                        
                         {/* Shimmer effect */}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
                       </div>
@@ -368,7 +360,7 @@ export default function HomePage() {
                     <CardContent className="p-7 relative">
                       {/* Subtle gradient overlay */}
                       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/10 pointer-events-none" />
-
+                      
                       <div className="space-y-5 relative z-10">
                         <div>
                           <h3 className="font-museo font-semibold text-white text-2xl mb-3 leading-tight group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-200 group-hover:bg-clip-text transition-all duration-300">
@@ -458,7 +450,7 @@ export default function HomePage() {
           <div className="absolute bottom-1/3 right-1/4 w-[28rem] h-[28rem] bg-gradient-to-bl from-orange-500/10 to-brand-orange/6 rounded-full blur-[100px]" />
           <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-gradient-to-r from-brand-orange/8 to-orange-400/8 rounded-full blur-[80px] transform -translate-x-1/2 -translate-y-1/2" />
         </div>
-
+        
         <div className="container mx-auto px-4 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -500,7 +492,7 @@ export default function HomePage() {
                 {/* Enhanced Glow effect */}
                 <div className="absolute -inset-6 bg-gradient-to-r from-brand-orange/20 to-orange-500/20 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-all duration-500" />
                 <div className="absolute -inset-3 bg-gradient-to-r from-brand-orange/15 to-orange-500/15 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-300" />
-
+                
                 <div className="relative bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-2xl p-6 group-hover:border-brand-orange/30 transition-all duration-500">
                   <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-brand-orange/20 to-orange-500/20 rounded-2xl mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 border border-brand-orange/20 backdrop-blur-sm relative overflow-hidden">
                     <stat.icon className="h-9 w-9 text-brand-orange relative z-10" />
@@ -528,12 +520,12 @@ export default function HomePage() {
           <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-48 -translate-y-48 animate-pulse" />
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl translate-x-48 translate-y-48 animate-pulse" />
           <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-white/5 rounded-full blur-2xl -translate-x-32 -translate-y-32" />
-
+          
           {/* Geometric patterns */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_75%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:40px_40px]" />
           <div className="absolute inset-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:20px_20px]" />
         </div>
-
+        
         <div className="container mx-auto px-4 text-center relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
