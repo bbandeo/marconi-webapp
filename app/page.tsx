@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { getOptimizedImageUrl } from "@/lib/cloudinary"
+import { getOptimizedImageUrl, getPropertyMainImage } from "@/lib/cloudinary"
 import { PropertyService } from "@/services/properties"
 import type { Property } from "@/lib/supabase"
 import Link from "next/link"
@@ -278,9 +278,7 @@ export default function HomePage() {
                       <div className="aspect-video relative overflow-hidden">
                         <Image
                           src={getOptimizedImageUrl(
-                            property.images && property.images.length > 0 
-                              ? property.images[0] 
-                              : "gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy",
+                            getPropertyMainImage(property.images),
                             {
                               width: 400,
                               height: 250,

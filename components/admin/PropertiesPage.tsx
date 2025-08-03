@@ -17,6 +17,30 @@ interface PropertyWithStats extends Property {
   leads?: number
 }
 
+const formatPrice = (price: number, currency: string = "USD") => {
+  return new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price)
+}
+
+const getPropertyTypeLabel = (type: string) => {
+  switch (type) {
+    case "casa":
+      return "Casa"
+    case "departamento":
+      return "Departamento"
+    case "local":
+      return "Local Comercial"
+    case "terreno":
+      return "Terreno"
+    default:
+      return type
+  }
+}
+
 interface PropertyImageProps {
   images: string[]
   title: string

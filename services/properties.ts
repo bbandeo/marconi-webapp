@@ -81,10 +81,11 @@ export class PropertyService {
       throw new Error(`Error fetching properties: ${error.message}`)
     }
 
-    // Convertir status de la base de datos al frontend
+    // Convertir status de la base de datos al frontend y procesar imágenes
     const propertiesWithMappedStatus = data?.map((property) => ({
       ...property,
       status_display: STATUS_MAP[property.status as keyof typeof STATUS_MAP] || property.status,
+      images: property.images || [], // Asegurar que images sea un array
     }))
 
     return {
