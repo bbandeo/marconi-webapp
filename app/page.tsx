@@ -229,16 +229,23 @@ export default function HomePage() {
       </section>
 
       {/* Featured Properties */}
-      <section className="py-20 bg-gray-800">
+      <section className="py-24 bg-gradient-to-b from-gray-800 to-gray-850">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-16"
           >
-            <h2 className="text-4xl font-museo font-medium text-white mb-4">Propiedades Destacadas</h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+            <div className="inline-block mb-4">
+              <span className="text-brand-orange text-sm font-semibold tracking-wider uppercase">
+                Oportunidades Únicas
+              </span>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-museo font-medium text-white mb-6 leading-tight">
+              Propiedades Destacadas
+            </h2>
+            <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Descubre las mejores oportunidades inmobiliarias en Reconquista
             </p>
           </motion.div>
@@ -273,7 +280,7 @@ export default function HomePage() {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Card className="bg-gray-700 border-gray-600 hover:border-brand-orange transition-all duration-300 overflow-hidden group">
+                  <Card className="bg-gray-750 border-gray-600 hover:border-brand-orange hover:shadow-2xl hover:shadow-brand-orange/10 transition-all duration-500 overflow-hidden group">
                     <div className="relative">
                       <div className="aspect-video relative overflow-hidden">
                         <Image
@@ -289,26 +296,31 @@ export default function HomePage() {
                           ) || "/placeholder.svg"}
                           alt={property.title}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="object-cover group-hover:scale-110 transition-transform duration-500"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       </div>
 
-                      <div className="absolute top-3 left-3">
-                        <Badge className="bg-brand-orange hover:bg-orange-600 text-white">Destacada</Badge>
+                      <div className="absolute top-4 left-4">
+                        <Badge className="bg-brand-orange/90 backdrop-blur-sm hover:bg-brand-orange text-white shadow-lg">
+                          ⭐ Destacada
+                        </Badge>
                       </div>
 
-                      <div className="absolute bottom-3 left-3">
-                        <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                      <div className="absolute bottom-4 left-4">
+                        <div className="bg-black/80 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-lg font-museo font-semibold">
                           {formatPrice(property.price, property.operation_type, property.currency)}
                         </div>
                       </div>
                     </div>
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
+                    <CardContent className="p-7">
+                      <div className="space-y-5">
                         <div>
-                          <h3 className="font-semibold text-white text-xl mb-2">{property.title}</h3>
-                          <div className="flex items-center text-gray-400">
-                            <MapPin className="h-4 w-4 mr-1" />
+                          <h3 className="font-museo font-semibold text-white text-2xl mb-3 leading-tight">
+                            {property.title}
+                          </h3>
+                          <div className="flex items-center text-gray-300 text-base">
+                            <MapPin className="h-4 w-4 mr-2 text-brand-orange" />
                             {property.address && property.neighborhood 
                               ? `${property.address}, ${property.neighborhood}`
                               : property.neighborhood || property.address || `${property.city}, ${property.province}`
@@ -317,35 +329,35 @@ export default function HomePage() {
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <span className="bg-gray-600 text-gray-200 px-3 py-1 rounded-full text-sm">
+                          <span className="bg-gray-600/70 text-gray-100 px-4 py-2 rounded-full text-sm font-medium">
                             {getPropertyTypeLabel(property.property_type)}
                           </span>
-                          <div className="flex items-center gap-4 text-gray-300">
+                          <div className="flex items-center gap-5 text-gray-300">
                             {property.bedrooms && property.bedrooms > 0 && (
-                              <div className="flex items-center gap-1">
-                                <Bed className="h-4 w-4" />
-                                {property.bedrooms}
+                              <div className="flex items-center gap-1.5">
+                                <Bed className="h-4 w-4 text-brand-orange" />
+                                <span className="font-medium">{property.bedrooms}</span>
                               </div>
                             )}
                             {property.bathrooms && property.bathrooms > 0 && (
-                              <div className="flex items-center gap-1">
-                                <Bath className="h-4 w-4" />
-                                {property.bathrooms}
+                              <div className="flex items-center gap-1.5">
+                                <Bath className="h-4 w-4 text-brand-orange" />
+                                <span className="font-medium">{property.bathrooms}</span>
                               </div>
                             )}
                             {property.area_m2 && (
-                              <div className="flex items-center gap-1">
-                                <Square className="h-4 w-4" />
-                                {property.area_m2}m²
+                              <div className="flex items-center gap-1.5">
+                                <Square className="h-4 w-4 text-brand-orange" />
+                                <span className="font-medium">{property.area_m2}m²</span>
                               </div>
                             )}
                           </div>
                         </div>
 
                         <Link href={`/propiedades/${property.id}`}>
-                          <Button className="w-full bg-brand-orange hover:bg-orange-600 text-white">
+                          <Button className="w-full bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-500 hover:to-brand-orange text-white font-semibold py-3 text-base transition-all duration-300 shadow-lg">
                             Ver detalles
-                            <ArrowRight className="ml-2 h-4 w-4" />
+                            <ArrowRight className="ml-2 h-5 w-5" />
                           </Button>
                         </Link>
                       </div>
@@ -376,13 +388,32 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
+      <section className="py-24 bg-gradient-to-b from-gray-900 to-gray-800 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,#F97316_1px,transparent_1px)] bg-[size:50px_50px]" />
+        </div>
+        
+        <div className="container mx-auto px-4 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-museo font-medium text-white mb-4">
+              Nuestra Trayectoria
+            </h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              Números que respaldan nuestra experiencia y compromiso
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
           >
             {[
               { icon: Home, number: "500+", label: "Propiedades Vendidas" },
@@ -395,14 +426,18 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
+                transition={{ delay: index * 0.15 }}
+                className="text-center group"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-4">
-                  <stat.icon className="h-8 w-8 text-brand-orange" />
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-brand-orange/20 to-orange-500/20 rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300 border border-brand-orange/20">
+                  <stat.icon className="h-9 w-9 text-brand-orange" />
                 </div>
-                <div className="text-3xl font-museo font-medium text-white mb-2">{stat.number}</div>
-                <div className="text-gray-400">{stat.label}</div>
+                <div className="text-4xl md:text-5xl font-museo font-semibold text-white mb-3 group-hover:text-brand-orange transition-colors duration-300">
+                  {stat.number}
+                </div>
+                <div className="text-gray-300 text-lg font-medium leading-relaxed">
+                  {stat.label}
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -410,30 +445,46 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-brand-orange">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-24 bg-gradient-to-br from-brand-orange via-orange-500 to-orange-600 relative overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-48 -translate-y-48" />
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl translate-x-48 translate-y-48" />
+        </div>
+        
+        <div className="container mx-auto px-4 text-center relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="max-w-3xl mx-auto"
+            className="max-w-4xl mx-auto"
           >
-            <h2 className="text-4xl font-museo font-medium text-white mb-6">¿Listo para encontrar tu próximo hogar?</h2>
-            <p className="text-xl text-orange-100 mb-8">
+            <div className="inline-block mb-6">
+              <span className="bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-semibold tracking-wider uppercase">
+                Comienza Hoy
+              </span>
+            </div>
+            <h2 className="text-5xl md:text-6xl font-museo font-semibold text-white mb-8 leading-tight">
+              ¿Listo para encontrar tu próximo hogar?
+            </h2>
+            <p className="text-xl md:text-2xl text-orange-100 mb-12 leading-relaxed max-w-3xl mx-auto">
               Nuestro equipo de expertos está aquí para ayudarte en cada paso del camino
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Link href="/propiedades">
-                <Button size="lg" variant="secondary" className="bg-white text-brand-orange hover:bg-gray-100">
+                <Button 
+                  size="lg" 
+                  className="bg-white text-brand-orange hover:bg-gray-100 font-semibold text-lg px-8 py-4 h-auto shadow-2xl hover:shadow-white/25 transition-all duration-300"
+                >
                   Explorar Propiedades
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-3 h-5 w-5" />
                 </Button>
               </Link>
               <Link href="/contacto">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange bg-transparent"
+                  className="border-2 border-white text-white hover:bg-white hover:text-brand-orange bg-transparent font-semibold text-lg px-8 py-4 h-auto backdrop-blur-sm transition-all duration-300"
                 >
                   Contactar Agente
                 </Button>

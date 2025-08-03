@@ -26,6 +26,10 @@ const config = {
       },
       colors: {
         "brand-orange": "#F97316",
+        gray: {
+          750: "#374151",
+          850: "#1f2937",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
