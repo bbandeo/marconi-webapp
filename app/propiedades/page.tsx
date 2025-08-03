@@ -157,6 +157,7 @@ export default function PropiedadesPage() {
   }, [properties, searchTerm, operationFilter, typeFilter, minPrice, maxPrice, bedroomsFilter, bathroomsFilter, sortBy])
 
   // Pagination
+  const [currentPage, setCurrentPage] = useState(1)
   const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE)
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
   const endIndex = startIndex + ITEMS_PER_PAGE

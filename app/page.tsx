@@ -105,12 +105,9 @@ export default function HomePage() {
               <Link href="/agentes" className="text-gray-300 hover:text-white transition-colors">
                 AGENTES
               </Link>
-              <button 
-                onClick={() => window.open('https://wa.me/5493482123456?text=Hola,%20quiero%20más%20información', '_blank')}
-                className="text-gray-300 hover:text-white transition-colors"
-              >
+              <Link href="/contacto" className="text-gray-300 hover:text-white transition-colors">
                 CONTACTO
-              </button>
+              </Link>
             </nav>
 
             {/* Mobile Search Bar */}
