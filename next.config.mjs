@@ -11,11 +11,7 @@ const nextConfig = {
     unoptimized: true,
   },
   // Configuración adicional para desarrollo
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
-  // Mejorar tiempo de compilación
-  swcMinify: true,
+  serverExternalPackages: [],
 }
 
 export default nextConfig
