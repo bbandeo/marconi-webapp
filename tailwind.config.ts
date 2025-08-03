@@ -92,13 +92,13 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       spacing: {
-        xs: "0.5rem", // 8px
-        sm: "1rem", // 16px
-        md: "1.5rem", // 24px
-        lg: "2rem", // 32px
-        xl: "3rem", // 48px
-        "2xl": "4rem", // 64px
-        "3xl": "6rem", // 96px
+        xs: "0.5rem",
+        sm: "1rem",
+        md: "1.5rem",
+        lg: "2rem",
+        xl: "3rem",
+        "2xl": "4rem",
+        "3xl": "6rem",
       },
       boxShadow: {
         'modern': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',

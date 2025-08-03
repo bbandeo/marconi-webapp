@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -7,11 +8,6 @@ import { getOptimizedImageUrl, getPropertyMainImage } from "@/lib/cloudinary"
 import { PropertyService } from "@/services/properties"
 import type { Property } from "@/lib/supabase"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -68,117 +64,114 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header with Modern Design */}
-      <header className="relative bg-gradient-modern text-white shadow-modern">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-gold to-yellow-400 rounded-xl flex items-center justify-center shadow-glow">
-                <span className="text-2xl font-museo font-bold text-brand-dark">M</span>
+            <div className="flex items-center">
+              <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                <span className="text-white text-xl font-museo font-bold">M</span>
               </div>
-              <div>
-                <h1 className="text-2xl font-museo font-bold">
-                  <span className="text-gradient-gold">MARCONI</span>
-                </h1>
-                <p className="text-xs text-gray-300 font-light">ESTUDIO JURÍDICO E INMOBILIARIO</p>
+              <div className="ml-3">
+                <h1 className="text-xl font-museo font-bold text-gray-900">MARCONI</h1>
+                <p className="text-xs text-gray-500">ESTUDIO JURÍDICO E INMOBILIARIO</p>
+              </div>
+            </div>
+
+            {/* Desktop Search Bar */}
+            <div className="hidden md:flex flex-1 max-w-lg mx-8">
+              <div className="w-full flex">
+                <input
+                  type="text"
+                  placeholder="Buscar propiedades..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  onClick={handleSearch}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 transition-colors"
+                >
+                  <Search className="w-5 h-5" />
+                </button>
               </div>
             </div>
 
             {/* Navigation */}
             <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-white font-semibold border-b-2 border-brand-gold pb-1">
+              <Link href="/" className="text-gray-900 font-semibold">
                 INICIO
               </Link>
-              <Link href="/propiedades" className="text-gray-300 hover:text-white transition-all duration-300 hover:text-brand-gold">
+              <Link href="/propiedades" className="text-gray-600 hover:text-gray-900">
                 PROPIEDADES
               </Link>
-              <Link href="/agentes" className="text-gray-300 hover:text-white transition-all duration-300 hover:text-brand-gold">
+              <Link href="/agentes" className="text-gray-600 hover:text-gray-900">
                 AGENTES
               </Link>
-              <Link href="/contacto" className="text-gray-300 hover:text-white transition-all duration-300 hover:text-brand-gold">
+              <Link href="/contacto" className="text-gray-600 hover:text-gray-900">
                 CONTACTO
               </Link>
             </nav>
 
+            {/* Mobile Search Bar */}
+            <div className="md:hidden flex-1 max-w-xs mx-4">
+              <div className="flex">
+                <input
+                  type="text"
+                  placeholder="Buscar..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                  className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  onClick={handleSearch}
+                  className="px-3 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700"
+                >
+                  <Search className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
             {/* Contact Button */}
             <button
               onClick={() => window.open('https://wa.me/5493482123456?text=Hola,%20quiero%20más%20información', '_blank')}
-              className="hidden md:flex items-center space-x-2 bg-brand-red hover:bg-red-700 px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-red-glow hover:shadow-lg transform hover:scale-105"
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md font-semibold flex items-center space-x-2"
             >
               <MessageCircle className="w-4 h-4" />
-              <span>CONSULTAR</span>
+              <span className="hidden sm:inline">CONSULTAR</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Hero Section with Modern Typography */}
-      <section className="relative bg-gradient-modern text-white py-24 overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50"></div>
-          <div className="absolute top-20 right-20 w-96 h-96 bg-brand-gold/10 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 left-20 w-80 h-80 bg-brand-red/10 rounded-full blur-3xl"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-8">
-            <h1 className="text-5xl md:text-7xl font-museo font-bold leading-tight">
-              <span className="block">ENCUENTRA TU</span>
-              <span className="block text-gradient-gold">HOGAR IDEAL</span>
+      {/* Hero Section */}
+      <section className="bg-blue-600 text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-museo font-bold mb-6">
+              Encuentra tu hogar ideal
             </h1>
-
-            <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto font-light">
-              Más de 15 años conectando familias con sus sueños inmobiliarios
+            <p className="text-xl mb-8 text-blue-100">
+              La mejor selección de propiedades en Reconquista
             </p>
 
-            {/* Modern Search Bar */}
-            <div className="max-w-2xl mx-auto">
-              <div className="relative glass-effect rounded-2xl p-2 shadow-modern">
-                <div className="flex items-center">
-                  <Search className="w-6 h-6 text-gray-400 ml-4" />
-                  <input
-                    type="text"
-                    placeholder="Buscar por ubicación, tipo de propiedad..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    className="flex-1 bg-transparent text-white placeholder-gray-400 px-4 py-4 outline-none text-lg"
-                  />
-                  <button
-                    onClick={handleSearch}
-                    className="bg-brand-gold hover:bg-yellow-500 text-brand-dark px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-glow"
-                  >
-                    BUSCAR
-                  </button>
-                </div>
-              </div>
-            </div>
-
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-              <div className="text-center glass-effect rounded-2xl p-6 hover-lift">
-                <div className="w-16 h-16 bg-brand-gold/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Home className="w-8 h-8 text-brand-gold" />
-                </div>
-                <div className="text-3xl font-museo font-bold text-gradient-gold">500+</div>
-                <div className="text-gray-300">Propiedades Vendidas</div>
+            <div className="grid grid-cols-3 gap-8 mt-12">
+              <div className="text-center">
+                <div className="text-3xl font-museo font-bold">500+</div>
+                <div className="text-blue-200">Propiedades Vendidas</div>
               </div>
-              <div className="text-center glass-effect rounded-2xl p-6 hover-lift">
-                <div className="w-16 h-16 bg-brand-red/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-8 h-8 text-brand-red" />
-                </div>
-                <div className="text-3xl font-museo font-bold text-brand-red">1200+</div>
-                <div className="text-gray-300">Familias Satisfechas</div>
+              <div className="text-center">
+                <div className="text-3xl font-museo font-bold">1200+</div>
+                <div className="text-blue-200">Familias Satisfechas</div>
               </div>
-              <div className="text-center glass-effect rounded-2xl p-6 hover-lift">
-                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="w-8 h-8 text-green-400" />
-                </div>
-                <div className="text-3xl font-museo font-bold text-green-400">15+</div>
-                <div className="text-gray-300">Años de Experiencia</div>
+              <div className="text-center">
+                <div className="text-3xl font-museo font-bold">15+</div>
+                <div className="text-blue-200">Años de Experiencia</div>
               </div>
             </div>
           </div>
@@ -186,20 +179,20 @@ export default function HomePage() {
       </section>
 
       {/* Featured Properties */}
-      <section className="py-20 bg-brand-light">
+      <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-museo font-bold text-brand-dark mb-4">
-              PROPIEDADES <span className="text-gradient-gold">DESTACADAS</span>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-museo font-bold text-gray-900 mb-4">
+              Propiedades Destacadas
             </h2>
-            <div className="w-24 h-1 bg-brand-gold mx-auto rounded-full"></div>
+            <p className="text-gray-600">Las mejores oportunidades del mercado</p>
           </div>
 
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white rounded-3xl shadow-modern animate-pulse">
-                  <div className="h-64 bg-gray-200 rounded-t-3xl"></div>
+                <div key={i} className="bg-white rounded-lg shadow animate-pulse">
+                  <div className="h-48 bg-gray-200 rounded-t-lg"></div>
                   <div className="p-6 space-y-4">
                     <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                     <div className="h-4 bg-gray-200 rounded w-1/2"></div>
@@ -210,14 +203,14 @@ export default function HomePage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {featuredProperties.map((property) => (
-                <div key={property.id} className="group bg-white rounded-3xl shadow-modern hover:shadow-xl transition-all duration-500 hover-lift overflow-hidden">
-                  <div className="relative h-64 overflow-hidden">
+                <div key={property.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+                  <div className="relative h-48">
                     <Image
                       src={getOptimizedImageUrl(
                         getPropertyMainImage(property.images),
                         {
                           width: 400,
-                          height: 250,
+                          height: 200,
                           crop: "fill",
                           quality: "auto",
                           format: "auto",
@@ -225,26 +218,24 @@ export default function HomePage() {
                       ) || "/placeholder.svg"}
                       alt={property.title}
                       fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="object-cover"
                     />
-                    <div className="absolute top-4 left-4 bg-brand-red text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    <div className="absolute top-4 left-4 bg-red-500 text-white px-2 py-1 rounded text-sm font-semibold">
                       DESTACADA
                     </div>
-                    <button className="absolute top-4 right-4 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors">
-                      <Heart className="w-5 h-5" />
+                    <button className="absolute top-4 right-4 w-8 h-8 bg-white rounded-full flex items-center justify-center text-gray-600 hover:text-red-500">
+                      <Heart className="w-4 h-4" />
                     </button>
                   </div>
 
                   <div className="p-6">
-                    <div className="mb-4">
-                      <h3 className="text-xl font-museo font-bold text-brand-dark mb-2 line-clamp-2">
-                        {property.title}
-                      </h3>
-                      <p className="text-gray-600 flex items-center">
-                        <MapPin className="w-4 h-4 mr-1 text-brand-gold" />
-                        {property.neighborhood}
-                      </p>
-                    </div>
+                    <h3 className="text-xl font-museo font-semibold text-gray-900 mb-2">
+                      {property.title}
+                    </h3>
+                    <p className="text-gray-600 flex items-center mb-4">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      {property.neighborhood}
+                    </p>
 
                     <div className="flex items-center justify-between mb-4 text-sm text-gray-600">
                       <div className="flex items-center">
@@ -263,17 +254,16 @@ export default function HomePage() {
 
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-2xl font-museo font-bold text-gradient-gold">
+                        <p className="text-2xl font-museo font-bold text-blue-600">
                           {formatPrice(property.price, property.operation_type, property.currency)}
                         </p>
                         <p className="text-sm text-gray-500">{property.operation_type}</p>
                       </div>
                       <Link
                         href={`/propiedades?id=${property.id}`}
-                        className="bg-brand-dark hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center space-x-2"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold"
                       >
-                        <span>VER</span>
-                        <ChevronRight className="w-4 h-4" />
+                        Ver Detalles
                       </Link>
                     </div>
                   </div>
@@ -285,80 +275,63 @@ export default function HomePage() {
           <div className="text-center mt-12">
             <Link
               href="/propiedades"
-              className="inline-flex items-center space-x-2 bg-brand-gold hover:bg-yellow-500 text-brand-dark px-8 py-4 rounded-xl font-museo font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-glow"
+              className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-museo font-semibold"
             >
-              <span>VER TODAS LAS PROPIEDADES</span>
-              <ChevronRight className="w-5 h-5" />
+              Ver Todas las Propiedades
+              <ChevronRight className="w-5 h-5 ml-2" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className="py-20 bg-gradient-modern text-white">
+      {/* Services */}
+      <section className="py-16 bg-gray-800 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-museo font-bold mb-4">
-              NUESTROS <span className="text-gradient-gold">SERVICIOS</span>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-museo font-bold mb-4">
+              Nuestros Servicios
             </h2>
-            <div className="w-24 h-1 bg-brand-gold mx-auto rounded-full"></div>
+            <p className="text-gray-300">Soluciones integrales para todas tus necesidades inmobiliarias</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
               { title: "Asesoramiento Legal", icon: "⚖️", desc: "Respaldo jurídico completo" },
               { title: "Tasaciones", icon: "📊", desc: "Evaluaciones precisas del mercado" },
               { title: "Financiamiento", icon: "💰", desc: "Opciones de crédito adaptadas" },
               { title: "Gestión Integral", icon: "🏠", desc: "De principio a fin" }
             ].map((service, index) => (
-              <div key={index} className="text-center glass-effect rounded-2xl p-8 hover-lift group">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                  {service.icon}
-                </div>
-                <h3 className="text-xl font-museo font-bold mb-2 text-brand-gold">
-                  {service.title}
-                </h3>
-                <p className="text-gray-300">
-                  {service.desc}
-                </p>
+              <div key={index} className="text-center">
+                <div className="text-4xl mb-4">{service.icon}</div>
+                <h3 className="text-xl font-museo font-bold mb-2">{service.title}</h3>
+                <p className="text-gray-300">{service.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-20 bg-brand-light">
+      {/* Contact */}
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-3xl shadow-modern p-8 md:p-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="bg-white rounded-lg shadow-md p-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div>
-                <h2 className="text-4xl md:text-5xl font-museo font-bold text-brand-dark mb-6">
-                  ¿LISTO PARA <span className="text-gradient-gold">INVERTIR?</span>
+                <h2 className="text-3xl font-museo font-bold text-gray-900 mb-4">
+                  ¿Listo para invertir?
                 </h2>
-                <p className="text-xl text-gray-600 mb-8">
+                <p className="text-gray-600 mb-6">
                   Contáctanos y te ayudamos a encontrar la propiedad perfecta para ti.
                 </p>
 
                 <div className="space-y-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-brand-gold/20 rounded-full flex items-center justify-center">
-                      <Phone className="w-6 h-6 text-brand-gold" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-brand-dark">Teléfono</p>
-                      <p className="text-gray-600">+54 9 3482 123456</p>
-                    </div>
+                  <div className="flex items-center">
+                    <Phone className="w-5 h-5 text-blue-600 mr-3" />
+                    <span>+54 9 3482 123456</span>
                   </div>
-
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-brand-red/20 rounded-full flex items-center justify-center">
-                      <Mail className="w-6 h-6 text-brand-red" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-brand-dark">Email</p>
-                      <p className="text-gray-600">info@marconi.com</p>
-                    </div>
+                  <div className="flex items-center">
+                    <Mail className="w-5 h-5 text-blue-600 mr-3" />
+                    <span>info@marconi.com</span>
                   </div>
                 </div>
               </div>
@@ -366,18 +339,15 @@ export default function HomePage() {
               <div className="space-y-4">
                 <button
                   onClick={() => window.open('https://wa.me/5493482123456?text=Hola,%20quiero%20más%20información', '_blank')}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3"
+                  className="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold"
                 >
-                  <MessageCircle className="w-6 h-6" />
-                  <span>CONSULTAR POR WHATSAPP</span>
+                  Consultar por WhatsApp
                 </button>
-
                 <Link
                   href="/contacto"
-                  className="w-full bg-brand-dark hover:bg-gray-800 text-white py-4 px-8 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3 block text-center"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-semibold block text-center"
                 >
-                  <Mail className="w-6 h-6" />
-                  <span>ENVIAR CONSULTA</span>
+                  Enviar Consulta
                 </Link>
               </div>
             </div>
@@ -386,25 +356,22 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-brand-dark text-white py-12">
+      <footer className="bg-gray-900 text-white py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="flex items-center justify-center space-x-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-gold to-yellow-400 rounded-xl flex items-center justify-center shadow-glow">
-                <span className="text-2xl font-museo font-bold text-brand-dark">M</span>
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center mr-3">
+                <span className="text-white text-xl font-museo font-bold">M</span>
               </div>
               <div>
-                <h1 className="text-2xl font-museo font-bold text-gradient-gold">MARCONI</h1>
+                <h1 className="text-xl font-museo font-bold">MARCONI</h1>
                 <p className="text-xs text-gray-400">ESTUDIO JURÍDICO E INMOBILIARIO</p>
               </div>
             </div>
-
-            <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-              Más de 15 años brindando servicios inmobiliarios y jurídicos de excelencia,
-              conectando familias con sus hogares ideales.
+            <p className="text-gray-400 mb-6">
+              Más de 15 años brindando servicios inmobiliarios y jurídicos de excelencia.
             </p>
-
-            <div className="border-t border-gray-700 pt-8">
+            <div className="border-t border-gray-700 pt-6">
               <p className="text-gray-500">
                 © 2024 Marconi - Estudio Jurídico e Inmobiliario. Todos los derechos reservados.
               </p>

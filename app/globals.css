@@ -11,38 +11,6 @@
   font-display: swap;
 }
 
-/* Modern Design Utilities */
-@layer utilities {
-  .text-gradient-gold {
-    background: linear-gradient(135deg, #D4AF37 0%, #FFD700 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  
-  .bg-gradient-modern {
-    background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 100%);
-  }
-  
-  .glass-effect {
-    backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-  }
-  
-  .curve-modern {
-    border-radius: 2rem 0.5rem 2rem 0.5rem;
-  }
-  
-  .hover-lift {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .hover-lift:hover {
-    transform: translateY(-8px);
-  }
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
