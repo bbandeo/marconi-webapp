@@ -152,12 +152,12 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-black/40" />
           
           {/* Bottom blur effect inspired by office aesthetic */}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/60 via-50% to-transparent to-70%" />
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent backdrop-blur-xl" />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/60 via-50% to-transparent to-70% z-10" />
+          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent backdrop-blur-xl z-20" />
         </div>
 
         {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center px-4">
+        <div className="relative z-30 h-full flex flex-col justify-center items-center px-4">
           <div className="container mx-auto text-center max-w-6xl">
             {/* Main Impactful Text */}
             <motion.div
