@@ -120,10 +120,14 @@ export default function HomePage() {
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
-              <div className="text-2xl font-bold">
-                <span className="text-white">MARCONI</span>
-                <span className="text-brand-orange block text-sm font-normal tracking-wider">INMOBILIARIA</span>
-              </div>
+              <Image
+                src="/assets/logos/marconi_title.svg"
+                alt="Marconi Inmobiliaria"
+                width={140}
+                height={45}
+                className="h-8 md:h-10 w-auto"
+                priority
+              />
             </Link>
 
             {/* Desktop Navigation */}
@@ -184,32 +188,23 @@ export default function HomePage() {
               transition={{ duration: 1.2, ease: "easeOut" }}
               className="mb-16 md:mb-24"
             >
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-white leading-tight tracking-wide">
-                <motion.span
+              <div className="flex flex-col items-center">
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
-                  className="block mb-4 md:mb-6"
+                  className="mb-6 md:mb-8"
                 >
-                  No esperes más,
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.8 }}
-                  className="block mb-4 md:mb-6 font-normal"
-                >
-                  encuentra el hogar ideal
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.9, duration: 0.8 }}
-                  className="block text-gray-200"
-                >
-                  con nosotros.
-                </motion.span>
-              </h1>
+                  <Image
+                    src="/assets/impact_text/noesperesmas_logo.svg"
+                    alt="No esperes más"
+                    width={800}
+                    height={200}
+                    className="w-full max-w-4xl h-auto"
+                    priority
+                  />
+                </motion.div>
+              </div>
             </motion.div>
 
             {/* Desktop Search Bar - Minimalist Design */}
@@ -290,12 +285,13 @@ export default function HomePage() {
             className="mt-auto mb-8 md:mb-12 text-center"
           >
             <div className="text-white">
-              <div className="text-3xl md:text-4xl lg:text-5xl font-extralight tracking-[0.2em] mb-2">
-                MARCONI
-              </div>
-              <div className="text-sm md:text-base text-gray-300 font-light tracking-[0.3em] uppercase">
-                Negocios Inmobiliarios
-              </div>
+              <Image
+                src="/assets/logos/marconi_title.svg"
+                alt="Marconi Inmobiliaria"
+                width={300}
+                height={80}
+                className="h-16 md:h-20 lg:h-24 w-auto mx-auto mb-4"
+              />
             </div>
           </motion.div>
 
@@ -505,10 +501,13 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
-                <div className="text-2xl font-bold">
-                  <span className="text-white">MARCONI</span>
-                  <span className="text-brand-orange block text-sm font-normal tracking-wider">INMOBILIARIA</span>
-                </div>
+                <Image
+                  src="/assets/logos/marconi_title.svg"
+                  alt="Marconi Inmobiliaria"
+                  width={140}
+                  height={45}
+                  className="h-8 w-auto"
+                />
               </div>
               <p className="text-gray-400 mb-4">
                 La inmobiliaria líder en Reconquista, comprometida con encontrar el hogar perfecto para cada familia.

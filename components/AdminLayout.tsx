@@ -49,7 +49,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
 								<Home className="w-5 h-5 text-white" />
 							</div>
 							<div>
-								<h1 className="font-bold text-gray-900">MARCONI</h1>
+								<img 
+									src="/assets/logos/marconi_title.svg" 
+									alt="Marconi Inmobiliaria" 
+									className="h-6 w-auto"
+								/>
 								<p className="text-xs text-gray-500">Admin Panel</p>
 							</div>
 						</a>
