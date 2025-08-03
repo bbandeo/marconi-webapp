@@ -149,11 +149,21 @@ export default function HomePage() {
             priority
           />
           {/* Subtle dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-black/30" />
           
-          {/* Bottom blur effect inspired by office aesthetic */}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/60 via-50% to-transparent to-70% z-10" />
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent backdrop-blur-xl z-20" />
+          {/* Glass morphism blur effects inspired by office aesthetic */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/40 via-50% to-transparent to-70% z-10" />
+          
+          {/* Bottom glass effect with visible backdrop blur */}
+          <div className="absolute bottom-0 left-0 right-0 h-64 z-20">
+            <div className="h-full bg-gradient-to-t from-gray-900/90 via-gray-900/60 via-40% to-transparent backdrop-blur-2xl border-t border-white/10 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-800/50 to-transparent" />
+            </div>
+          </div>
+
+          {/* Additional frosted glass panels for modern office look */}
+          <div className="absolute bottom-20 left-8 w-32 h-32 bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 z-15 hidden md:block" />
+          <div className="absolute bottom-32 right-12 w-24 h-40 bg-white/3 backdrop-blur-lg rounded-xl border border-white/5 z-15 hidden lg:block" />
         </div>
 
         {/* Content */}
