@@ -105,9 +105,12 @@ export default function HomePage() {
               <Link href="/agentes" className="text-gray-300 hover:text-white transition-colors">
                 AGENTES
               </Link>
-              <Link href="/contacto" className="text-gray-300 hover:text-white transition-colors">
+              <button 
+                onClick={() => window.open('https://wa.me/5493482123456?text=Hola,%20quiero%20más%20información', '_blank')}
+                className="text-gray-300 hover:text-white transition-colors"
+              >
                 CONTACTO
-              </Link>
+              </button>
             </nav>
 
             {/* Mobile Search Bar */}
@@ -116,6 +119,9 @@ export default function HomePage() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Buscar propiedades..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
                 />
               </div>
@@ -354,12 +360,13 @@ export default function HomePage() {
                           </div>
                         </div>
 
-                        <Link href={`/propiedades/${property.id}`}>
-                          <Button className="w-full bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-500 hover:to-brand-orange text-white font-semibold py-3 text-base transition-all duration-300 shadow-lg">
-                            Ver detalles
-                            <ArrowRight className="ml-2 h-5 w-5" />
-                          </Button>
-                        </Link>
+                        <Button 
+                          onClick={() => window.location.href = `/propiedades?id=${property.id}`}
+                          className="w-full bg-gradient-to-r from-brand-orange to-orange-500 hover:from-orange-500 hover:to-brand-orange text-white font-semibold py-3 text-base transition-all duration-300 shadow-lg"
+                        >
+                          Ver detalles
+                          <ArrowRight className="ml-2 h-5 w-5" />
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -480,15 +487,14 @@ export default function HomePage() {
                   <ArrowRight className="ml-3 h-5 w-5" />
                 </Button>
               </Link>
-              <Link href="/contacto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-2 border-white text-white hover:bg-white hover:text-brand-orange bg-transparent font-semibold text-lg px-8 py-4 h-auto backdrop-blur-sm transition-all duration-300"
-                >
-                  Contactar Agente
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => window.open('https://wa.me/5493482123456?text=Hola,%20estoy%20interesado%20en%20sus%20servicios%20inmobiliarios', '_blank')}
+                className="border-2 border-white text-white hover:bg-white hover:text-brand-orange bg-transparent font-semibold text-lg px-8 py-4 h-auto backdrop-blur-sm transition-all duration-300"
+              >
+                Contactar Agente
+              </Button>
             </div>
           </motion.div>
         </div>
@@ -527,9 +533,12 @@ export default function HomePage() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contacto" className="hover:text-white transition-colors">
+                  <button 
+                    onClick={() => window.open('https://wa.me/5493482123456?text=Hola,%20quiero%20más%20información', '_blank')}
+                    className="hover:text-white transition-colors text-left"
+                  >
                     Contacto
-                  </Link>
+                  </button>
                 </li>
               </ul>
             </div>

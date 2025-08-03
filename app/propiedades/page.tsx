@@ -35,7 +35,7 @@ export default function PropiedadesPage() {
   const [properties, setProperties] = useState<Property[]>([])
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
-  const [currentPage, setCurrentPage] = useState(1)
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
 
   // Filters
   const [searchTerm, setSearchTerm] = useState("")
