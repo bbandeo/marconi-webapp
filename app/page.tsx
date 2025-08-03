@@ -152,12 +152,12 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-black/30" />
           
           {/* Glass morphism blur effects inspired by office aesthetic */}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/40 via-50% to-transparent to-70% z-10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/50 via-40% via-gray-900/25 via-60% via-gray-900/10 via-80% to-transparent z-10" />
           
           {/* Bottom glass effect with visible backdrop blur */}
           <div className="absolute bottom-0 left-0 right-0 h-64 z-20">
-            <div className="h-full bg-gradient-to-t from-gray-900/90 via-gray-900/60 via-40% to-transparent backdrop-blur-2xl border-t border-white/10 shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-800/50 to-transparent" />
+            <div className="h-full bg-gradient-to-t from-gray-900/90 via-gray-900/70 via-30% via-gray-900/40 via-60% via-gray-900/15 via-85% to-transparent backdrop-blur-2xl border-t border-white/10 shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-800/50 via-gray-800/20 via-70% to-transparent" />
             </div>
           </div>
 
