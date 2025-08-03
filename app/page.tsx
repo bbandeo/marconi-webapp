@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Search, MapPin, Bed, Bath, Square, ArrowRight, Star, Users, Home, Award, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,73 +9,32 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
+import { PropertyService } from "@/services/properties"
+import type { Property } from "@/lib/supabase"
 import Link from "next/link"
 import Image from "next/image"
-
-interface Property {
-  id: string
-  title: string
-  price: number
-  operation_type: "sale" | "rent"
-  property_type: "house" | "apartment" | "commercial" | "land"
-  bedrooms: number
-  bathrooms: number
-  area: number
-  address: string
-  neighborhood: string
-  images: string[]
-  featured: boolean
-}
-
-const featuredProperties: Property[] = [
-  {
-    id: "1",
-    title: "Casa moderna en centro",
-    price: 85000,
-    operation_type: "sale",
-    property_type: "house",
-    bedrooms: 3,
-    bathrooms: 2,
-    area: 120,
-    address: "San Martín 1234",
-    neighborhood: "Centro",
-    images: ["gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy"],
-    featured: true,
-  },
-  {
-    id: "2",
-    title: "Departamento luminoso",
-    price: 45000,
-    operation_type: "rent",
-    property_type: "apartment",
-    bedrooms: 2,
-    bathrooms: 1,
-    area: 65,
-    address: "Rivadavia 567",
-    neighborhood: "Norte",
-    images: ["gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy"],
-    featured: true,
-  },
-  {
-    id: "3",
-    title: "Local comercial estratégico",
-    price: 120000,
-    operation_type: "sale",
-    property_type: "commercial",
-    bedrooms: 0,
-    bathrooms: 1,
-    area: 80,
-    address: "Belgrano 890",
-    neighborhood: "Centro",
-    images: ["gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy"],
-    featured: true,
-  },
-]
 
 export default function HomePage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [operationType, setOperationType] = useState("")
   const [propertyType, setPropertyType] = useState("")
+  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const loadFeaturedProperties = async () => {
+      try {
+        const properties = await PropertyService.getFeaturedProperties(3)
+        setFeaturedProperties(properties)
+      } catch (error) {
+        console.error("Error loading featured properties:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadFeaturedProperties()
+  }, [])
 
   const handleSearch = () => {
     const params = new URLSearchParams()
@@ -86,26 +45,26 @@ export default function HomePage() {
     window.location.href = `/propiedades?${params.toString()}`
   }
 
-  const formatPrice = (price: number, operation: string) => {
+  const formatPrice = (price: number, operation: string, currency: string = "USD") => {
     return (
       new Intl.NumberFormat("es-AR", {
         style: "currency",
-        currency: "USD",
+        currency: currency,
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
-      }).format(price) + (operation === "rent" ? "/mes" : "")
+      }).format(price) + (operation === "alquiler" ? "/mes" : "")
     )
   }
 
   const getPropertyTypeLabel = (type: string) => {
     switch (type) {
-      case "house":
+      case "casa":
         return "Casa"
-      case "apartment":
+      case "departamento":
         return "Departamento"
-      case "commercial":
-        return "Comercial"
-      case "land":
+      case "local":
+        return "Local Comercial"
+      case "terreno":
         return "Terreno"
       default:
         return type
@@ -285,86 +244,122 @@ export default function HomePage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {featuredProperties.map((property, index) => (
-              <motion.div
-                key={property.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="bg-gray-700 border-gray-600 hover:border-brand-orange transition-all duration-300 overflow-hidden group">
-                  <div className="relative">
-                    <div className="aspect-video relative overflow-hidden">
-                      <Image
-                        src={getOptimizedImageUrl(property.images[0], {
-                          width: 400,
-                          height: 250,
-                          crop: "fill",
-                          quality: "auto",
-                          format: "auto",
-                        }) || "/placeholder.svg"}
-                        alt={property.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-
-                    <div className="absolute top-3 left-3">
-                      <Badge className="bg-brand-orange hover:bg-orange-600 text-white">Destacada</Badge>
-                    </div>
-
-                    <div className="absolute bottom-3 left-3">
-                      <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                        {formatPrice(property.price, property.operation_type)}
+            {loading ? (
+              // Loading skeleton
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="bg-gray-700 border border-gray-600 rounded-lg overflow-hidden">
+                  <div className="aspect-video bg-gray-600 animate-pulse" />
+                  <div className="p-6 space-y-4">
+                    <div className="h-6 bg-gray-600 rounded animate-pulse" />
+                    <div className="h-4 bg-gray-600 rounded animate-pulse w-3/4" />
+                    <div className="flex justify-between">
+                      <div className="h-6 bg-gray-600 rounded animate-pulse w-20" />
+                      <div className="flex gap-4">
+                        <div className="h-4 bg-gray-600 rounded animate-pulse w-8" />
+                        <div className="h-4 bg-gray-600 rounded animate-pulse w-8" />
+                        <div className="h-4 bg-gray-600 rounded animate-pulse w-12" />
                       </div>
                     </div>
+                    <div className="h-10 bg-gray-600 rounded animate-pulse" />
                   </div>
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="font-semibold text-white text-xl mb-2">{property.title}</h3>
-                        <div className="flex items-center text-gray-400">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          {property.address}, {property.neighborhood}
+                </div>
+              ))
+            ) : featuredProperties.length > 0 ? (
+              featuredProperties.map((property, index) => (
+                <motion.div
+                  key={property.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Card className="bg-gray-700 border-gray-600 hover:border-brand-orange transition-all duration-300 overflow-hidden group">
+                    <div className="relative">
+                      <div className="aspect-video relative overflow-hidden">
+                        <Image
+                          src={getOptimizedImageUrl(
+                            property.images && property.images.length > 0 
+                              ? property.images[0] 
+                              : "gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy",
+                            {
+                              width: 400,
+                              height: 250,
+                              crop: "fill",
+                              quality: "auto",
+                              format: "auto",
+                            }
+                          ) || "/placeholder.svg"}
+                          alt={property.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+
+                      <div className="absolute top-3 left-3">
+                        <Badge className="bg-brand-orange hover:bg-orange-600 text-white">Destacada</Badge>
+                      </div>
+
+                      <div className="absolute bottom-3 left-3">
+                        <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                          {formatPrice(property.price, property.operation_type, property.currency)}
                         </div>
                       </div>
-
-                      <div className="flex items-center justify-between">
-                        <span className="bg-gray-600 text-gray-200 px-3 py-1 rounded-full text-sm">
-                          {getPropertyTypeLabel(property.property_type)}
-                        </span>
-                        <div className="flex items-center gap-4 text-gray-300">
-                          {property.bedrooms > 0 && (
-                            <div className="flex items-center gap-1">
-                              <Bed className="h-4 w-4" />
-                              {property.bedrooms}
-                            </div>
-                          )}
-                          {property.bathrooms > 0 && (
-                            <div className="flex items-center gap-1">
-                              <Bath className="h-4 w-4" />
-                              {property.bathrooms}
-                            </div>
-                          )}
-                          <div className="flex items-center gap-1">
-                            <Square className="h-4 w-4" />
-                            {property.area}m²
+                    </div>
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="font-semibold text-white text-xl mb-2">{property.title}</h3>
+                          <div className="flex items-center text-gray-400">
+                            <MapPin className="h-4 w-4 mr-1" />
+                            {property.address && property.neighborhood 
+                              ? `${property.address}, ${property.neighborhood}`
+                              : property.neighborhood || property.address || `${property.city}, ${property.province}`
+                            }
                           </div>
                         </div>
-                      </div>
 
-                      <Link href={`/propiedades/${property.id}`}>
-                        <Button className="w-full bg-brand-orange hover:bg-orange-600 text-white">
-                          Ver detalles
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                        <div className="flex items-center justify-between">
+                          <span className="bg-gray-600 text-gray-200 px-3 py-1 rounded-full text-sm">
+                            {getPropertyTypeLabel(property.property_type)}
+                          </span>
+                          <div className="flex items-center gap-4 text-gray-300">
+                            {property.bedrooms && property.bedrooms > 0 && (
+                              <div className="flex items-center gap-1">
+                                <Bed className="h-4 w-4" />
+                                {property.bedrooms}
+                              </div>
+                            )}
+                            {property.bathrooms && property.bathrooms > 0 && (
+                              <div className="flex items-center gap-1">
+                                <Bath className="h-4 w-4" />
+                                {property.bathrooms}
+                              </div>
+                            )}
+                            {property.area_m2 && (
+                              <div className="flex items-center gap-1">
+                                <Square className="h-4 w-4" />
+                                {property.area_m2}m²
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <Link href={`/propiedades/${property.id}`}>
+                          <Button className="w-full bg-brand-orange hover:bg-orange-600 text-white">
+                            Ver detalles
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-gray-400 text-lg">No hay propiedades destacadas disponibles</p>
+              </div>
+            )}
           </div>
 
           <div className="text-center">
