@@ -163,7 +163,7 @@ export default function HomePage() {
 
           {/* Additional frosted glass panels for modern office look - softened */}
           <div className="absolute bottom-20 left-8 w-32 h-32 bg-white/2 backdrop-blur-md rounded-2xl border border-white/5 z-15 hidden md:block" />
-          <div className="absolute bottom-32 right-12 w-24 h-40 bg-white/1 backdrop-blur-md rounded-xl border border-white/3 z-15 hidden lg:block" /></div>
+          <div className="absolute bottom-32 right-12 w-24 h-40 bg-white/1 backdrop-blur-md rounded-xl border border-white/3 z-15 hidden lg:block" />
         </div>
 
         {/* Content */}
