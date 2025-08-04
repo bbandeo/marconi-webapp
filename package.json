@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "node --max-old-space-size=2048 node_modules/.bin/next build",
-"dev": "next dev -H 0.0.0.0 -p 5000",    "lint": "next lint",
+    "build": "npx next build",
+    "dev": "next dev -H 0.0.0.0 -p 5000",
+    "lint": "next lint",
     "start": "next start"
   },
   "dependencies": {
