@@ -149,21 +149,21 @@ export default function HomePage() {
             priority
           />
           {/* Subtle dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/30" />
+          <div className="absolute inset-0 bg-black/20" />
           
-          {/* Glass morphism blur effects inspired by office aesthetic */}
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/50 via-40% via-gray-900/25 via-60% via-gray-900/10 via-80% to-transparent z-10" />
+          {/* Glass morphism blur effects - much softer */}
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-gray-900/30 via-40% via-gray-900/15 via-60% via-gray-900/5 via-80% to-transparent z-10" />
           
-          {/* Bottom glass effect with visible backdrop blur */}
+          {/* Bottom glass effect with visible backdrop blur - softened */}
           <div className="absolute bottom-0 left-0 right-0 h-64 z-20">
-            <div className="h-full bg-gradient-to-t from-gray-900/90 via-gray-900/70 via-30% via-gray-900/40 via-60% via-gray-900/15 via-85% to-transparent backdrop-blur-2xl border-t border-white/10 shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-800/50 via-gray-800/20 via-70% to-transparent" />
+            <div className="h-full bg-gradient-to-t from-gray-900/70 via-gray-900/45 via-30% via-gray-900/25 via-60% via-gray-900/8 via-85% to-transparent backdrop-blur-xl border-t border-white/5 shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-800/30 via-gray-800/10 via-70% to-transparent" />
             </div>
           </div>
 
-          {/* Additional frosted glass panels for modern office look */}
-          <div className="absolute bottom-20 left-8 w-32 h-32 bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 z-15 hidden md:block" />
-          <div className="absolute bottom-32 right-12 w-24 h-40 bg-white/3 backdrop-blur-lg rounded-xl border border-white/5 z-15 hidden lg:block" />
+          {/* Additional frosted glass panels for modern office look - softened */}
+          <div className="absolute bottom-20 left-8 w-32 h-32 bg-white/2 backdrop-blur-md rounded-2xl border border-white/5 z-15 hidden md:block" />
+          <div className="absolute bottom-32 right-12 w-24 h-40 bg-white/1 backdrop-blur-md rounded-xl border border-white/3 z-15 hidden lg:block" /></div>
         </div>
 
         {/* Content */}
