@@ -1,0 +1,47 @@
+modules = ["nodejs-20", "web", "python-base-3.13"]
+run = "npm run start"
+
+[nix]
+channel = "stable-25_05"
+packages = ["openssh"]
+
+[deployment]
+run = ["sh", "-c", "npm run start"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[workflows]
+runButton = "Dev Mode"
+
+[[workflows.workflow]]
+name = "Build and Dev"
+author = 23075779
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run build"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
+[[workflows.workflow]]
+name = "Install dependencies"
+mode = "sequential"
+author = 23075779
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm install"
+
+[[workflows.workflow]]
+name = "Dev Mode"
+author = 23075779
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
