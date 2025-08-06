@@ -19,7 +19,15 @@ export const uploadToCloudinary = async (
   } = {},
 ) => {
   try {
-    const result = await cloudinary.uploader.upload(file, {
+    // Convert Buffer to base64 data URI if needed
+    let uploadSource: string
+    if (Buffer.isBuffer(file)) {
+      uploadSource = `data:image/png;base64,${file.toString('base64')}`
+    } else {
+      uploadSource = file
+    }
+
+    const result = await cloudinary.uploader.upload(uploadSource, {
       folder: options.folder || "marconi/properties",
       transformation: options.transformation || [
         { width: 1200, height: 800, crop: "fill", quality: "auto" },
