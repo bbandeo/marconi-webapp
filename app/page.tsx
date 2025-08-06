@@ -1,101 +1,94 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Search, MapPin, Bed, Bath, Square, ArrowRight, Star, Users, Home, Award, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { getOptimizedImageUrl } from "@/lib/cloudinary"
-import Link from "next/link"
-import Image from "next/image"
-
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  Search,
+  MapPin,
+  Bed,
+  Bath,
+  Square,
+  ArrowRight,
+  MessageCircle,
+  Star,
+  Users,
+  Home,
+  Award,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { getOptimizedImageUrl } from "@/lib/cloudinary";
+import Link from "next/link";
+import Image from "next/image";
 
 // Importar servicios
-import { useIsClient } from "@/hooks/use-is-client"
-import { PropertyService } from "@/services/properties"
-
-
-interface Property {
-  id: string
-  title: string
-  price: number
-  operation_type: "sale" | "rent"
-  property_type: "house" | "apartment" | "commercial" | "land"
-  bedrooms: number
-  bathrooms: number
-  area: number
-  address: string
-  neighborhood: string
-  images: string[]
-  featured: boolean
-}
- 
+import { useIsClient } from "@/hooks/use-is-client";
+import { PropertyService } from "@/services/properties";
+import type { Property } from "@/lib/supabase"
 
 export default function HomePage() {
-  const [currentStat, setCurrentStat] = useState(0)
-  const [scrolled, setScrolled] = useState(false)
-  const isClient = useIsClient()
+  const [currentStat, setCurrentStat] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+  const isClient = useIsClient();
 
   // Estados para datos del backend
-  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([])
-  const [loadingProperties, setLoadingProperties] = useState(true)
+  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
+  const [loadingProperties, setLoadingProperties] = useState(true);
   const [contactForm, setContactForm] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: '',
-    propertyId: null as number | null
-  })
-  const [submitLoading, setSubmitLoading] = useState(false)
-  const [submitSuccess, setSubmitSuccess] = useState(false)
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+    propertyId: null as number | null,
+  });
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const stats = [
     { number: "200+", label: "Propiedades Vendidas" },
     { number: "98%", label: "Clientes Satisfechos" },
     { number: "5", label: "Años de Experiencia" },
     { number: "24/7", label: "Atención Disponible" },
-  ]
+  ];
 
- // Cargar propiedades destacadas al montar el componente
+  // Cargar propiedades destacadas al montar el componente
   useEffect(() => {
     const loadFeaturedProperties = async () => {
       try {
-        setLoadingProperties(true)
-        const properties = await PropertyService.getFeaturedProperties()
-        setFeaturedProperties(properties)
+        setLoadingProperties(true);
+        const properties = await PropertyService.getFeaturedProperties();
+        setFeaturedProperties(properties);
       } catch (error) {
-        console.error('Error loading featured properties:', error)
+        console.error("Error loading featured properties:", error);
       } finally {
-        setLoadingProperties(false)
+        setLoadingProperties(false);
       }
-    }
+    };
 
-    loadFeaturedProperties()
-  }, [])
+    loadFeaturedProperties();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentStat((prev) => (prev + 1) % stats.length)
-    }, 2000)
-    return () => clearInterval(interval)
-  }, [])
+      setCurrentStat((prev) => (prev + 1) % stats.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (!isClient) {
-      return
+      return;
     }
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [isClient])
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isClient]);
 
-
-/* 
+  /* 
 
 
   const handleSearch = () => {
@@ -115,23 +108,39 @@ export default function HomePage() {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
       }).format(price) + (operation === "rent" ? "/mes" : "")
-    )
-  }
+    );
+  };
 
   const getPropertyTypeLabel = (type: string) => {
     switch (type) {
       case "house":
-        return "Casa"
+        return "Casa";
       case "apartment":
-        return "Departamento"
+        return "Departamento";
       case "commercial":
-        return "Comercial"
+        return "Comercial";
       case "land":
-        return "Terreno"
+        return "Terreno";
       default:
-        return type
+        return type;
     }
+  };
+
+
+  // Manejar interés en una propiedad específica
+  const handlePropertyInterest = (property: Property) => {
+    setContactForm(prev => ({
+      ...prev,
+      message: `Hola, me interesa la propiedad: ${property.title} (${formatPrice(property.price, property.currency)}). Me gustaría recibir más información.`,
+      propertyId: property.id
+    }))
+    
+    // Scroll al formulario de contacto
+    document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })
   }
+
+
+
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -153,13 +162,22 @@ export default function HomePage() {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/propiedades" className="text-gray-300 hover:text-white transition-colors">
+              <Link
+                href="/propiedades"
+                className="text-gray-300 hover:text-white transition-colors"
+              >
                 PROPIEDADES
               </Link>
-              <Link href="/agentes" className="text-gray-300 hover:text-white transition-colors">
+              <Link
+                href="/agentes"
+                className="text-gray-300 hover:text-white transition-colors"
+              >
                 AGENTES
               </Link>
-              <Link href="/contacto" className="text-gray-300 hover:text-white transition-colors">
+              <Link
+                href="/contacto"
+                className="text-gray-300 hover:text-white transition-colors"
+              >
                 CONTACTO
               </Link>
             </nav>
@@ -183,13 +201,15 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src={getOptimizedImageUrl("gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy", {
-              width: 1920,
-              height: 1080,
-              crop: "fill",
-              quality: "auto",
-              format: "auto",
-            }) || "/placeholder.svg"}
+            src={
+              getOptimizedImageUrl("plaza_experiencialugarmundo_001", {
+                width: 1920,
+                height: 1080,
+                crop: "fill",
+                quality: "auto",
+                format: "auto",
+              }) || "/placeholder.svg"
+            }
             alt="Reconquista - Marconi Inmobiliaria"
             fill
             className="object-cover"
@@ -200,9 +220,11 @@ export default function HomePage() {
         </div>
 
         {/* Content */}
+
         <div className="relative z-10 h-full flex flex-col justify-center items-center px-4">
+          {/* Main Impactful Text 
           <div className="container mx-auto text-center max-w-6xl">
-            {/* Main Impactful Text */}
+
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
@@ -225,21 +247,19 @@ export default function HomePage() {
                     priority
                   />
                 </motion.div>
-                
+
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.8, duration: 0.8 }}
                   className="mb-8 md:mb-12"
-                >
-
-                </motion.div>
+                ></motion.div>
               </div>
             </motion.div>
-
           </div>
+          */}
 
-          {/* Company Branding at Bottom - Minimalist */}
+          {/* Company Branding at Bottom - Minimalist 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -256,121 +276,147 @@ export default function HomePage() {
               />
             </div>
           </motion.div>
-
-         
+        */}
         </div>
       </section>
 
-      {/* Featured Properties */}
-      <section className="py-20 bg-gray-800">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-museo font-medium text-white mb-4">Propiedades Destacadas</h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Descubre las mejores oportunidades inmobiliarias en Reconquista
-            </p>
-          </motion.div>
+      {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
+      <section id="propiedades" className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
+            </h2>
+            <p className="text-lg text-gray-300 mb-8">Las mejores oportunidades de inversión en Reconquista</p>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {featuredProperties.map((property, index) => (
-              <motion.div
-                key={property.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="bg-gray-700 border-gray-600 hover:border-brand-orange transition-all duration-300 overflow-hidden group">
-                  <div className="relative">
-                    <div className="aspect-video relative overflow-hidden">
-                      <Image
-                        src={getOptimizedImageUrl(property.images[0], {
-                          width: 400,
-                          height: 250,
-                          crop: "fill",
-                          quality: "auto",
-                          format: "auto",
-                        }) || "/placeholder.svg"}
-                        alt={property.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
+          {loadingProperties ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto"></div>
+              <p className="text-white mt-4">Cargando propiedades...</p>
+            </div>
+          ) : (
+            <>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredProperties.map((property) => (
+                  <Card
+                    key={property.id}
+                    className="bg-black border-orange-500 border-2 overflow-hidden group hover:scale-105 transition-all duration-300"
+                  >
+                    <div className="relative overflow-hidden">
+                      {property.images && property.images.length > 0 ? (
+                        <img 
+                          src={property.images[0]} 
+                          alt={property.title}
+                          className="w-full h-48 object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-48 bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white">
+                          <Home className="w-8 h-8 mr-2" /> Sin imagen
+                        </div>
+                      )}
 
-                    <div className="absolute top-3 left-3">
-                      <Badge className="bg-brand-orange hover:bg-orange-600 text-white">Destacada</Badge>
-                    </div>
-
-                    <div className="absolute bottom-3 left-3">
-                      <div className="bg-black/70 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                        {formatPrice(property.price, property.operation_type)}
+                      <div className="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full font-bold text-sm">
+                        {property.operation_type.toUpperCase()}
                       </div>
-                    </div>
-                  </div>
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
-                      <div>
-                        <h3 className="font-semibold text-white text-xl mb-2">{property.title}</h3>
-                        <div className="flex items-center text-gray-400">
-                          <MapPin className="h-4 w-4 mr-1" />
-                          {property.address}, {property.neighborhood}
+
+                      {property.featured && (
+                        <div className="absolute top-4 right-4 bg-yellow-500 text-black px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                          <Star className="w-3 h-3" />
+                          DESTACADA
+                        </div>
+                      )}
+
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent p-4">
+                        <div className="text-2xl font-bold text-white mb-1">
+                          {formatPrice(property.price, property.currency)}
+                        </div>
+                        <div className="text-orange-500 font-semibold text-sm flex items-center">
+                          <MapPin className="w-3 h-3 mr-1" />
+                          {property.neighborhood}, Reconquista
                         </div>
                       </div>
+                    </div>
 
-                      <div className="flex items-center justify-between">
-                        <span className="bg-gray-600 text-gray-200 px-3 py-1 rounded-full text-sm">
-                          {getPropertyTypeLabel(property.property_type)}
-                        </span>
-                        <div className="flex items-center gap-4 text-gray-300">
-                          {property.bedrooms > 0 && (
-                            <div className="flex items-center gap-1">
-                              <Bed className="h-4 w-4" />
+                    <CardContent className="p-4">
+                      <h3 className="font-bold text-white mb-2">{property.title}</h3>
+                      
+                      {(property.bedrooms || property.bathrooms || property.area_m2) && (
+                        <div className="flex items-center gap-4 text-white mb-3 text-sm">
+                          {property.bedrooms && (
+                            <span className="flex items-center">
+                              <Bed className="w-4 h-4 mr-1" />
                               {property.bedrooms}
-                            </div>
+                            </span>
                           )}
-                          {property.bathrooms > 0 && (
-                            <div className="flex items-center gap-1">
-                              <Bath className="h-4 w-4" />
+                          {property.bathrooms && (
+                            <span className="flex items-center">
+                              <Bath className="w-4 h-4 mr-1" />
                               {property.bathrooms}
-                            </div>
+                            </span>
                           )}
-                          <div className="flex items-center gap-1">
-                            <Square className="h-4 w-4" />
-                            {property.area}m²
-                          </div>
+                          <span className="flex items-center">
+                            <Square className="w-4 h-4 mr-1" />
+                            {property.area_m2}m²
+                          </span>
                         </div>
-                      </div>
+                      )}
 
-                      <Link href={`/propiedades/${property.id}`}>
-                        <Button className="w-full bg-brand-orange hover:bg-orange-600 text-white">
-                          Ver detalles
-                          <ArrowRight className="ml-2 h-4 w-4" />
+                      {property.features && property.features.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-4">
+                          {property.features.slice(0, 3).map((feature, i) => (
+                            <span key={i} className="bg-orange-500 bg-opacity-20 text-orange-500 px-2 py-1 rounded text-xs">
+                              {feature}
+                            </span>
+                          ))}
+                          {property.features.length > 3 && (
+                            <span className="text-gray-400 text-xs">+{property.features.length - 3} más</span>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="flex gap-2">
+                        <Button 
+                          className="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-sm"
+                          onClick={() => handlePropertyInterest(property)}
+                        >
+                          Me interesa <ArrowRight className="w-3 h-3 ml-1" />
                         </Button>
-                      </Link>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
+                          onClick={() => handlePropertyInterest(property)}
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
 
-          <div className="text-center">
-            <Link href="/propiedades">
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-white bg-transparent"
-              >
-                Ver todas las propiedades
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          </div>
+              {featuredProperties.length === 0 && (
+                <div className="text-center py-12">
+                  <Home className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <p className="text-white text-lg">No hay propiedades destacadas disponibles</p>
+                  <p className="text-gray-400">Próximamente agregaremos nuevas propiedades</p>
+                </div>
+              )}
+
+              <div className="text-center mt-8">
+                <Link href="/propiedades">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
+                  >
+                    Ver todas las propiedades <ArrowRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -400,7 +446,9 @@ export default function HomePage() {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-4">
                   <stat.icon className="h-8 w-8 text-brand-orange" />
                 </div>
-                <div className="text-3xl font-museo font-medium text-white mb-2">{stat.number}</div>
+                <div className="text-3xl font-museo font-medium text-white mb-2">
+                  {stat.number}
+                </div>
                 <div className="text-gray-400">{stat.label}</div>
               </motion.div>
             ))}
@@ -417,13 +465,20 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="max-w-3xl mx-auto"
           >
-            <h2 className="text-4xl font-museo font-medium text-white mb-6">¿Listo para encontrar tu próximo hogar?</h2>
+            <h2 className="text-4xl font-museo font-medium text-white mb-6">
+              ¿Listo para encontrar tu próximo hogar?
+            </h2>
             <p className="text-xl text-orange-100 mb-8">
-              Nuestro equipo de expertos está aquí para ayudarte en cada paso del camino
+              Nuestro equipo de expertos está aquí para ayudarte en cada paso
+              del camino
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/propiedades">
-                <Button size="lg" variant="secondary" className="bg-white text-brand-orange hover:bg-gray-100">
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="bg-white text-brand-orange hover:bg-gray-100"
+                >
                   Explorar Propiedades
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -457,7 +512,8 @@ export default function HomePage() {
                 />
               </div>
               <p className="text-gray-400 mb-4">
-                La inmobiliaria líder en Reconquista, comprometida con encontrar el hogar perfecto para cada familia.
+                La inmobiliaria líder en Reconquista, comprometida con encontrar
+                el hogar perfecto para cada familia.
               </p>
             </div>
 
@@ -465,17 +521,26 @@ export default function HomePage() {
               <h3 className="text-white font-semibold mb-4">Enlaces</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <Link href="/propiedades" className="hover:text-white transition-colors">
+                  <Link
+                    href="/propiedades"
+                    className="hover:text-white transition-colors"
+                  >
                     Propiedades
                   </Link>
                 </li>
                 <li>
-                  <Link href="/agentes" className="hover:text-white transition-colors">
+                  <Link
+                    href="/agentes"
+                    className="hover:text-white transition-colors"
+                  >
                     Agentes
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contacto" className="hover:text-white transition-colors">
+                  <Link
+                    href="/contacto"
+                    className="hover:text-white transition-colors"
+                  >
                     Contacto
                   </Link>
                 </li>
@@ -493,10 +558,12 @@ export default function HomePage() {
           </div>
 
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Marconi Inmobiliaria. Todos los derechos reservados.</p>
+            <p>
+              &copy; 2024 Marconi Inmobiliaria. Todos los derechos reservados.
+            </p>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }
