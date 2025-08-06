@@ -211,13 +211,7 @@ export default function HomePage() {
                   transition={{ delay: 0.8, duration: 0.8 }}
                   className="mb-8 md:mb-12"
                 >
-                  <Image
-                    src="/assets/logos/logocasa.svg"
-                    alt="Logo Casa"
-                    width={120}
-                    height={120}
-                    className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28"
-                  />
+
                 </motion.div>
               </div>
             </motion.div>
@@ -242,22 +236,7 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          {/* Scroll Indicator - Minimalist */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.2, duration: 0.8 }}
-            className="hidden md:flex absolute bottom-6 left-1/2 transform -translate-x-1/2"
-          >
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 2.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-              className="flex flex-col items-center text-white/60"
-            >
-              <div className="w-px h-8 bg-white/30 mb-2"></div>
-              <ChevronDown className="h-4 w-4" />
-            </motion.div>
-          </motion.div>
+         
         </div>
       </section>
 

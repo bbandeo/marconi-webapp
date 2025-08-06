@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -9,24 +10,12 @@ import { Badge } from "@/components/ui/badge"
 import { Search, Filter, MapPin, Bed, Bath, Square, Heart, Eye, ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
+import { PropertyService } from "@/services/properties"
+import type { Property as PropertyType } from "@/lib/supabase"
 
-interface Property {
-  id: string
-  title: string
-  price: number
-  currency: string
+interface Property extends PropertyType {
   operation: "sale" | "rent"
-  type: "house" | "apartment" | "commercial"
-  address: string
-  neighborhood: string
-  bedrooms: number
-  bathrooms: number
-  area: number
-  images: string[]
-  featured: boolean
-  status: "available" | "sold" | "rented"
-  views: number
-  createdAt: string
+  type: "house" | "apartment" | "commercial" | "terreno" | "local"
 }
 
 const ITEMS_PER_PAGE = 12
@@ -47,51 +36,40 @@ export default function PropiedadesPage() {
   const [bathroomsFilter, setBathroomsFilter] = useState("all")
   const [sortBy, setSortBy] = useState("newest")
 
-  // Mock data - replace with actual API call
+  // Fetch properties from Supabase
   useEffect(() => {
-    const mockProperties: Property[] = [
-      {
-        id: "1",
-        title: "Casa moderna en centro",
-        price: 85000,
-        currency: "USD",
-        operation: "sale",
-        type: "house",
-        address: "San Martín 1234",
-        neighborhood: "Centro",
-        bedrooms: 3,
-        bathrooms: 2,
-        area: 120,
-        images: ["gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy"],
-        featured: true,
-        status: "available",
-        views: 245,
-        createdAt: "2024-01-15",
-      },
-      {
-        id: "2",
-        title: "Departamento luminoso",
-        price: 95000,
-        currency: "USD",
-        operation: "sale",
-        type: "apartment",
-        address: "Rivadavia 567",
-        neighborhood: "Centro",
-        bedrooms: 2,
-        bathrooms: 1,
-        area: 85,
-        images: ["gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy"],
-        featured: true,
-        status: "available",
-        views: 189,
-        createdAt: "2024-01-10",
-      },
-      // Add more mock properties...
-    ]
+    const fetchProperties = async () => {
+      try {
+        setLoading(true)
+        const result = await PropertyService.getProperties({
+          limit: 100, // Get all properties
+          sort_by: "created_at",
+          sort_order: "desc"
+        })
 
-    setProperties(mockProperties)
-    setFilteredProperties(mockProperties)
-    setLoading(false)
+        // Map properties to match the expected interface
+        const mappedProperties = result.properties.map((property): Property => ({
+          ...property,
+          operation: property.operation_type === "venta" ? "sale" : "rent",
+          type: property.property_type === "casa" ? "house" 
+               : property.property_type === "departamento" ? "apartment"
+               : property.property_type === "terreno" ? "terreno"
+               : property.property_type === "local" ? "commercial"
+               : "house"
+        }))
+
+        setProperties(mappedProperties)
+        setFilteredProperties(mappedProperties)
+      } catch (error) {
+        console.error("Error fetching properties:", error)
+        setProperties([])
+        setFilteredProperties([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProperties()
   }, [])
 
   // Apply filters
@@ -103,8 +81,8 @@ export default function PropiedadesPage() {
       filtered = filtered.filter(
         (property) =>
           property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          property.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          property.neighborhood.toLowerCase().includes(searchTerm.toLowerCase()),
+          (property.address && property.address.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (property.neighborhood && property.neighborhood.toLowerCase().includes(searchTerm.toLowerCase())),
       )
     }
 
@@ -128,12 +106,12 @@ export default function PropiedadesPage() {
 
     // Bedrooms filter
     if (bedroomsFilter !== "all") {
-      filtered = filtered.filter((property) => property.bedrooms >= Number.parseInt(bedroomsFilter))
+      filtered = filtered.filter((property) => property.bedrooms && property.bedrooms >= Number.parseInt(bedroomsFilter))
     }
 
     // Bathrooms filter
     if (bathroomsFilter !== "all") {
-      filtered = filtered.filter((property) => property.bathrooms >= Number.parseInt(bathroomsFilter))
+      filtered = filtered.filter((property) => property.bathrooms && property.bathrooms >= Number.parseInt(bathroomsFilter))
     }
 
     // Sort
@@ -145,10 +123,10 @@ export default function PropiedadesPage() {
         filtered.sort((a, b) => b.price - a.price)
         break
       case "newest":
-        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         break
       case "views":
-        filtered.sort((a, b) => b.views - a.views)
+        filtered.sort((a, b) => (b.views || 0) - (a.views || 0))
         break
     }
 
@@ -171,6 +149,38 @@ export default function PropiedadesPage() {
     setBedroomsFilter("all")
     setBathroomsFilter("all")
     setSortBy("newest")
+  }
+
+  // Helper function to get property type display name
+  const getTypeDisplayName = (type: string) => {
+    switch (type) {
+      case "house":
+        return "Casa"
+      case "apartment":
+        return "Departamento"
+      case "terreno":
+        return "Terreno"
+      case "commercial":
+        return "Comercial"
+      default:
+        return "Propiedad"
+    }
+  }
+
+  // Helper function to get status display name
+  const getStatusDisplayName = (status: string) => {
+    switch (status) {
+      case "available":
+        return "Disponible"
+      case "sold":
+        return "Vendida"
+      case "rented":
+        return "Alquilada"
+      case "reserved":
+        return "Reservada"
+      default:
+        return status
+    }
   }
 
   if (loading) {
@@ -243,6 +253,7 @@ export default function PropiedadesPage() {
                   <SelectItem value="all">Todos</SelectItem>
                   <SelectItem value="house">Casa</SelectItem>
                   <SelectItem value="apartment">Departamento</SelectItem>
+                  <SelectItem value="terreno">Terreno</SelectItem>
                   <SelectItem value="commercial">Comercial</SelectItem>
                 </SelectContent>
               </Select>
@@ -332,19 +343,26 @@ export default function PropiedadesPage() {
                 className="bg-gray-800 border-gray-700 overflow-hidden hover:border-brand-orange transition-colors group"
               >
                 <div className="relative">
-                  <Image
-                    src={getOptimizedImageUrl(property.images[0], {
-                      width: 400,
-                      height: 250,
-                      quality: "auto",
-                      format: "auto",
-                      crop: "fill" || "/placeholder.svg",
-                    })}
-                    alt={property.title}
-                    width={400}
-                    height={250}
-                    className="w-full h-48 object-cover"
-                  />
+                  {property.images && property.images.length > 0 ? (
+                    <Image
+                      src={property.images[0]}
+                      alt={property.title}
+                      width={400}
+                      height={250}
+                      className="w-full h-48 object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.src = "/placeholder.svg"
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
+                      <div className="text-gray-400 text-center">
+                        <div className="w-12 h-12 bg-gray-600 rounded mx-auto mb-2"></div>
+                        <p className="text-sm">Sin imagen</p>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Status badges */}
                   <div className="absolute top-3 left-3 flex gap-2">
@@ -355,14 +373,12 @@ export default function PropiedadesPage() {
                           ? "bg-green-500 text-white"
                           : property.status === "sold"
                             ? "bg-red-500 text-white"
-                            : "bg-yellow-500 text-white"
+                            : property.status === "rented"
+                              ? "bg-blue-500 text-white"
+                              : "bg-yellow-500 text-white"
                       }
                     >
-                      {property.status === "available"
-                        ? "Disponible"
-                        : property.status === "sold"
-                          ? "Vendida"
-                          : "Alquilada"}
+                      {getStatusDisplayName(property.status)}
                     </Badge>
                   </div>
 
@@ -393,35 +409,37 @@ export default function PropiedadesPage() {
 
                   <div className="flex items-center justify-between text-sm text-gray-300 mb-3">
                     <Badge variant="secondary" className="bg-gray-700 text-gray-300">
-                      {property.type === "house"
-                        ? "Casa"
-                        : property.type === "apartment"
-                          ? "Departamento"
-                          : "Comercial"}
+                      {getTypeDisplayName(property.type)}
                     </Badge>
                   </div>
 
                   <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
                     <div className="flex items-center space-x-4">
-                      <div className="flex items-center">
-                        <Bed className="w-4 h-4 mr-1" />
-                        {property.bedrooms}
-                      </div>
-                      <div className="flex items-center">
-                        <Bath className="w-4 h-4 mr-1" />
-                        {property.bathrooms}
-                      </div>
-                      <div className="flex items-center">
-                        <Square className="w-4 h-4 mr-1" />
-                        {property.area}m²
-                      </div>
+                      {property.bedrooms && (
+                        <div className="flex items-center">
+                          <Bed className="w-4 h-4 mr-1" />
+                          {property.bedrooms}
+                        </div>
+                      )}
+                      {property.bathrooms && (
+                        <div className="flex items-center">
+                          <Bath className="w-4 h-4 mr-1" />
+                          {property.bathrooms}
+                        </div>
+                      )}
+                      {property.area_m2 && (
+                        <div className="flex items-center">
+                          <Square className="w-4 h-4 mr-1" />
+                          {property.area_m2}m²
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center text-xs text-gray-500">
                       <Eye className="w-3 h-3 mr-1" />
-                      {property.views} vistas
+                      {property.views || 0} vistas
                     </div>
                     <Button size="sm" className="bg-brand-orange hover:bg-brand-orange/90 text-white">
                       Ver detalles
