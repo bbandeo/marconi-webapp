@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Search, MapPin, Bed, Bath, Square, ArrowRight, Star, Users, Home, Award, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,12 @@ import { Badge } from "@/components/ui/badge"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
 import Link from "next/link"
 import Image from "next/image"
+
+
+// Importar servicios
+import { useIsClient } from "@/hooks/use-is-client"
+import { PropertyService } from "@/services/properties"
+
 
 interface Property {
   id: string
@@ -26,56 +32,71 @@ interface Property {
   images: string[]
   featured: boolean
 }
-
-const featuredProperties: Property[] = [
-  {
-    id: "1",
-    title: "Casa moderna en centro",
-    price: 85000,
-    operation_type: "sale",
-    property_type: "house",
-    bedrooms: 3,
-    bathrooms: 2,
-    area: 120,
-    address: "San Martín 1234",
-    neighborhood: "Centro",
-    images: ["gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy"],
-    featured: true,
-  },
-  {
-    id: "2",
-    title: "Departamento luminoso",
-    price: 45000,
-    operation_type: "rent",
-    property_type: "apartment",
-    bedrooms: 2,
-    bathrooms: 1,
-    area: 65,
-    address: "Rivadavia 567",
-    neighborhood: "Norte",
-    images: ["gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy"],
-    featured: true,
-  },
-  {
-    id: "3",
-    title: "Local comercial estratégico",
-    price: 120000,
-    operation_type: "sale",
-    property_type: "commercial",
-    bedrooms: 0,
-    bathrooms: 1,
-    area: 80,
-    address: "Belgrano 890",
-    neighborhood: "Centro",
-    images: ["gustavo-papasergio-emoKYb99CRI-unsplash_w6gipy"],
-    featured: true,
-  },
-]
+ 
 
 export default function HomePage() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [operationType, setOperationType] = useState("")
-  const [propertyType, setPropertyType] = useState("")
+  const [currentStat, setCurrentStat] = useState(0)
+  const [scrolled, setScrolled] = useState(false)
+  const isClient = useIsClient()
+
+  // Estados para datos del backend
+  const [featuredProperties, setFeaturedProperties] = useState<Property[]>([])
+  const [loadingProperties, setLoadingProperties] = useState(true)
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+    propertyId: null as number | null
+  })
+  const [submitLoading, setSubmitLoading] = useState(false)
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+
+  const stats = [
+    { number: "200+", label: "Propiedades Vendidas" },
+    { number: "98%", label: "Clientes Satisfechos" },
+    { number: "5", label: "Años de Experiencia" },
+    { number: "24/7", label: "Atención Disponible" },
+  ]
+
+ // Cargar propiedades destacadas al montar el componente
+  useEffect(() => {
+    const loadFeaturedProperties = async () => {
+      try {
+        setLoadingProperties(true)
+        const properties = await PropertyService.getFeaturedProperties()
+        setFeaturedProperties(properties)
+      } catch (error) {
+        console.error('Error loading featured properties:', error)
+      } finally {
+        setLoadingProperties(false)
+      }
+    }
+
+    loadFeaturedProperties()
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentStat((prev) => (prev + 1) % stats.length)
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    if (!isClient) {
+      return
+    }
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [isClient])
+
+
+/* 
+
 
   const handleSearch = () => {
     const params = new URLSearchParams()
@@ -84,7 +105,7 @@ export default function HomePage() {
     if (propertyType) params.set("type", propertyType)
 
     window.location.href = `/propiedades?${params.toString()}`
-  }
+  } */
 
   const formatPrice = (price: number, operation: string) => {
     return (
