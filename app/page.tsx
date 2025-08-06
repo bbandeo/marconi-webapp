@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { Search, MapPin, Bed, Bath, Square, ArrowRight, Star, Users, Home, Award, ChevronDown } from "lucide-react"
+import { Search, MapPin, Bed, Bath, Square, ArrowRight, Star, Users, Home, Award, ChevronDown } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -168,7 +168,7 @@ export default function HomePage() {
               crop: "fill",
               quality: "auto",
               format: "auto",
-            }) || "/placeholder.svg"}
+             || "/placeholder.svg"}) || "/placeholder.svg"}
             alt="Reconquista - Marconi Inmobiliaria"
             fill
             className="object-cover"
@@ -205,20 +205,7 @@ export default function HomePage() {
                   />
                 </motion.div>
                 
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
-                  className="mb-8 md:mb-12"
-                >
-                  <Image
-                    src="/assets/logos/logocasa.svg"
-                    alt="Logo Casa"
-                    width={120}
-                    height={120}
-                    className="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28"
-                  />
-                </motion.div>
+                
               </div>
             </motion.div>
 
@@ -295,7 +282,7 @@ export default function HomePage() {
                           crop: "fill",
                           quality: "auto",
                           format: "auto",
-                        }) || "/placeholder.svg"}
+                         || "/placeholder.svg"}) || "/placeholder.svg"}
                         alt={property.title}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
