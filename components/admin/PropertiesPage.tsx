@@ -10,7 +10,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
-import type { Property } from "@/lib/supabase"
+import { PropertyService } from "@/services/properties"
+import type { Property, STATUS_MAP } from "@/lib/supabase"
 
 interface PropertyWithStats extends Property {
   views?: number
@@ -49,6 +50,18 @@ function PropertyImage({ images, title }: PropertyImageProps) {
   )
 }
 
+const filteredProperties = properties.filter((property) => {
+    const matchesSearch = !searchTerm || 
+      property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      property.address?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      property.neighborhood?.toLowerCase().includes(searchTerm.toLowerCase())
+    
+    const matchesStatus = statusFilter === "all" || property.status === statusFilter
+    const matchesType = typeFilter === "all" || property.property_type === typeFilter
+    
+    return matchesSearch && matchesStatus && matchesType
+  })
+
 export default function PropertiesPage() {
   const router = useRouter()
   const [properties, setProperties] = useState<PropertyWithStats[]>([])
@@ -59,7 +72,242 @@ export default function PropertiesPage() {
 
   useEffect(() => {
     fetchProperties()
-  }, [])
+  }, [searchTerm, statusFilter, typeFilter])
+
+  const fetchProperties = async () => {
+    try {
+      setLoading(true)
+      
+      const filters: any = {}
+      
+      if (statusFilter !== "all") {
+        filters.status = statusFilter
+      }
+      
+      if (typeFilter !== "all") {
+        filters.property_type = typeFilter
+      }
+
+      const result = await PropertyService.getProperties({
+        search: searchTerm || undefined,
+        ...filters,
+        limit: 50, // Aumentar el límite para mostrar más propiedades
+        sort_by: "created_at",
+        sort_order: "desc"
+      })
+
+      setProperties(result.properties)
+    } catch (error) {
+      console.error("Error fetching properties:", error)
+      // En caso de error, usar datos mock para evitar crash
+      setProperties([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDeleteProperty = async (id: number) => {
+    if (!confirm("¿Estás seguro de que quieres eliminar esta propiedad?")) {
+      return
+    }
+
+    try {
+      await PropertyService.deleteProperty(id)
+      await fetchProperties() // Recargar la lista
+    } catch (error) {
+      console.error("Error deleting property:", error)
+      alert("Error al eliminar la propiedad")
+    }
+  }
+
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status) {
+      case "available":
+        return "default"
+      case "sold":
+        return "destructive"
+      case "rented":
+        return "secondary"
+      case "reserved":
+        return "outline"
+      default:
+        return "default"
+    }
+  }
+
+  const getStatusDisplay = (status: string) => {
+    return STATUS_MAP[status as keyof typeof STATUS_MAP] || status
+  }
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-300 rounded w-1/4"></div>
+          <div className="space-y-3">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-16 bg-gray-300 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-6">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Propiedades</h1>
+          <p className="text-gray-600">Gestiona tu inventario de propiedades</p>
+        </div>
+        <Button onClick={() => router.push("/admin/properties/new")} className="flex items-center gap-2">
+          <Plus className="w-4 h-4" />
+          Nueva Propiedad
+        </Button>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Input
+            placeholder="Buscar propiedades..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-full sm:w-40">
+            <SelectValue placeholder="Estado" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos los estados</SelectItem>
+            <SelectItem value="available">Disponible</SelectItem>
+            <SelectItem value="sold">Vendido</SelectItem>
+            <SelectItem value="rented">Alquilado</SelectItem>
+            <SelectItem value="reserved">Reservado</SelectItem>
+          </SelectContent>
+        </Select>
+        <Select value={typeFilter} onValueChange={setTypeFilter}>
+          <SelectTrigger className="w-full sm:w-40">
+            <SelectValue placeholder="Tipo" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos los tipos</SelectItem>
+            <SelectItem value="casa">Casa</SelectItem>
+            <SelectItem value="departamento">Departamento</SelectItem>
+            <SelectItem value="terreno">Terreno</SelectItem>
+            <SelectItem value="local">Local</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Properties List */}
+      <div className="space-y-4">
+        {filteredProperties.length === 0 ? (
+          <Card>
+            <CardContent className="p-6 text-center">
+              <Home className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No hay propiedades</h3>
+              <p className="text-gray-600 mb-4">
+                {searchTerm || statusFilter !== "all" || typeFilter !== "all"
+                  ? "No se encontraron propiedades con los filtros aplicados."
+                  : "Comienza agregando tu primera propiedad."}
+              </p>
+              <Button onClick={() => router.push("/admin/properties/new")}>
+                <Plus className="w-4 h-4 mr-2" />
+                Nueva Propiedad
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          filteredProperties.map((property) => (
+            <Card key={property.id} className="hover:shadow-md transition-shadow">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4 flex-1">
+                    <PropertyImage images={property.images} title={property.title} />
+                    
+                    <div className="flex-1">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3 className="font-medium text-gray-900">{property.title}</h3>
+                          <div className="flex items-center text-sm text-gray-600 mt-1">
+                            <MapPin className="w-4 h-4 mr-1" />
+                            {property.address || property.neighborhood || "Sin dirección"}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-gray-900">
+                            ${property.price?.toLocaleString()} {property.currency || "USD"}
+                          </p>
+                          <Badge variant={getStatusBadgeVariant(property.status)}>
+                            {getStatusDisplay(property.status)}
+                          </Badge>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+                        {property.bedrooms && (
+                          <div className="flex items-center">
+                            <Bed className="w-4 h-4 mr-1" />
+                            {property.bedrooms}
+                          </div>
+                        )}
+                        {property.bathrooms && (
+                          <div className="flex items-center">
+                            <Bath className="w-4 h-4 mr-1" />
+                            {property.bathrooms}
+                          </div>
+                        )}
+                        {property.area_m2 && (
+                          <div className="flex items-center">
+                            <Square className="w-4 h-4 mr-1" />
+                            {property.area_m2} m²
+                          </div>
+                        )}
+                        <div className="flex items-center">
+                          <Eye className="w-4 h-4 mr-1" />
+                          {property.views || 0}
+                        </div>
+                        {property.featured && (
+                          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <MoreHorizontal className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => router.push(`/admin/properties/${property.id}/edit`)}>
+                        <Edit className="w-4 h-4 mr-2" />
+                        Editar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => handleDeleteProperty(property.id)}
+                        className="text-red-600"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Eliminar
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+    </div>
+  )
+}
 
   const fetchProperties = async () => {
     try {
