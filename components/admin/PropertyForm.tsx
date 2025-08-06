@@ -377,7 +377,7 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <Upload className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" />
                     <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                      <span className="font-semibold">Click para subir</span> o arrastra y suelta
+                      <span className="font-semibold">Click para subir</span>
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPG o JPEG (MAX. 5MB cada una)</p>
                   </div>
