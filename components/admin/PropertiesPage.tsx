@@ -1,79 +1,108 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Home, Plus, Search, Edit, Trash2, Star, Eye, MoreHorizontal, MapPin, Bed, Bath, Square } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getOptimizedImageUrl } from "@/lib/cloudinary"
-import { PropertyService } from "@/services/properties"
-import type { Property, STATUS_MAP } from "@/lib/supabase"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Home,
+  Plus,
+  Search,
+  Edit,
+  Trash2,
+  Star,
+  Eye,
+  MoreHorizontal,
+  MapPin,
+  Bed,
+  Bath,
+  Square
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+import { getOptimizedImageUrl } from "@/lib/cloudinary";
+import { PropertyService } from "@/services/properties";
+import type { Property, STATUS_MAP } from "@/lib/supabase";
 
 interface PropertyWithStats extends Property {
-  views?: number
-  leads?: number
+  views?: number;
+  leads?: number;
 }
 
 interface PropertyImageProps {
-  images: string[]
-  title: string
+  images: string[];
+  title: string;
 }
 
 function PropertyImage({ images, title }: PropertyImageProps) {
-  const [imageError, setImageError] = useState(false)
-  const firstImage = images && images.length > 0 ? images[0] : null
+  const [imageError, setImageError] = useState(false);
+  const firstImage = images && images.length > 0 ? images[0] : null;
+  console.log("Images:", images);
+  console.log("First Image:", firstImage);
 
   if (!firstImage || imageError) {
     return (
       <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center">
         <Home className="w-6 h-6 text-gray-400" />
       </div>
-    )
+    );
   }
 
   return (
     <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-700">
       <img
         src={
-          getOptimizedImageUrl(firstImage, { width: 48, height: 48, crop: "fill" }) ||
-          "/placeholder.svg"
+          getOptimizedImageUrl(firstImage, {
+            width: 48,
+            height: 48,
+            crop: "fill"
+          }) || "/placeholder.svg"
         }
         alt={title}
         className="w-full h-full object-cover"
         onError={() => setImageError(true)}
       />
     </div>
-  )
+  );
 }
 
 export default function PropertiesPage() {
-  const router = useRouter()
-  const [properties, setProperties] = useState<PropertyWithStats[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [typeFilter, setTypeFilter] = useState("all")
+  const router = useRouter();
+  const [properties, setProperties] = useState<PropertyWithStats[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
 
   useEffect(() => {
-    fetchProperties()
-  }, [searchTerm, statusFilter, typeFilter])
+    fetchProperties();
+  }, [searchTerm, statusFilter, typeFilter]);
 
   const fetchProperties = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
 
-      const filters: any = {}
+      const filters: any = {};
 
       if (statusFilter !== "all") {
-        filters.status = statusFilter
+        filters.status = statusFilter;
       }
 
       if (typeFilter !== "all") {
-        filters.property_type = typeFilter
+        filters.property_type = typeFilter;
       }
 
       const result = await PropertyService.getProperties({
@@ -82,147 +111,159 @@ export default function PropertiesPage() {
         limit: 50,
         sort_by: "created_at",
         sort_order: "desc"
-      })
+      });
 
-      setProperties(result.properties)
+      setProperties(result.properties);
     } catch (error) {
-      console.error("Error fetching properties:", error)
-      setProperties([])
+      console.error("Error fetching properties:", error);
+      setProperties([]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleDeleteProperty = async (id: number) => {
     if (!confirm("¿Estás seguro de que quieres eliminar esta propiedad?")) {
-      return
+      return;
     }
 
     try {
-      await PropertyService.deleteProperty(id)
-      await fetchProperties()
+      await PropertyService.deleteProperty(id);
+      await fetchProperties();
     } catch (error) {
-      console.error("Error deleting property:", error)
-      alert("Error al eliminar la propiedad")
+      console.error("Error deleting property:", error);
+      alert("Error al eliminar la propiedad");
     }
-  }
+  };
 
-  const toggleFeatured = async (propertyId: number, currentFeatured: boolean) => {
+  const toggleFeatured = async (
+    propertyId: number,
+    currentFeatured: boolean
+  ) => {
     try {
       const response = await fetch(`/api/properties/${propertyId}`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          featured: !currentFeatured,
-        }),
-      })
+          featured: !currentFeatured
+        })
+      });
 
       if (response.ok) {
         setProperties((prev) =>
-          prev.map((property) => (property.id === propertyId ? { ...property, featured: !currentFeatured } : property)),
-        )
+          prev.map((property) =>
+            property.id === propertyId
+              ? { ...property, featured: !currentFeatured }
+              : property
+          )
+        );
       }
     } catch (error) {
-      console.error("Error toggling featured status:", error)
+      console.error("Error toggling featured status:", error);
     }
-  }
+  };
 
   const deleteProperty = async (propertyId: number) => {
     if (!confirm("¿Estás seguro de que quieres eliminar esta propiedad?")) {
-      return
+      return;
     }
 
     try {
       const response = await fetch(`/api/properties/${propertyId}`, {
-        method: "DELETE",
-      })
+        method: "DELETE"
+      });
 
       if (response.ok) {
-        setProperties((prev) => prev.filter((property) => property.id !== propertyId))
+        setProperties((prev) =>
+          prev.filter((property) => property.id !== propertyId)
+        );
       }
     } catch (error) {
-      console.error("Error deleting property:", error)
+      console.error("Error deleting property:", error);
     }
-  }
+  };
 
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case "available":
-        return "default"
+        return "default";
       case "sold":
-        return "destructive"
+        return "destructive";
       case "rented":
-        return "secondary"
+        return "secondary";
       case "reserved":
-        return "outline"
+        return "outline";
       default:
-        return "default"
+        return "default";
     }
-  }
+  };
 
   const getStatusDisplay = (status: string) => {
-    return STATUS_MAP[status as keyof typeof STATUS_MAP] || status
-  }
+    return STATUS_MAP[status as keyof typeof STATUS_MAP] || status;
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "available":
       case "Disponible":
-        return "bg-green-500 text-white"
+        return "bg-green-500 text-white";
       case "sold":
       case "Vendido":
-        return "bg-red-500 text-white"
+        return "bg-red-500 text-white";
       case "rented":
       case "Alquilado":
-        return "bg-blue-500 text-white"
+        return "bg-blue-500 text-white";
       case "reserved":
       case "Reservado":
-        return "bg-yellow-500 text-white"
+        return "bg-yellow-500 text-white";
       default:
-        return "bg-gray-500 text-white"
+        return "bg-gray-500 text-white";
     }
-  }
+  };
 
   const getPropertyTypeLabel = (type: string) => {
     const typeMap: { [key: string]: string } = {
       casa: "Casa",
       departamento: "Departamento",
       terreno: "Terreno",
-      local: "Local",
-    }
-    return typeMap[type] || type
-  }
+      local: "Local"
+    };
+    return typeMap[type] || type;
+  };
 
   const getOperationTypeLabel = (type: string) => {
     const operationMap: { [key: string]: string } = {
       venta: "Venta",
-      alquiler: "Alquiler",
-    }
-    return operationMap[type] || type
-  }
+      alquiler: "Alquiler"
+    };
+    return operationMap[type] || type;
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-AR", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price)
-  }
+      maximumFractionDigits: 0
+    }).format(price);
+  };
 
   const filteredProperties = properties.filter((property) => {
-    const matchesSearch = !searchTerm ||
+    const matchesSearch =
+      !searchTerm ||
       property.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       property.address?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      property.neighborhood?.toLowerCase().includes(searchTerm.toLowerCase())
+      property.neighborhood?.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesStatus = statusFilter === "all" || property.status === statusFilter
-    const matchesType = typeFilter === "all" || property.property_type === typeFilter
+    const matchesStatus =
+      statusFilter === "all" || property.status === statusFilter;
+    const matchesType =
+      typeFilter === "all" || property.property_type === typeFilter;
 
-    return matchesSearch && matchesStatus && matchesType
-  })
+    return matchesSearch && matchesStatus && matchesType;
+  });
 
   if (loading) {
     return (
@@ -237,7 +278,10 @@ export default function PropertiesPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 bg-gray-800 rounded-lg animate-pulse" />
+            <div
+              key={i}
+              className="h-24 bg-gray-800 rounded-lg animate-pulse"
+            />
           ))}
         </div>
 
@@ -249,7 +293,7 @@ export default function PropertiesPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -257,8 +301,12 @@ export default function PropertiesPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-white">Gestión de Propiedades</h1>
-          <p className="text-gray-300">Administra todas las propiedades del sistema</p>
+          <h1 className="text-2xl font-bold text-white">
+            Gestión de Propiedades
+          </h1>
+          <p className="text-gray-300">
+            Administra todas las propiedades del sistema
+          </p>
         </div>
         <Button
           onClick={() => router.push("/admin/properties/new")}
@@ -276,26 +324,30 @@ export default function PropertiesPage() {
             label: "Total Propiedades",
             value: properties.length.toString(),
             color: "bg-blue-500",
-            icon: Home,
+            icon: Home
           },
           {
             label: "Disponibles",
-            value: properties.filter((p) => p.status === "available").length.toString(),
+            value: properties
+              .filter((p) => p.status === "available")
+              .length.toString(),
             color: "bg-green-500",
-            icon: Home,
+            icon: Home
           },
           {
             label: "Vendidas",
-            value: properties.filter((p) => p.status === "sold").length.toString(),
+            value: properties
+              .filter((p) => p.status === "sold")
+              .length.toString(),
             color: "bg-red-500",
-            icon: Home,
+            icon: Home
           },
           {
             label: "Destacadas",
             value: properties.filter((p) => p.featured).length.toString(),
             color: "bg-brand-orange",
-            icon: Star,
-          },
+            icon: Star
+          }
         ].map((stat, index) => (
           <Card key={index} className="bg-gray-800 border-gray-700">
             <CardContent className="p-6">
@@ -333,19 +385,34 @@ export default function PropertiesPage() {
                   <SelectValue placeholder="Estado" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-700 border-gray-600">
-                  <SelectItem value="all" className="text-white hover:bg-gray-600">
+                  <SelectItem
+                    value="all"
+                    className="text-white hover:bg-gray-600"
+                  >
                     Todos
                   </SelectItem>
-                  <SelectItem value="available" className="text-white hover:bg-gray-600">
+                  <SelectItem
+                    value="available"
+                    className="text-white hover:bg-gray-600"
+                  >
                     Disponible
                   </SelectItem>
-                  <SelectItem value="sold" className="text-white hover:bg-gray-600">
+                  <SelectItem
+                    value="sold"
+                    className="text-white hover:bg-gray-600"
+                  >
                     Vendido
                   </SelectItem>
-                  <SelectItem value="rented" className="text-white hover:bg-gray-600">
+                  <SelectItem
+                    value="rented"
+                    className="text-white hover:bg-gray-600"
+                  >
                     Alquilado
                   </SelectItem>
-                  <SelectItem value="reserved" className="text-white hover:bg-gray-600">
+                  <SelectItem
+                    value="reserved"
+                    className="text-white hover:bg-gray-600"
+                  >
                     Reservado
                   </SelectItem>
                 </SelectContent>
@@ -356,25 +423,42 @@ export default function PropertiesPage() {
                   <SelectValue placeholder="Tipo" />
                 </SelectTrigger>
                 <SelectContent className="bg-gray-700 border-gray-600">
-                  <SelectItem value="all" className="text-white hover:bg-gray-600">
+                  <SelectItem
+                    value="all"
+                    className="text-white hover:bg-gray-600"
+                  >
                     Todos
                   </SelectItem>
-                  <SelectItem value="casa" className="text-white hover:bg-gray-600">
+                  <SelectItem
+                    value="casa"
+                    className="text-white hover:bg-gray-600"
+                  >
                     Casa
                   </SelectItem>
-                  <SelectItem value="departamento" className="text-white hover:bg-gray-600">
+                  <SelectItem
+                    value="departamento"
+                    className="text-white hover:bg-gray-600"
+                  >
                     Departamento
                   </SelectItem>
-                  <SelectItem value="terreno" className="text-white hover:bg-gray-600">
+                  <SelectItem
+                    value="terreno"
+                    className="text-white hover:bg-gray-600"
+                  >
                     Terreno
                   </SelectItem>
-                  <SelectItem value="local" className="text-white hover:bg-gray-600">
+                  <SelectItem
+                    value="local"
+                    className="text-white hover:bg-gray-600"
+                  >
                     Local
                   </SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <p className="text-sm text-gray-400">{filteredProperties.length} propiedades encontradas</p>
+            <p className="text-sm text-gray-400">
+              {filteredProperties.length} propiedades encontradas
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -386,23 +470,45 @@ export default function PropertiesPage() {
             <table className="w-full">
               <thead className="bg-gray-700/50">
                 <tr>
-                  <th className="text-left py-4 px-6 font-medium text-gray-200">Propiedad</th>
-                  <th className="text-left py-4 px-6 font-medium text-gray-200">Tipo</th>
-                  <th className="text-left py-4 px-6 font-medium text-gray-200">Precio</th>
-                  <th className="text-left py-4 px-6 font-medium text-gray-200">Estado</th>
-                  <th className="text-left py-4 px-6 font-medium text-gray-200">Ubicación</th>
-                  <th className="text-left py-4 px-6 font-medium text-gray-200">Estadísticas</th>
-                  <th className="text-left py-4 px-6 font-medium text-gray-200">Acciones</th>
+                  <th className="text-left py-4 px-6 font-medium text-gray-200">
+                    Propiedad
+                  </th>
+                  <th className="text-left py-4 px-6 font-medium text-gray-200">
+                    Tipo
+                  </th>
+                  <th className="text-left py-4 px-6 font-medium text-gray-200">
+                    Precio
+                  </th>
+                  <th className="text-left py-4 px-6 font-medium text-gray-200">
+                    Estado
+                  </th>
+                  <th className="text-left py-4 px-6 font-medium text-gray-200">
+                    Ubicación
+                  </th>
+                  <th className="text-left py-4 px-6 font-medium text-gray-200">
+                    Estadísticas
+                  </th>
+                  <th className="text-left py-4 px-6 font-medium text-gray-200">
+                    Acciones
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-700">
                 {filteredProperties.map((property) => (
-                  <tr key={property.id} className="hover:bg-gray-700/30 transition-colors">
+                  <tr
+                    key={property.id}
+                    className="hover:bg-gray-700/30 transition-colors"
+                  >
                     <td className="py-4 px-6">
                       <div className="flex items-center space-x-3">
-                        <PropertyImage images={property.images || []} title={property.title} />
+                        <PropertyImage
+                          images={property.images || []}
+                          title={property.title}
+                        />
                         <div>
-                          <h3 className="font-medium text-white">{property.title}</h3>
+                          <h3 className="font-medium text-white">
+                            {property.title}
+                          </h3>
                           <div className="flex items-center text-sm text-gray-400 space-x-4">
                             {property.bedrooms && (
                               <span className="flex items-center">
@@ -428,15 +534,23 @@ export default function PropertiesPage() {
                     </td>
                     <td className="py-4 px-6">
                       <div>
-                        <p className="text-sm font-medium text-white">{getPropertyTypeLabel(property.property_type)}</p>
-                        <p className="text-xs text-gray-400">{getOperationTypeLabel(property.operation_type)}</p>
+                        <p className="text-sm font-medium text-white">
+                          {getPropertyTypeLabel(property.property_type)}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {getOperationTypeLabel(property.operation_type)}
+                        </p>
                       </div>
                     </td>
                     <td className="py-4 px-6">
-                      <span className="text-sm font-medium text-white">{formatPrice(property.price)}</span>
+                      <span className="text-sm font-medium text-white">
+                        {formatPrice(property.price)}
+                      </span>
                     </td>
                     <td className="py-4 px-6">
-                      <Badge className={getStatusColor(property.status)}>{property.status}</Badge>
+                      <Badge className={getStatusColor(property.status)}>
+                        {property.status}
+                      </Badge>
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center text-sm text-gray-400">
@@ -458,25 +572,40 @@ export default function PropertiesPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => toggleFeatured(property.id, property.featured)}
+                          onClick={() =>
+                            toggleFeatured(property.id, property.featured)
+                          }
                           className="p-1 hover:bg-gray-600"
                         >
                           <Star
                             className={`w-4 h-4 ${
-                              property.featured ? "text-brand-orange fill-current" : "text-gray-400"
+                              property.featured
+                                ? "text-brand-orange fill-current"
+                                : "text-gray-400"
                             }`}
                           />
                         </Button>
 
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="p-1 hover:bg-gray-600 text-gray-300">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="p-1 hover:bg-gray-600 text-gray-300"
+                            >
                               <MoreHorizontal className="w-4 h-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-gray-700 border-gray-600">
+                          <DropdownMenuContent
+                            align="end"
+                            className="bg-gray-700 border-gray-600"
+                          >
                             <DropdownMenuItem
-                              onClick={() => router.push(`/admin/properties/${property.id}/edit`)}
+                              onClick={() =>
+                                router.push(
+                                  `/admin/properties/${property.id}/edit`
+                                )
+                              }
                               className="text-white hover:bg-gray-600"
                             >
                               <Edit className="w-4 h-4 mr-2" />
@@ -502,25 +631,29 @@ export default function PropertiesPage() {
           {filteredProperties.length === 0 && (
             <div className="text-center py-12">
               <Home className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-white mb-2">No se encontraron propiedades</h3>
+              <h3 className="text-lg font-medium text-white mb-2">
+                No se encontraron propiedades
+              </h3>
               <p className="text-gray-400 mb-4">
                 {searchTerm || statusFilter !== "all" || typeFilter !== "all"
                   ? "Intenta ajustar los filtros de búsqueda"
                   : "Comienza agregando tu primera propiedad"}
               </p>
-              {!searchTerm && statusFilter === "all" && typeFilter === "all" && (
-                <Button
-                  onClick={() => router.push("/admin/properties/new")}
-                  className="bg-brand-orange hover:bg-brand-orange/90 text-white"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Nueva Propiedad
-                </Button>
-              )}
+              {!searchTerm &&
+                statusFilter === "all" &&
+                typeFilter === "all" && (
+                  <Button
+                    onClick={() => router.push("/admin/properties/new")}
+                    className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nueva Propiedad
+                  </Button>
+                )}
             </div>
           )}
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
