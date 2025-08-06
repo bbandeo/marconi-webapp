@@ -24,9 +24,9 @@ This quick start lets you get an end-to-end implementation up and running using 
 
 In a terminal in your Node.js environment, run:
 
-```
+\`\`\`
 npm install cloudinary
-```
+\`\`\`
 
 ### Set your API environment variable
 
@@ -34,14 +34,14 @@ In a terminal, set your `CLOUDINARY_URL` environment variable.
 Copy the **API environment variable** format from the [API Keys](https://console.cloudinary.com/settings/api-keys) page of the Cloudinary Console Settings. Replace `<your_api_key>` and `<your_api_secret>` with your actual values. Your cloud name is already correctly included in the format.
 * On Mac or Linux:
 
-    ```
+    \`\`\`
     export CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
-    ```
+    \`\`\`
 * On Windows:
 
-    ```
+    \`\`\`
     set CLOUDINARY_URL=cloudinary://API_KEY:API_SECRET@CLOUD_NAME
-    ```
+    \`\`\`
 
 > **INFO**:
 >
@@ -53,7 +53,7 @@ Create a new file called **index.js** and copy and paste the following into this
 
 index.js
 
-```nodejs
+\`\`\`nodejs
 // Require the cloudinary library
 const cloudinary = require('cloudinary').v2;
 
@@ -64,7 +64,7 @@ cloudinary.config({
 
 // Log the configuration
 console.log(cloudinary.config());
-```
+\`\`\`
 
 More info about configuration...
 
@@ -76,7 +76,7 @@ Copy and paste this into **index.js**:
 
 index.js (continued)
 
-```nodejs
+\`\`\`nodejs
 /////////////////////////
 // Uploads an image file
 /////////////////////////
@@ -99,7 +99,7 @@ const uploadImage = async (imagePath) => {
       console.error(error);
     }
 };
-```
+\`\`\`
 
 More info about upload...
 
@@ -119,7 +119,7 @@ Copy and paste this into **index.js**:
 
 index.js (continued)
 
-```nodejs
+\`\`\`nodejs
 /////////////////////////////////////
 // Gets details of an uploaded image
 /////////////////////////////////////
@@ -139,7 +139,7 @@ const getAssetInfo = async (publicId) => {
         console.error(error);
     }
 };
-```
+\`\`\`
 
 More info about getting details of an asset...
 
@@ -153,7 +153,7 @@ Copy and paste this into **index.js**:
 
 index.js (continued)
 
-```nodejs
+\`\`\`nodejs
 //////////////////////////////////////////////////////////////
 // Creates an HTML image tag with a transformation that
 // results in a circular thumbnail crop of the image  
@@ -177,7 +177,7 @@ const createImageTag = (publicId, ...colors) => {
 
     return imageTag;
 };
-```
+\`\`\`
 
 More info about transformations...
 
@@ -197,7 +197,7 @@ Copy and paste this into **index.js** to call the functions you just created:
 
 index.js (continued)
 
-```nodejs
+\`\`\`nodejs
 //////////////////
 //
 // Main function
@@ -221,19 +221,19 @@ index.js (continued)
     console.log(imageTag);
 
 })();
-```
+\`\`\`
 
 Save your changes then run the script from the terminal: 
 
-```
+\`\`\`
 node index.js
-```
+\`\`\`
 
 Check the configuration...
 
 If you set the `CLOUDINARY_URL` environment variable correctly, the response in the **Console** tab will look something like this:
 
-```
+\`\`\`
 {
   cloud_name: 'demo',
   api_key: '1234',
@@ -242,13 +242,13 @@ If you set the `CLOUDINARY_URL` environment variable correctly, the response in 
   secure_distribution: null,
   secure: true
 }
-```
+\`\`\`
 
 Check the upload response...
 
 The response to the upload call looks something like this:
 
-```
+\`\`\`
 {
   asset_id: '843cc951bfaa0406ab46c4a511be352f',
   public_id: 'happy_people',
@@ -273,7 +273,7 @@ The response to the upload call looks something like this:
   original_filename: 'happy_people',
   api_key: '1234'
 }
-```
+\`\`\`
 
 You can see the image that has been uploaded to your Cloudinary storage by copying the `secure_url` that is returned in the upload response and pasting it in a browser.
 
@@ -283,7 +283,7 @@ Check the resource response...
 
 The response to the resource method looks something like this:
 
-```
+\`\`\`
 {
   asset_id: '843cc951bfaa0406ab46c4a511be352f',
   public_id: 'happy_people',
@@ -318,7 +318,7 @@ The response to the resource method looks something like this:
   rate_limit_reset_at: 2022-05-03T14:00:00.000Z,
   rate_limit_remaining: 9719
 } 
-```
+\`\`\`
 
 Notice that the response includes the most predominant colors in the image.
 
@@ -326,9 +326,9 @@ Check the image tag...
 
 The generated image tag looks something like this:
 
-```
+\`\`\`
 <img src='https://res.cloudinary.com/demo/image/upload/c_thumb,g_faces,h_250,w_250/r_max/co_rgb:F8F3F0,e_outline:10/b_rgb:DBE0EA/happy_people' />
-```
+\`\`\`
 
 You can use the returned image tag to display the image on your website. For now, copy and paste the URL to see the transformed image in the browser:
 

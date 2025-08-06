@@ -121,14 +121,6 @@ export default function HomePage() {
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/assets/logos/logocasa.svg"
-                alt="Logo Casa"
-                width={32}
-                height={32}
-                className="h-8 w-8 md:h-10 md:w-10"
-                priority
-              />
-              <Image
                 src="/assets/logos/marconi_title.svg"
                 alt="Marconi Inmobiliaria"
                 width={140}
