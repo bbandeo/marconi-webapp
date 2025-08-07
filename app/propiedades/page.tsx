@@ -390,7 +390,7 @@ export default function PropiedadesPage() {
                 <Button
                   onClick={clearFilters}
                   variant="outline"
-                  className="bg-transparent border-orange-500/50 text-orange-300 hover:bg-orange-500 hover:text-white backdrop-blur-sm"
+                  className="bg-gray-700/60 border-gray-500/40 text-gray-300 hover:bg-orange-500/80 hover:text-white hover:border-orange-500/60 backdrop-blur-sm transition-all duration-300"
                 >
                   Limpiar
                 </Button>
