@@ -159,9 +159,16 @@ export default function PropertiesPage() {
               : property
           )
         );
+        
+        // Show success feedback
+        const action = !currentFeatured ? "marcada como destacada" : "removida de destacadas";
+        console.log(`Propiedad ${action} exitosamente`);
+      } else {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
     } catch (error) {
       console.error("Error toggling featured status:", error);
+      alert("Error al cambiar el estado destacado de la propiedad");
     }
   };
 

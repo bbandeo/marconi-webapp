@@ -151,7 +151,7 @@ export default function HomePage() {
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <Image
-                src="/assets/logos/marconi_title.svg"
+                src="/assets/logos/marconi_header_orangewhite.png"
                 alt="Marconi Inmobiliaria"
                 width={140}
                 height={45}

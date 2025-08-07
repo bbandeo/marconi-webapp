@@ -8,6 +8,7 @@ This is **Marconi Inmobiliaria**, a Spanish real estate platform built with Next
 
 ## Development Commands
 
+- `pnpm local` - Run local web server for development
 - `pnpm dev` - Start development server
 - `pnpm build` - Build for production
 - `pnpm start` - Start production server  

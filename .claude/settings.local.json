@@ -8,7 +8,9 @@
       "Bash(pnpm build:*)",
       "Bash(pkill:*)",
       "Bash(git fetch:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": []
   }

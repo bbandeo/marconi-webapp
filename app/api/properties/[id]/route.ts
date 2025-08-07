@@ -3,9 +3,10 @@ import { createClient } from "@supabase/supabase-js"
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { data, error } = await supabase.from("properties").select("*").eq("id", params.id).single()
+    const { id } = await params
+    const { data, error } = await supabase.from("properties").select("*").eq("id", id).single()
 
     if (error) {
       if (error.code === "PGRST116") {
@@ -22,11 +23,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const body = await request.json()
 
-    const { data, error } = await supabase.from("properties").update(body).eq("id", params.id).select().single()
+    const { data, error } = await supabase.from("properties").update(body).eq("id", id).select().single()
 
     if (error) {
       console.error("Database error:", error)
@@ -40,9 +42,29 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { error } = await supabase.from("properties").delete().eq("id", params.id)
+    const { id } = await params
+    const body = await request.json()
+
+    const { data, error } = await supabase.from("properties").update(body).eq("id", id).select().single()
+
+    if (error) {
+      console.error("Database error:", error)
+      return NextResponse.json({ error: "Failed to update property" }, { status: 500 })
+    }
+
+    return NextResponse.json(data)
+  } catch (error) {
+    console.error("API error:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+  }
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params
+    const { error } = await supabase.from("properties").delete().eq("id", id)
 
     if (error) {
       console.error("Database error:", error)

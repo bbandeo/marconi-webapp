@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge"
 import { Search, Filter, MapPin, Bed, Bath, Square, Heart, Eye, ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
 import { PropertyService } from "@/services/properties"
 import type { Property as PropertyType } from "@/lib/supabase"
@@ -342,27 +343,28 @@ export default function PropiedadesPage() {
                 key={property.id}
                 className="bg-gray-800 border-gray-700 overflow-hidden hover:border-brand-orange transition-colors group"
               >
-                <div className="relative">
-                  {property.images && property.images.length > 0 ? (
-                    <Image
-                      src={property.images[0]}
-                      alt={property.title}
-                      width={400}
-                      height={250}
-                      className="w-full h-48 object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement
-                        target.src = "/placeholder.svg"
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
-                      <div className="text-gray-400 text-center">
-                        <div className="w-12 h-12 bg-gray-600 rounded mx-auto mb-2"></div>
-                        <p className="text-sm">Sin imagen</p>
+                <Link href={`/propiedades/${property.id}`}>
+                  <div className="relative cursor-pointer">
+                    {property.images && property.images.length > 0 ? (
+                      <Image
+                        src={property.images[0]}
+                        alt={property.title}
+                        width={400}
+                        height={250}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement
+                          target.src = "/placeholder.svg"
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
+                        <div className="text-gray-400 text-center">
+                          <div className="w-12 h-12 bg-gray-600 rounded mx-auto mb-2"></div>
+                          <p className="text-sm">Sin imagen</p>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
                   {/* Status badges */}
                   <div className="absolute top-3 left-3 flex gap-2">
@@ -397,10 +399,13 @@ export default function PropiedadesPage() {
                       {property.currency}$ {property.price.toLocaleString()}
                     </div>
                   </div>
-                </div>
+                  </div>
+                </Link>
 
                 <CardContent className="p-4">
-                  <h3 className="font-semibold text-white mb-2 line-clamp-1">{property.title}</h3>
+                  <Link href={`/propiedades/${property.id}`}>
+                    <h3 className="font-semibold text-white mb-2 line-clamp-1 hover:text-brand-orange transition-colors cursor-pointer">{property.title}</h3>
+                  </Link>
 
                   <div className="flex items-center text-gray-400 text-sm mb-3">
                     <MapPin className="w-4 h-4 mr-1" />
@@ -441,9 +446,11 @@ export default function PropiedadesPage() {
                       <Eye className="w-3 h-3 mr-1" />
                       {property.views || 0} vistas
                     </div>
-                    <Button size="sm" className="bg-brand-orange hover:bg-brand-orange/90 text-white">
-                      Ver detalles
-                    </Button>
+                    <Link href={`/propiedades/${property.id}`}>
+                      <Button size="sm" className="bg-brand-orange hover:bg-brand-orange/90 text-white">
+                        Ver detalles
+                      </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>

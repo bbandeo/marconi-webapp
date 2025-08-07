@@ -25,7 +25,7 @@ const config = {
         museo: ["Museo Sans", "sans-serif"],
       },
       colors: {
-        "brand-orange": "#F97316",
+        "brand-orange": "#ff6600",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

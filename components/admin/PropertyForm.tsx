@@ -16,7 +16,26 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { toast } from "@/hooks/use-toast"
-import { X, Plus, Upload } from "lucide-react"
+import { X, Plus, Upload, GripVertical } from "lucide-react"
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable'
+import {
+  useSortable,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 const propertySchema = z.object({
   title: z.string().min(1, "El título es requerido"),
@@ -43,6 +62,71 @@ interface PropertyFormProps {
   onSubmit?: (data: PropertyFormData) => void
 }
 
+interface SortableImageItemProps {
+  id: string
+  image: string
+  index: number
+  onRemove: (index: number) => void
+  isFirst: boolean
+}
+
+function SortableImageItem({ id, image, index, onRemove, isFirst }: SortableImageItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="relative group bg-white rounded-lg border shadow-sm"
+    >
+      <div className="relative">
+        <img
+          src={image || "/placeholder.svg"}
+          alt={`Imagen ${index + 1}`}
+          className="w-full h-32 object-cover rounded-t-lg"
+        />
+        <div
+          {...attributes}
+          {...listeners}
+          className="absolute top-2 left-2 p-1 bg-black bg-opacity-50 rounded cursor-move hover:bg-opacity-70 transition-colors"
+        >
+          <GripVertical className="h-4 w-4 text-white" />
+        </div>
+        <Button
+          type="button"
+          variant="destructive"
+          size="sm"
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0"
+          onClick={() => onRemove(index)}
+        >
+          <X className="h-4 w-4" />
+        </Button>
+        {isFirst && (
+          <Badge className="absolute bottom-2 left-2 bg-blue-600">
+            Principal
+          </Badge>
+        )}
+      </div>
+      <div className="p-2 text-center">
+        <span className="text-xs text-gray-500">Imagen {index + 1}</span>
+      </div>
+    </div>
+  )
+}
+
 const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
   const router = useRouter()
   const [images, setImages] = useState<string[]>([])
@@ -50,6 +134,13 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
   const [newFeature, setNewFeature] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [uploadingImages, setUploadingImages] = useState(false)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   const {
     register,
@@ -132,6 +223,23 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
       // Clear the input
       if (event.target) {
         event.target.value = ""
+      }
+    }
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (over && active.id !== over.id) {
+      const activeIndex = images.findIndex((_, index) => `image-${index}` === active.id)
+      const overIndex = images.findIndex((_, index) => `image-${index}` === over.id)
+
+      if (activeIndex !== -1 && overIndex !== -1) {
+        setImages((items) => arrayMove(items, activeIndex, overIndex))
+        toast({
+          title: "Orden actualizado",
+          description: "El orden de las imágenes ha sido actualizado. La primera imagen será la principal.",
+        })
       }
     }
   }
@@ -400,26 +508,34 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
             </div>
 
             {images.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {images.map((image, index) => (
-                  <div key={index} className="relative group">
-                    <img
-                      src={image || "/placeholder.svg"}
-                      alt={`Imagen ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-lg"
-                    />
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                      onClick={() => removeImage(index)}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                    {index === 0 && <Badge className="absolute bottom-2 left-2 bg-blue-600">Principal</Badge>}
-                  </div>
-                ))}
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <GripVertical className="h-4 w-4" />
+                  <span>Arrastra las imágenes para cambiar el orden. La primera será la imagen principal.</span>
+                </div>
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={images.map((_, index) => `image-${index}`)}
+                    strategy={rectSortingStrategy}
+                  >
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {images.map((image, index) => (
+                        <SortableImageItem
+                          key={`image-${index}`}
+                          id={`image-${index}`}
+                          image={image}
+                          index={index}
+                          onRemove={removeImage}
+                          isFirst={index === 0}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
               </div>
             )}
 

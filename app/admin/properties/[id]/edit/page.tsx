@@ -10,32 +10,23 @@ export default function EditPropertyPage() {
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		// Simular carga de datos de la propiedad
 		const loadProperty = async () => {
 			try {
-				// const property = await getProperty(params.id)
-				// Datos de ejemplo
-				const mockProperty = {
-					id: Number(params.id),
-					title: "Casa familiar en Barrio Parque",
-					description: "Hermosa casa de 3 dormitorios con gran patio y parrilla. Ideal para familias que buscan comodidad y espacio.",
-					type: "Casa",
-					operation: "Venta",
-					price: 75000,
-					currency: "USD",
-					bedrooms: 3,
-					bathrooms: 2,
-					area: 150,
-					address: "Belgrano 1234",
-					neighborhood: "Barrio Parque",
-					features: ["cochera", "patio", "parrilla", "aire acondicionado"],
-					featured: true,
-					status: "Disponible",
-					images: []
-				};
-				setProperty(mockProperty);
+				const response = await fetch(`/api/properties/${params.id}`);
+				
+				if (!response.ok) {
+					if (response.status === 404) {
+						setProperty(null);
+						return;
+					}
+					throw new Error('Error al cargar la propiedad');
+				}
+				
+				const property = await response.json();
+				setProperty(property);
 			} catch (error) {
 				console.error("Error loading property:", error);
+				setProperty(null);
 			} finally {
 				setLoading(false);
 			}
