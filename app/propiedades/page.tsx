@@ -407,126 +407,155 @@ export default function PropiedadesPage() {
           <p className="text-gray-300">{filteredProperties.length} propiedades encontradas</p>
         </div>
 
-        {/* Properties Grid */}
+        {/* Properties List */}
         {currentProperties.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          <div className="space-y-6 mb-8">
             {currentProperties.map((property) => (
               <Card
                 key={property.id}
-                className="bg-gray-800/90 border-gray-600/50 border overflow-hidden group hover:border-gray-500 hover:shadow-xl transition-all duration-300 backdrop-blur-sm"
+                className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm"
               >
-                <Link href={`/propiedades/${property.id}`}>
-                  <div className="relative cursor-pointer">
-                    {property.images && property.images.length > 0 ? (
-                      <Image
-                        src={property.images[0]}
-                        alt={property.title}
-                        width={500}
-                        height={300}
-                        className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement
-                          target.src = "/placeholder.svg"
-                        }}
-                      />
-                    ) : (
-                      <div className="w-full h-56 bg-gray-700 flex items-center justify-center">
-                        <div className="text-gray-400 text-center">
-                          <div className="w-12 h-12 bg-gray-600 rounded mx-auto mb-2"></div>
-                          <p className="text-sm">Sin imagen</p>
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
+                  {/* Image Section */}
+                  <div className="lg:col-span-2 relative">
+                    <Link href={`/propiedades/${property.id}`}>
+                      <div className="relative cursor-pointer h-64 lg:h-80">
+                        {property.images && property.images.length > 0 ? (
+                          <Image
+                            src={property.images[0]}
+                            alt={property.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement
+                              target.src = "/placeholder.svg"
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-gray-700 flex items-center justify-center">
+                            <div className="text-gray-400 text-center">
+                              <div className="w-16 h-16 bg-gray-600 rounded mx-auto mb-3"></div>
+                              <p>Sin imagen</p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Status badges */}
+                        <div className="absolute top-4 left-4">
+                          <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-4 py-2 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
+                            {property.operation === "sale" ? "VENTA" : "ALQUILER"}
+                          </div>
+                        </div>
+
+                        {/* Featured badge */}
+                        {property.featured && (
+                          <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
+                            <Eye className="w-4 h-4" />
+                            DESTACADA
+                          </div>
+                        )}
+
+                        {/* Favorite button */}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
+                        >
+                          <Heart className="w-5 h-5" />
+                        </Button>
+                      </div>
+                    </Link>
+                  </div>
+
+                  {/* Content Section */}
+                  <div className="lg:col-span-3 p-6 lg:p-8 flex flex-col justify-between">
+                    <div>
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <Link href={`/propiedades/${property.id}`}>
+                            <h3 className="font-bold text-white text-2xl mb-2 hover:text-orange-300 transition-colors cursor-pointer">
+                              {property.title}
+                            </h3>
+                          </Link>
+                          <div className="flex items-center text-orange-300 font-medium mb-1">
+                            <MapPin className="w-4 h-4 mr-2" />
+                            {property.neighborhood}, Reconquista
+                          </div>
+                        </div>
+                        <div className="text-right ml-4">
+                          <div className="text-3xl font-bold text-white mb-1">
+                            {property.currency}$ {property.price.toLocaleString()}
+                          </div>
+                          <div className="text-gray-400 text-sm">
+                            {property.operation === "rent" ? "por mes" : ""}
+                          </div>
                         </div>
                       </div>
-                    )}
 
-                  {/* Status badges */}
-                  <div className="absolute top-4 left-4">
-                    <div className="bg-gray-800/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-lg font-medium text-sm backdrop-blur-sm">
-                      {property.operation === "sale" ? "VENTA" : "ALQUILER"}
-                    </div>
-                  </div>
-
-                  {/* Featured badge */}
-                  {property.featured && (
-                    <div className="absolute top-4 right-4 bg-yellow-600/80 text-yellow-100 border border-yellow-500/30 px-2 py-1 rounded-lg text-xs flex items-center gap-1 backdrop-blur-sm">
-                      <Eye className="w-3 h-3" />
-                      DESTACADA
-                    </div>
-                  )}
-
-                  {/* Favorite button */}
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="absolute top-3 right-3 bg-gray-800/60 hover:bg-gray-700/80 text-gray-300 hover:text-white backdrop-blur-sm"
-                  >
-                    <Heart className="w-4 h-4" />
-                  </Button>
-
-                  {/* Price and location overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900/95 via-gray-900/80 to-transparent p-5">
-                    <div className="text-2xl font-bold text-white mb-1">
-                      {property.currency}$ {property.price.toLocaleString()}
-                    </div>
-                    <div className="text-orange-300 font-medium text-sm flex items-center">
-                      <MapPin className="w-3 h-3 mr-1" />
-                      {property.neighborhood}, Reconquista
-                    </div>
-                  </div>
-                  </div>
-                </Link>
-
-                <CardContent className="p-5">
-                  <h3 className="font-bold text-white mb-3 text-lg">{property.title}</h3>
-                  
-                  {(property.bedrooms || property.bathrooms || property.area_m2) && (
-                    <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
-                      {property.bedrooms && (
-                        <span className="flex items-center">
-                          <Bed className="w-4 h-4 mr-1" />
-                          {property.bedrooms}
-                        </span>
+                      {/* Property Details */}
+                      {(property.bedrooms || property.bathrooms || property.area_m2) && (
+                        <div className="flex items-center gap-6 text-gray-300 mb-6">
+                          {property.bedrooms && (
+                            <div className="flex items-center bg-gray-700/40 px-4 py-2 rounded-lg">
+                              <Bed className="w-5 h-5 mr-2 text-orange-300" />
+                              <span className="font-medium">{property.bedrooms} dormitorios</span>
+                            </div>
+                          )}
+                          {property.bathrooms && (
+                            <div className="flex items-center bg-gray-700/40 px-4 py-2 rounded-lg">
+                              <Bath className="w-5 h-5 mr-2 text-orange-300" />
+                              <span className="font-medium">{property.bathrooms} baños</span>
+                            </div>
+                          )}
+                          <div className="flex items-center bg-gray-700/40 px-4 py-2 rounded-lg">
+                            <Square className="w-5 h-5 mr-2 text-orange-300" />
+                            <span className="font-medium">{property.area_m2}m²</span>
+                          </div>
+                        </div>
                       )}
-                      {property.bathrooms && (
-                        <span className="flex items-center">
-                          <Bath className="w-4 h-4 mr-1" />
-                          {property.bathrooms}
-                        </span>
-                      )}
-                      <span className="flex items-center">
-                        <Square className="w-4 h-4 mr-1" />
-                        {property.area_m2}m²
-                      </span>
-                    </div>
-                  )}
 
-                  {property.features && property.features.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {property.features.slice(0, 3).map((feature, i) => (
-                        <span key={i} className="bg-orange-500/20 text-orange-300 border border-orange-500/30 px-3 py-1 rounded-md text-xs">
-                          {feature}
-                        </span>
-                      ))}
-                      {property.features.length > 3 && (
-                        <span className="text-gray-400 text-xs">+{property.features.length - 3} más</span>
+                      {/* Features */}
+                      {property.features && property.features.length > 0 && (
+                        <div className="mb-6">
+                          <h4 className="text-white font-medium mb-3">Características:</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {property.features.slice(0, 5).map((feature, i) => (
+                              <span key={i} className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-3 py-1 rounded-lg text-sm font-medium">
+                                {feature}
+                              </span>
+                            ))}
+                            {property.features.length > 5 && (
+                              <span className="text-gray-400 text-sm px-3 py-1">+{property.features.length - 5} más</span>
+                            )}
+                          </div>
+                        </div>
                       )}
                     </div>
-                  )}
 
-                  <div className="flex gap-3">
-                    <Link href={`/propiedades/${property.id}`} className="flex-1">
-                      <Button className="w-full bg-orange-600/80 hover:bg-orange-600 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300">
-                        Ver detalles <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
+                    {/* Action Buttons */}
+                    <div className="flex gap-4 pt-4 border-t border-gray-700/50">
+                      <Link href={`/propiedades/${property.id}`} className="flex-1">
+                        <Button className="w-full bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 py-3 text-base font-medium rounded-xl shadow-lg">
+                          Ver detalles completos <ArrowLeft className="w-5 h-5 ml-2 rotate-180" />
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="outline"
+                        className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm px-6 rounded-xl"
+                      >
+                        <Heart className="w-5 h-5 mr-2" />
+                        Guardar
                       </Button>
-                    </Link>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm"
-                    >
-                      <Heart className="w-4 h-4" />
-                    </Button>
+                      <Button
+                        variant="outline"
+                        className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm px-6 rounded-xl"
+                      >
+                        Contactar
+                      </Button>
+                    </div>
                   </div>
-                </CardContent>
+                </div>
               </Card>
             ))}
           </div>
