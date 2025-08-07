@@ -551,7 +551,7 @@ export default function HomePage() {
               <h3 className="text-white font-semibold mb-4">Contacto</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>Reconquista, Santa Fe</li>
-                <li>+54 9 3482 123456</li>
+                <li>+54 9 3482 308100</li>
                 <li>info@marconiinmobiliaria.com</li>
               </ul>
             </div>
@@ -559,7 +559,7 @@ export default function HomePage() {
 
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
             <p>
-              &copy; 2024 Marconi Inmobiliaria. Todos los derechos reservados.
+              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
             </p>
           </div>
         </div>
