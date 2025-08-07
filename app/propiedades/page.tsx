@@ -409,11 +409,11 @@ export default function PropiedadesPage() {
 
         {/* Properties Grid */}
         {currentProperties.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
             {currentProperties.map((property) => (
               <Card
                 key={property.id}
-                className="bg-black border-orange-500 border-2 overflow-hidden group hover:scale-105 transition-all duration-300"
+                className="bg-gray-800/90 border-gray-600/50 border overflow-hidden group hover:border-gray-500 hover:shadow-xl transition-all duration-300 backdrop-blur-sm"
               >
                 <Link href={`/propiedades/${property.id}`}>
                   <div className="relative cursor-pointer">
@@ -421,16 +421,16 @@ export default function PropiedadesPage() {
                       <Image
                         src={property.images[0]}
                         alt={property.title}
-                        width={400}
-                        height={250}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        width={500}
+                        height={300}
+                        className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement
                           target.src = "/placeholder.svg"
                         }}
                       />
                     ) : (
-                      <div className="w-full h-48 bg-gray-700 flex items-center justify-center">
+                      <div className="w-full h-56 bg-gray-700 flex items-center justify-center">
                         <div className="text-gray-400 text-center">
                           <div className="w-12 h-12 bg-gray-600 rounded mx-auto mb-2"></div>
                           <p className="text-sm">Sin imagen</p>
@@ -440,14 +440,14 @@ export default function PropiedadesPage() {
 
                   {/* Status badges */}
                   <div className="absolute top-4 left-4">
-                    <div className="bg-orange-500 text-white px-3 py-1 rounded-full font-bold text-sm">
+                    <div className="bg-gray-800/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-lg font-medium text-sm backdrop-blur-sm">
                       {property.operation === "sale" ? "VENTA" : "ALQUILER"}
                     </div>
                   </div>
 
                   {/* Featured badge */}
                   {property.featured && (
-                    <div className="absolute top-4 right-4 bg-yellow-500 text-black px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                    <div className="absolute top-4 right-4 bg-yellow-600/80 text-yellow-100 border border-yellow-500/30 px-2 py-1 rounded-lg text-xs flex items-center gap-1 backdrop-blur-sm">
                       <Eye className="w-3 h-3" />
                       DESTACADA
                     </div>
@@ -457,17 +457,17 @@ export default function PropiedadesPage() {
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="absolute top-3 right-3 bg-black/50 hover:bg-black/70 text-white"
+                    className="absolute top-3 right-3 bg-gray-800/60 hover:bg-gray-700/80 text-gray-300 hover:text-white backdrop-blur-sm"
                   >
                     <Heart className="w-4 h-4" />
                   </Button>
 
                   {/* Price and location overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent p-4">
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900/95 via-gray-900/80 to-transparent p-5">
                     <div className="text-2xl font-bold text-white mb-1">
                       {property.currency}$ {property.price.toLocaleString()}
                     </div>
-                    <div className="text-orange-500 font-semibold text-sm flex items-center">
+                    <div className="text-orange-300 font-medium text-sm flex items-center">
                       <MapPin className="w-3 h-3 mr-1" />
                       {property.neighborhood}, Reconquista
                     </div>
@@ -475,11 +475,11 @@ export default function PropiedadesPage() {
                   </div>
                 </Link>
 
-                <CardContent className="p-4">
-                  <h3 className="font-bold text-white mb-2">{property.title}</h3>
+                <CardContent className="p-5">
+                  <h3 className="font-bold text-white mb-3 text-lg">{property.title}</h3>
                   
                   {(property.bedrooms || property.bathrooms || property.area_m2) && (
-                    <div className="flex items-center gap-4 text-white mb-3 text-sm">
+                    <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
                       {property.bedrooms && (
                         <span className="flex items-center">
                           <Bed className="w-4 h-4 mr-1" />
@@ -500,9 +500,9 @@ export default function PropiedadesPage() {
                   )}
 
                   {property.features && property.features.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-4">
+                    <div className="flex flex-wrap gap-2 mb-4">
                       {property.features.slice(0, 3).map((feature, i) => (
-                        <span key={i} className="bg-orange-500 bg-opacity-20 text-orange-500 px-2 py-1 rounded text-xs">
+                        <span key={i} className="bg-orange-500/20 text-orange-300 border border-orange-500/30 px-3 py-1 rounded-md text-xs">
                           {feature}
                         </span>
                       ))}
@@ -512,16 +512,16 @@ export default function PropiedadesPage() {
                     </div>
                   )}
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                     <Link href={`/propiedades/${property.id}`} className="flex-1">
-                      <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm">
-                        Ver detalles <ArrowLeft className="w-3 h-3 ml-1 rotate-180" />
+                      <Button className="w-full bg-orange-600/80 hover:bg-orange-600 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300">
+                        Ver detalles <ArrowLeft className="w-4 h-4 ml-2 rotate-180" />
                       </Button>
                     </Link>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
+                      className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm"
                     >
                       <Heart className="w-4 h-4" />
                     </Button>
