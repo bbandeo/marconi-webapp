@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Search, Filter, MapPin, Bed, Bath, Square, Heart, Eye, ChevronLeft, ChevronRight } from "lucide-react"
+import { Search, Filter, MapPin, Bed, Bath, Square, Heart, Eye, ChevronLeft, ChevronRight, Home, ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
@@ -200,20 +200,104 @@ export default function PropiedadesPage() {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center">
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">Propiedades en Reconquista</h1>
-            <p className="text-lg text-gray-300">Encuentra tu próximo hogar o inversión</p>
+      {/* Header - matching homepage */}
+      <header className="bg-gray-900 border-b border-gray-800">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-2">
+              <Image
+                src="/assets/logos/marconi_header_orangewhite.png"
+                alt="Marconi Inmobiliaria"
+                width={140}
+                height={45}
+                className="h-8 md:h-10 w-auto"
+                priority
+              />
+            </Link>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <Link
+                href="/propiedades"
+                className="text-orange-500 border-b-2 border-orange-500 pb-1 font-medium transition-colors"
+              >
+                PROPIEDADES
+              </Link>
+              <Link
+                href="/agentes"
+                className="text-gray-300 hover:text-white transition-colors"
+              >
+                AGENTES
+              </Link>
+              <Link
+                href="/contacto"
+                className="text-gray-300 hover:text-white transition-colors"
+              >
+                CONTACTO
+              </Link>
+            </nav>
+
+            {/* Mobile Search Bar */}
+            <div className="md:hidden flex-1 max-w-xs ml-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Buscar propiedades..."
+                  className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-b from-gray-900 to-black py-12 md:py-20">
+        <div className="container mx-auto px-4">
+          {/* Breadcrumb */}
+          <div className="flex items-center space-x-2 text-sm text-gray-400 mb-8">
+            <Link href="/" className="hover:text-white transition-colors flex items-center">
+              <Home className="w-4 h-4 mr-1" />
+              Inicio
+            </Link>
+            <span className="text-gray-600">/</span>
+            <span className="text-orange-500">Propiedades</span>
+          </div>
+
+          {/* Back to Home Button */}
+          <div className="mb-8">
+            <Link href="/">
+              <Button
+                variant="outline"
+                className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Volver al inicio
+              </Button>
+            </Link>
+          </div>
+
+          {/* Page Title */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+              NUESTRAS <span className="text-orange-500">PROPIEDADES</span>
+            </h1>
+            <p className="text-xl text-gray-300 mb-8 max-w-5xl mx-auto">
+              Descubrí las mejores propiedades cuidadosamente seleccionadas por nuestro equipo  <br/>
+              y encontrá tu propiedad ideal con nuestro acompañamiento profesional.
+            </p>
+            <div className="text-gray-400">
+              <p>{filteredProperties.length} propiedades disponibles</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Filters */}
-      <div className="bg-gray-800/50 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
+      <div className="bg-gray-900 border-b border-gray-800">
+        <div className="container mx-auto px-4 py-8">
+          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 shadow-xl">
             <div className="flex items-center mb-4">
               <Filter className="w-5 h-5 text-brand-orange mr-2" />
               <h2 className="text-lg font-semibold text-white">Filtros de búsqueda</h2>
@@ -329,7 +413,7 @@ export default function PropiedadesPage() {
       </div>
 
       {/* Results */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="container mx-auto px-4 py-12 bg-gradient-to-b from-black to-gray-900">
         {/* Results count */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-gray-300">{filteredProperties.length} propiedades encontradas</p>
@@ -341,7 +425,7 @@ export default function PropiedadesPage() {
             {currentProperties.map((property) => (
               <Card
                 key={property.id}
-                className="bg-gray-800 border-gray-700 overflow-hidden hover:border-brand-orange transition-colors group"
+                className="bg-black border-orange-500 border-2 overflow-hidden group hover:scale-105 transition-all duration-300"
               >
                 <Link href={`/propiedades/${property.id}`}>
                   <div className="relative cursor-pointer">
@@ -367,22 +451,19 @@ export default function PropiedadesPage() {
                     )}
 
                   {/* Status badges */}
-                  <div className="absolute top-3 left-3 flex gap-2">
-                    {property.featured && <Badge className="bg-brand-orange text-white">Destacada</Badge>}
-                    <Badge
-                      className={
-                        property.status === "available"
-                          ? "bg-green-500 text-white"
-                          : property.status === "sold"
-                            ? "bg-red-500 text-white"
-                            : property.status === "rented"
-                              ? "bg-blue-500 text-white"
-                              : "bg-yellow-500 text-white"
-                      }
-                    >
-                      {getStatusDisplayName(property.status)}
-                    </Badge>
+                  <div className="absolute top-4 left-4">
+                    <div className="bg-orange-500 text-white px-3 py-1 rounded-full font-bold text-sm">
+                      {property.operation === "sale" ? "VENTA" : "ALQUILER"}
+                    </div>
                   </div>
+
+                  {/* Featured badge */}
+                  {property.featured && (
+                    <div className="absolute top-4 right-4 bg-yellow-500 text-black px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                      <Eye className="w-3 h-3" />
+                      DESTACADA
+                    </div>
+                  )}
 
                   {/* Favorite button */}
                   <Button
@@ -393,64 +474,69 @@ export default function PropiedadesPage() {
                     <Heart className="w-4 h-4" />
                   </Button>
 
-                  {/* Price overlay */}
-                  <div className="absolute bottom-3 left-3">
-                    <div className="bg-black/70 text-white px-3 py-1 rounded-lg font-bold">
+                  {/* Price and location overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent p-4">
+                    <div className="text-2xl font-bold text-white mb-1">
                       {property.currency}$ {property.price.toLocaleString()}
+                    </div>
+                    <div className="text-orange-500 font-semibold text-sm flex items-center">
+                      <MapPin className="w-3 h-3 mr-1" />
+                      {property.neighborhood}, Reconquista
                     </div>
                   </div>
                   </div>
                 </Link>
 
                 <CardContent className="p-4">
-                  <Link href={`/propiedades/${property.id}`}>
-                    <h3 className="font-semibold text-white mb-2 line-clamp-1 hover:text-brand-orange transition-colors cursor-pointer">{property.title}</h3>
-                  </Link>
-
-                  <div className="flex items-center text-gray-400 text-sm mb-3">
-                    <MapPin className="w-4 h-4 mr-1" />
-                    {property.address}, {property.neighborhood}
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm text-gray-300 mb-3">
-                    <Badge variant="secondary" className="bg-gray-700 text-gray-300">
-                      {getTypeDisplayName(property.type)}
-                    </Badge>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
-                    <div className="flex items-center space-x-4">
+                  <h3 className="font-bold text-white mb-2">{property.title}</h3>
+                  
+                  {(property.bedrooms || property.bathrooms || property.area_m2) && (
+                    <div className="flex items-center gap-4 text-white mb-3 text-sm">
                       {property.bedrooms && (
-                        <div className="flex items-center">
+                        <span className="flex items-center">
                           <Bed className="w-4 h-4 mr-1" />
                           {property.bedrooms}
-                        </div>
+                        </span>
                       )}
                       {property.bathrooms && (
-                        <div className="flex items-center">
+                        <span className="flex items-center">
                           <Bath className="w-4 h-4 mr-1" />
                           {property.bathrooms}
-                        </div>
+                        </span>
                       )}
-                      {property.area_m2 && (
-                        <div className="flex items-center">
-                          <Square className="w-4 h-4 mr-1" />
-                          {property.area_m2}m²
-                        </div>
-                      )}
+                      <span className="flex items-center">
+                        <Square className="w-4 h-4 mr-1" />
+                        {property.area_m2}m²
+                      </span>
                     </div>
-                  </div>
+                  )}
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center text-xs text-gray-500">
-                      <Eye className="w-3 h-3 mr-1" />
-                      {property.views || 0} vistas
+                  {property.features && property.features.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {property.features.slice(0, 3).map((feature, i) => (
+                        <span key={i} className="bg-orange-500 bg-opacity-20 text-orange-500 px-2 py-1 rounded text-xs">
+                          {feature}
+                        </span>
+                      ))}
+                      {property.features.length > 3 && (
+                        <span className="text-gray-400 text-xs">+{property.features.length - 3} más</span>
+                      )}
                     </div>
-                    <Link href={`/propiedades/${property.id}`}>
-                      <Button size="sm" className="bg-brand-orange hover:bg-brand-orange/90 text-white">
-                        Ver detalles
+                  )}
+
+                  <div className="flex gap-2">
+                    <Link href={`/propiedades/${property.id}`} className="flex-1">
+                      <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm">
+                        Ver detalles <ArrowLeft className="w-3 h-3 ml-1 rotate-180" />
                       </Button>
                     </Link>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
+                    >
+                      <Heart className="w-4 h-4" />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -508,6 +594,82 @@ export default function PropiedadesPage() {
           </div>
         )}
       </div>
+
+      {/* Footer - matching homepage */}
+      <footer className="bg-gray-800 border-t border-gray-700 py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <div className="flex items-center space-x-2 mb-4">
+                <Image
+                  src="/assets/logos/marconi_title.svg"
+                  alt="Marconi Inmobiliaria"
+                  width={140}
+                  height={45}
+                  className="h-8 w-auto"
+                />
+              </div>
+              <p className="text-gray-400 mb-4">
+                La inmobiliaria líder en Reconquista, comprometida con encontrar
+                el hogar perfecto para cada familia.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="text-white font-semibold mb-4">Enlaces</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <Link
+                    href="/propiedades"
+                    className="hover:text-white transition-colors text-orange-500"
+                  >
+                    Propiedades
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/agentes"
+                    className="hover:text-white transition-colors"
+                  >
+                    Agentes
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/contacto"
+                    className="hover:text-white transition-colors"
+                  >
+                    Contacto
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/"
+                    className="hover:text-white transition-colors"
+                  >
+                    Inicio
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="text-white font-semibold mb-4">Contacto</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>Reconquista, Santa Fe</li>
+                <li>+54 9 3482 308100</li>
+                <li>info@marconiinmobiliaria.com</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+            <p>
+              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
