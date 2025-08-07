@@ -23,9 +23,19 @@ const config = {
         sans: ["var(--font-inter)"],
         serif: ["var(--font-playfair-display)"],
         museo: ["Museo Sans", "sans-serif"],
+        playfair: ["Playfair Display", "serif"],
+        inter: ["Inter", "sans-serif"],
       },
       colors: {
         "brand-orange": "#ff6600",
+        // Nueva paleta premium
+        "premium": {
+          gold: "#c9a961",
+          warm: "#8b7355",
+          muted: "#e8e2d5",
+          dark: "#1a1a1a",
+          light: "#fafafa",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

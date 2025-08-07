@@ -14,6 +14,8 @@ import {
   Users,
   Home,
   Award,
+  Heart,
+  Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,14 +102,14 @@ export default function HomePage() {
     window.location.href = `/propiedades?${params.toString()}`
   } */
 
-  const formatPrice = (price: number, operation: string) => {
+  const formatPrice = (price: number, currency: string) => {
     return (
       new Intl.NumberFormat("es-AR", {
         style: "currency",
         currency: "USD",
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
-      }).format(price) + (operation === "rent" ? "/mes" : "")
+      }).format(price)
     );
   };
 
@@ -131,7 +133,7 @@ export default function HomePage() {
   const handlePropertyInterest = (property: Property) => {
     setContactForm(prev => ({
       ...prev,
-      message: `Hola, me interesa la propiedad: ${property.title} (${formatPrice(property.price, property.currency)}). Me gustaría recibir más información.`,
+      message: `Hola, me interesa la propiedad: ${property.title} (${property.currency}$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
       propertyId: property.id
     }))
     
@@ -301,83 +303,127 @@ export default function HomePage() {
                 {featuredProperties.map((property) => (
                   <Card
                     key={property.id}
-                    className="bg-black border-orange-500 border-2 overflow-hidden group hover:scale-105 transition-all duration-300"
+                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm"
                   >
                     <div className="relative overflow-hidden">
-                      {property.images && property.images.length > 0 ? (
-                        <img 
-                          src={property.images[0]} 
-                          alt={property.title}
-                          className="w-full h-48 object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-48 bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-white">
-                          <Home className="w-8 h-8 mr-2" /> Sin imagen
-                        </div>
-                      )}
+                      <Link href={`/propiedades/${property.id}`}>
+                        <div className="relative cursor-pointer h-48">
+                          {property.images && property.images.length > 0 ? (
+                            <Image
+                              src={property.images[0]}
+                              alt={property.title}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-500"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement
+                                target.src = "/placeholder.svg"
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-700 flex items-center justify-center">
+                              <div className="text-gray-400 text-center">
+                                <div className="w-16 h-16 bg-gray-600 rounded mx-auto mb-3"></div>
+                                <p>Sin imagen</p>
+                              </div>
+                            </div>
+                          )}
 
-                      <div className="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full font-bold text-sm">
-                        {property.operation_type.toUpperCase()}
-                      </div>
+                          {/* Status badges */}
+                          <div className="absolute top-4 left-4">
+                            <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
+                              {property.operation_type === "venta" ? "VENTA" : "ALQUILER"}
+                            </div>
+                          </div>
 
-                      {property.featured && (
-                        <div className="absolute top-4 right-4 bg-yellow-500 text-black px-2 py-1 rounded-full text-xs flex items-center gap-1">
-                          <Star className="w-3 h-3" />
-                          DESTACADA
-                        </div>
-                      )}
+                          {/* Featured badge */}
+                          {property.featured && (
+                            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
+                              <Eye className="w-4 h-4" />
+                              DESTACADA
+                            </div>
+                          )}
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent p-4">
-                        <div className="text-2xl font-bold text-white mb-1">
-                          {formatPrice(property.price, property.currency)}
+                          {/* Favorite button */}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                            }}
+                          >
+                            <Heart className="w-4 h-4" />
+                          </Button>
                         </div>
-                        <div className="text-orange-500 font-semibold text-sm flex items-center">
-                          <MapPin className="w-3 h-3 mr-1" />
-                          {property.neighborhood}, Reconquista
-                        </div>
-                      </div>
+                      </Link>
                     </div>
 
                     <CardContent className="p-4">
-                      <h3 className="font-bold text-white mb-2">{property.title}</h3>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <Link href={`/propiedades/${property.id}`}>
+                            <h3 className="font-bold text-white text-lg mb-2 hover:text-orange-300 transition-colors cursor-pointer">
+                              {property.title}
+                            </h3>
+                          </Link>
+                          <div className="flex items-center text-orange-300 font-medium mb-1">
+                            <MapPin className="w-4 h-4 mr-2" />
+                            {property.neighborhood}, Reconquista
+                          </div>
+                        </div>
+                        <div className="text-right ml-2">
+                          <div className="text-xl font-bold text-white mb-1">
+                            {property.currency}$ {property.price.toLocaleString()}
+                          </div>
+                          <div className="text-gray-400 text-xs">
+                            {property.operation_type === "alquiler" ? "por mes" : ""}
+                          </div>
+                        </div>
+                      </div>
                       
+                      {/* Property Details */}
                       {(property.bedrooms || property.bathrooms || property.area_m2) && (
-                        <div className="flex items-center gap-4 text-white mb-3 text-sm">
+                        <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
                           {property.bedrooms && (
-                            <span className="flex items-center">
-                              <Bed className="w-4 h-4 mr-1" />
-                              {property.bedrooms}
-                            </span>
+                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
+                              <Bed className="w-4 h-4 mr-1 text-orange-300" />
+                              <span className="font-medium">{property.bedrooms}</span>
+                            </div>
                           )}
                           {property.bathrooms && (
-                            <span className="flex items-center">
-                              <Bath className="w-4 h-4 mr-1" />
-                              {property.bathrooms}
-                            </span>
+                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
+                              <Bath className="w-4 h-4 mr-1 text-orange-300" />
+                              <span className="font-medium">{property.bathrooms}</span>
+                            </div>
                           )}
-                          <span className="flex items-center">
-                            <Square className="w-4 h-4 mr-1" />
-                            {property.area_m2}m²
-                          </span>
+                          <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
+                            <Square className="w-4 h-4 mr-1 text-orange-300" />
+                            <span className="font-medium">{property.area_m2}m²</span>
+                          </div>
                         </div>
                       )}
 
+                      {/* Features */}
                       {property.features && property.features.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-4">
-                          {property.features.slice(0, 3).map((feature, i) => (
-                            <span key={i} className="bg-orange-500 bg-opacity-20 text-orange-500 px-2 py-1 rounded text-xs">
-                              {feature}
-                            </span>
-                          ))}
-                          {property.features.length > 3 && (
-                            <span className="text-gray-400 text-xs">+{property.features.length - 3} más</span>
-                          )}
+                        <div className="mb-4">
+                          <div className="flex flex-wrap gap-2">
+                            {property.features.slice(0, 3).map((feature, i) => (
+                              <span key={i} className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium">
+                                {feature}
+                              </span>
+                            ))}
+                            {property.features.length > 3 && (
+                              <span className="text-gray-400 text-xs px-2 py-1">+{property.features.length - 3} más</span>
+                            )}
+                          </div>
                         </div>
                       )}
 
-                      <div className="flex gap-2">
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 pt-2 border-t border-gray-700/50">
                         <Button 
-                          className="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-sm"
+                          className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
                           onClick={() => handlePropertyInterest(property)}
                         >
                           Me interesa <ArrowRight className="w-3 h-3 ml-1" />
@@ -385,7 +431,7 @@ export default function HomePage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
+                          className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm rounded-xl"
                           onClick={() => handlePropertyInterest(property)}
                         >
                           <MessageCircle className="w-4 h-4" />
