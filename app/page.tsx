@@ -291,7 +291,7 @@ export default function HomePage() {
                 {featuredProperties.map((property) => (
                   <Card
                     key={property.id}
-                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm"
+                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
                   >
                     <div className="relative overflow-hidden">
                       <Link href={`/propiedades/${property.id}`}>
@@ -349,7 +349,7 @@ export default function HomePage() {
                       </Link>
                     </div>
 
-                    <CardContent className="p-4">
+                    <CardContent className="p-4 flex flex-col h-full">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <Link href={`/propiedades/${property.id}`}>
@@ -375,59 +375,61 @@ export default function HomePage() {
                         </div>
                       </div>
 
-                      {/* Property Details */}
-                      {(property.bedrooms ||
-                        property.bathrooms ||
-                        property.area_m2) && (
-                        <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
-                          {property.bedrooms && (
-                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                              <Bed className="w-4 h-4 mr-1 text-orange-300" />
-                              <span className="font-medium">
-                                {property.bedrooms}
-                              </span>
-                            </div>
-                          )}
-                          {property.bathrooms && (
-                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                              <Bath className="w-4 h-4 mr-1 text-orange-300" />
-                              <span className="font-medium">
-                                {property.bathrooms}
-                              </span>
-                            </div>
-                          )}
-                          <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                            <Square className="w-4 h-4 mr-1 text-orange-300" />
-                            <span className="font-medium">
-                              {property.area_m2}m²
-                            </span>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Features */}
-                      {property.features && property.features.length > 0 && (
-                        <div className="mb-4">
-                          <div className="flex flex-wrap gap-2">
-                            {property.features.slice(0, 3).map((feature, i) => (
-                              <span
-                                key={i}
-                                className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium"
-                              >
-                                {feature}
-                              </span>
-                            ))}
-                            {property.features.length > 3 && (
-                              <span className="text-gray-400 text-xs px-2 py-1">
-                                +{property.features.length - 3} más
-                              </span>
+                      <div className="flex-1">
+                        {/* Property Details */}
+                        {(property.bedrooms ||
+                          property.bathrooms ||
+                          property.area_m2) && (
+                          <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
+                            {property.bedrooms && (
+                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
+                                <Bed className="w-4 h-4 mr-1 text-orange-300" />
+                                <span className="font-medium">
+                                  {property.bedrooms}
+                                </span>
+                              </div>
                             )}
+                            {property.bathrooms && (
+                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
+                                <Bath className="w-4 h-4 mr-1 text-orange-300" />
+                                <span className="font-medium">
+                                  {property.bathrooms}
+                                </span>
+                              </div>
+                            )}
+                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
+                              <Square className="w-4 h-4 mr-1 text-orange-300" />
+                              <span className="font-medium">
+                                {property.area_m2}m²
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Action Buttons */}
-                      <div className="flex gap-2 pt-2 border-t border-gray-700/50">
+                        {/* Features */}
+                        {property.features && property.features.length > 0 && (
+                          <div className="mb-4">
+                            <div className="flex flex-wrap gap-2">
+                              {property.features.slice(0, 3).map((feature, i) => (
+                                <span
+                                  key={i}
+                                  className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium"
+                                >
+                                  {feature}
+                                </span>
+                              ))}
+                              {property.features.length > 3 && (
+                                <span className="text-gray-400 text-xs px-2 py-1">
+                                  +{property.features.length - 3} más
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action Buttons - Always at bottom */}
+                      <div className="flex gap-2 pt-2 border-t border-gray-700/50 mt-auto">
                         <Button
                           className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
                           onClick={() => handlePropertyInterest(property)}
