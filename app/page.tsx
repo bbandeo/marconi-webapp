@@ -205,7 +205,7 @@ export default function HomePage() {
         <div className="absolute inset-0">
           <Image
             src={
-              getOptimizedImageUrl("IMG_2850_bzefne", {
+              getOptimizedImageUrl("IMG_2850_c7gzcr", {
                 width: 1920,
                 height: 1080,
                 // crop: "none",
@@ -247,7 +247,7 @@ export default function HomePage() {
               </div>
             </motion.div>
           </div>
-              
+
           {/* Company Branding at Bottom */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
