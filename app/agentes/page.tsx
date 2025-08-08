@@ -31,7 +31,6 @@ interface Agent {
   name: string;
   role: string;
   specialization: string;
-  experience: string;
   phone: string;
   email: string;
   image: string;
@@ -46,7 +45,6 @@ const agents: Agent[] = [
     name: "Gustavo Marconi",
     role: "Gestor Comercial y CEO",
     specialization: "Propiedades Residenciales y Comerciales",
-    experience: "15 años de experiencia",
     phone: "+54 9 3482 704694",
     email: "gustavo@marconiinmobiliaria.com",
     image: "gustavo_vdczse",
@@ -64,7 +62,6 @@ const agents: Agent[] = [
     name: "Ramón Suligoy",
     role: "Gestor comercial",
     specialization: "Propiedades Comerciales",
-    experience: "10 años de experiencia",
     phone: "+54 9 3482 219676",
     email: "ramon@marconiinmobiliaria.com",
     image: "ramon_iyryyc",
@@ -82,7 +79,6 @@ const agents: Agent[] = [
     name: "Priscila Maydana",
     role: "Gestora comercial",
     specialization: "Propiedades Residenciales",
-    experience: "8 años de experiencia",
     phone: "+54 9 3482 653547",
     email: "priscila@marconiinmobiliaria.com",
     image: "priscila_gbc46h",
@@ -100,7 +96,6 @@ const agents: Agent[] = [
     name: "Facundo Altamirano",
     role: "Community manager inmobiliario",
     specialization: "Marketing Digital Inmobiliario",
-    experience: "5 años de experiencia",
     phone: "+54 9 3482 755308",
     email: "facundo@marconiinmobiliaria.com",
     image: "facundo_axinkj",
@@ -118,7 +113,6 @@ const agents: Agent[] = [
     name: "Micaela Domínguez",
     role: "Community manager inmobiliario",
     specialization: "Marketing Digital y Comunicaciones",
-    experience: "4 años de experiencia",
     phone: "+54 9 3487 229722",
     email: "micaela@marconiinmobiliaria.com",
     image: "micaela_rl56r5",
@@ -136,7 +130,6 @@ const agents: Agent[] = [
     name: "Bruno Bordón",
     role: "Corredor Inmobiliario",
     specialization: "Transacciones Inmobiliarias",
-    experience: "12 años de experiencia",
     phone: "+54 9 3482 261937",
     email: "bruno@marconiinmobiliaria.com",
     image: "bruno_aqcgnn",
@@ -275,20 +268,6 @@ export default function AgentesPage() {
               Conocé al equipo de profesionales inmobiliarios que te acompañará 
               en cada paso para encontrar tu próxima propiedad en Reconquista
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-brand-orange mb-2">+460</div>
-                <div className="text-gray-300">Propiedades Vendidas</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-brand-orange mb-2">+371</div>
-                <div className="text-gray-300">Clientes Satisfechos</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-brand-orange mb-2">4.9</div>
-                <div className="text-gray-300">Calificación Promedio</div>
-              </div>
-            </div>
           </motion.div>
         </div>
       </section>
@@ -352,7 +331,6 @@ export default function AgentesPage() {
                     <div className="mb-4">
                       <h3 className="text-xl font-bold text-white mb-1">{agent.name}</h3>
                       <p className="text-brand-orange font-semibold mb-1">{agent.role}</p>
-                      <p className="text-gray-400 text-sm">{agent.experience}</p>
                     </div>
 
                     <div className="mb-4">
