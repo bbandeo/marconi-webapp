@@ -28,7 +28,7 @@ import Image from "next/image";
 // Importar servicios
 import { useIsClient } from "@/hooks/use-is-client";
 import { PropertyService } from "@/services/properties";
-import type { Property } from "@/lib/supabase"
+import type { Property } from "@/lib/supabase";
 
 export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
@@ -103,14 +103,12 @@ export default function HomePage() {
   } */
 
   const formatPrice = (price: number, currency: string) => {
-    return (
-      new Intl.NumberFormat("es-AR", {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-      }).format(price)
-    );
+    return new Intl.NumberFormat("es-AR", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
   };
 
   const getPropertyTypeLabel = (type: string) => {
@@ -128,27 +126,27 @@ export default function HomePage() {
     }
   };
 
-
   // Manejar interés en una propiedad específica
   const handlePropertyInterest = (property: Property) => {
-    setContactForm(prev => ({
+    setContactForm((prev) => ({
       ...prev,
-      message: `Hola, me interesa la propiedad: ${property.title} (${property.currency}$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
-      propertyId: property.id
-    }))
-    
+      message: `Hola, me interesa la propiedad: ${property.title} (${
+        property.currency
+      }$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
+      propertyId: property.id,
+    }));
+
     // Scroll al formulario de contacto
-    document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-
-
+    document
+      .getElementById("contact-form")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800">
-        <div className="container mx-auto px-4">
+      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
+        <div className="w-full px-6">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
@@ -196,18 +194,22 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+
+        {/* Decorative divider line */}
+        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-screen flex flex-col">
+      <section className="relative h-[60vh] md:h-[92vh] flex flex-col">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
             src={
-              getOptimizedImageUrl("plaza_experiencialugarmundo_001", {
+              getOptimizedImageUrl("IMG_2850_bzefne", {
                 width: 1920,
                 height: 1080,
-                crop: "fill",
+                // crop: "none",
+                gravity: "south",
                 quality: "auto",
                 format: "auto",
               }) || "/placeholder.svg"
@@ -222,74 +224,60 @@ export default function HomePage() {
         </div>
 
         {/* Content */}
-
-        <div className="relative z-10 h-full flex flex-col justify-center items-center px-4">
-          {/* Main Impactful Text 
-          <div className="container mx-auto text-center max-w-6xl">
-
+        <div className="relative z-10 h-full flex flex-col justify-center items-center">
+          {/* Centered Impact Text */}
+          <div className="flex-1 flex items-center justify-center w-full">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: "easeOut" }}
-              className="mt-16 md:mt-24"
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="w-full"
             >
-              <div className="flex flex-col items-center">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.8 }}
-                  className="mb-8 md:mb-12"
-                >
-                  <Image
-                    src="/assets/impact_text/noesperesmas_logo.svg"
-                    alt="No esperes más"
-                    width={2000}
-                    height={500}
-                    className="w-full max-w-7xl h-auto"
-                    priority
-                  />
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8, duration: 0.8 }}
-                  className="mb-8 md:mb-12"
-                ></motion.div>
+              <div
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+                className="w-full p-20 flex justify-center"
+              >
+                <Image
+                  src="/assets/impact_text/vivilaexperiencia.PNG"
+                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
+                  width={800}
+                  height={200}
+                  priority
+                />
               </div>
             </motion.div>
           </div>
-          */}
-
-          {/* Company Branding at Bottom - Minimalist 
+              
+          {/* Company Branding at Bottom */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.8, duration: 0.8 }}
-            className="mt-auto mb-8 md:mb-12 text-center"
+            transition={{ delay: 0, duration: 0.4 }}
+            className="mb-8 text-center px-4"
           >
-            <div className="text-white">
-              <Image
-                src="/assets/logos/marconi_title.svg"
-                alt="Marconi Inmobiliaria"
-                width={300}
-                height={80}
-                className="h-16 md:h-20 lg:h-24 w-auto mx-auto mb-4"
-              />
-            </div>
+            <Image
+              src="/assets/logos/marconi_header_orangewhite.png"
+              alt="Marconi Inmobiliaria"
+              width={400}
+              height={120}
+              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
+            />
           </motion.div>
-        */}
         </div>
       </section>
-
       {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
-      <section id="propiedades" className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
+      <section
+        id="propiedades"
+        className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden"
+      >
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
               PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
             </h2>
-            <p className="text-lg text-gray-300 mb-8">Las mejores oportunidades de inversión en Reconquista</p>
+            <p className="text-lg text-gray-300 mb-8">
+              Las mejores oportunidades de inversión en Reconquista
+            </p>
           </div>
 
           {loadingProperties ? (
@@ -315,8 +303,8 @@ export default function HomePage() {
                               fill
                               className="object-cover group-hover:scale-105 transition-transform duration-500"
                               onError={(e) => {
-                                const target = e.target as HTMLImageElement
-                                target.src = "/placeholder.svg"
+                                const target = e.target as HTMLImageElement;
+                                target.src = "/placeholder.svg";
                               }}
                             />
                           ) : (
@@ -331,7 +319,9 @@ export default function HomePage() {
                           {/* Status badges */}
                           <div className="absolute top-4 left-4">
                             <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
-                              {property.operation_type === "venta" ? "VENTA" : "ALQUILER"}
+                              {property.operation_type === "venta"
+                                ? "VENTA"
+                                : "ALQUILER"}
                             </div>
                           </div>
 
@@ -374,32 +364,43 @@ export default function HomePage() {
                         </div>
                         <div className="text-right ml-2">
                           <div className="text-xl font-bold text-white mb-1">
-                            {property.currency}$ {property.price.toLocaleString()}
+                            {property.currency}${" "}
+                            {property.price.toLocaleString()}
                           </div>
                           <div className="text-gray-400 text-xs">
-                            {property.operation_type === "alquiler" ? "por mes" : ""}
+                            {property.operation_type === "alquiler"
+                              ? "por mes"
+                              : ""}
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Property Details */}
-                      {(property.bedrooms || property.bathrooms || property.area_m2) && (
+                      {(property.bedrooms ||
+                        property.bathrooms ||
+                        property.area_m2) && (
                         <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
                           {property.bedrooms && (
                             <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
                               <Bed className="w-4 h-4 mr-1 text-orange-300" />
-                              <span className="font-medium">{property.bedrooms}</span>
+                              <span className="font-medium">
+                                {property.bedrooms}
+                              </span>
                             </div>
                           )}
                           {property.bathrooms && (
                             <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
                               <Bath className="w-4 h-4 mr-1 text-orange-300" />
-                              <span className="font-medium">{property.bathrooms}</span>
+                              <span className="font-medium">
+                                {property.bathrooms}
+                              </span>
                             </div>
                           )}
                           <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
                             <Square className="w-4 h-4 mr-1 text-orange-300" />
-                            <span className="font-medium">{property.area_m2}m²</span>
+                            <span className="font-medium">
+                              {property.area_m2}m²
+                            </span>
                           </div>
                         </div>
                       )}
@@ -409,12 +410,17 @@ export default function HomePage() {
                         <div className="mb-4">
                           <div className="flex flex-wrap gap-2">
                             {property.features.slice(0, 3).map((feature, i) => (
-                              <span key={i} className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium">
+                              <span
+                                key={i}
+                                className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium"
+                              >
                                 {feature}
                               </span>
                             ))}
                             {property.features.length > 3 && (
-                              <span className="text-gray-400 text-xs px-2 py-1">+{property.features.length - 3} más</span>
+                              <span className="text-gray-400 text-xs px-2 py-1">
+                                +{property.features.length - 3} más
+                              </span>
                             )}
                           </div>
                         </div>
@@ -422,7 +428,7 @@ export default function HomePage() {
 
                       {/* Action Buttons */}
                       <div className="flex gap-2 pt-2 border-t border-gray-700/50">
-                        <Button 
+                        <Button
                           className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
                           onClick={() => handlePropertyInterest(property)}
                         >
@@ -445,8 +451,12 @@ export default function HomePage() {
               {featuredProperties.length === 0 && (
                 <div className="text-center py-12">
                   <Home className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">No hay propiedades destacadas disponibles</p>
-                  <p className="text-gray-400">Próximamente agregaremos nuevas propiedades</p>
+                  <p className="text-white text-lg">
+                    No hay propiedades destacadas disponibles
+                  </p>
+                  <p className="text-gray-400">
+                    Próximamente agregaremos nuevas propiedades
+                  </p>
                 </div>
               )}
 
@@ -457,7 +467,8 @@ export default function HomePage() {
                     variant="outline"
                     className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
                   >
-                    Ver todas las propiedades <ArrowRight className="w-4 h-4 ml-1" />
+                    Ver todas las propiedades{" "}
+                    <ArrowRight className="w-4 h-4 ml-1" />
                   </Button>
                 </Link>
               </div>

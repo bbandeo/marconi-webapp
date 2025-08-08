@@ -201,8 +201,8 @@ export default function PropiedadesPage() {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header - matching homepage */}
-      <header className="bg-gray-900 border-b border-gray-800">
-        <div className="container mx-auto px-4">
+      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
+        <div className="w-full px-6">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
@@ -250,6 +250,9 @@ export default function PropiedadesPage() {
             </div>
           </div>
         </div>
+        
+        {/* Decorative divider line */}
+        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
       </header>
 
       {/* Hero Section */}
