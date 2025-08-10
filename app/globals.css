@@ -84,3 +84,24 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Ripple effect for premium buttons */
+.ripple-container {
+  position: relative;
+  overflow: hidden;
+}
+.btn-ripple {
+  position: absolute;
+  border-radius: 9999px;
+  transform: scale(0);
+  background: radial-gradient(circle, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.2) 40%, transparent 70%);
+  animation: btn-ripple 600ms ease-out forwards;
+  pointer-events: none;
+  opacity: 0.6;
+}
+@keyframes btn-ripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}

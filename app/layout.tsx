@@ -4,6 +4,7 @@ import { Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
+import InitialReveal from "@/components/ux/InitialReveal"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </ThemeProvider>
+        <InitialReveal />
       </body>
     </html>
   )

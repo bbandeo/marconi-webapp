@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   Search,
   MapPin,
@@ -34,6 +34,11 @@ export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const isClient = useIsClient();
+  const heroRef = useRef<HTMLDivElement | null>(null);
+
+  // Parallax for hero background
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const heroParallaxY = useTransform(scrollYProgress, [0, 1], [0, -60]);
 
   // Estados para datos del backend
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
@@ -130,9 +135,7 @@ export default function HomePage() {
   const handlePropertyInterest = (property: Property) => {
     setContactForm((prev) => ({
       ...prev,
-      message: `Hola, me interesa la propiedad: ${property.title} (${
-        property.currency
-      }$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
+      message: `Hola, me interesa la propiedad: ${property.title} (${property.currency}$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
       propertyId: property.id,
     }));
 
@@ -142,12 +145,25 @@ export default function HomePage() {
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Animation variants
+  const heroContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.1 }
+    },
+  };
+  const heroItem = {
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  };
+
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
+      <header className={`${scrolled ? "bg-gray-900/90 backdrop-blur supports-[backdrop-filter]:bg-gray-900/80" : "bg-gray-900/60"} border-b border-gray-800 sticky top-0 z-50 shadow-md transition-all duration-300`}>
         <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className={`flex items-center justify-between ${scrolled ? "h-14 md:h-16" : "h-16 md:h-20"} transition-[height] duration-300`}>
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
               <Image
@@ -200,9 +216,9 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[92vh] flex flex-col">
+      <section ref={heroRef} className="relative h-[60vh] md:h-[92vh] flex flex-col">
         {/* Background Image */}
-        <div className="absolute inset-0">
+        <motion.div style={{ y: heroParallaxY }} className="absolute inset-0 will-change-transform">
           <Image
             src={
               getOptimizedImageUrl("IMG_2850_c7gzcr", {
@@ -221,19 +237,20 @@ export default function HomePage() {
           />
           {/* Subtle dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/40" />
-        </div>
+        </motion.div>
 
         {/* Content */}
         <div className="relative z-10 h-full flex flex-col justify-center items-center">
           {/* Centered Impact Text */}
           <div className="flex-1 flex items-center justify-center w-full">
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              variants={heroContainer}
+              initial="hidden"
+              animate="visible"
               className="w-full"
             >
-              <div
+              <motion.div
+                variants={heroItem}
                 style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
                 className="w-full p-20 flex justify-center"
               >
@@ -244,15 +261,15 @@ export default function HomePage() {
                   height={200}
                   priority
                 />
-              </div>
+              </motion.div>
             </motion.div>
           </div>
 
           {/* Company Branding at Bottom */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0, duration: 0.4 }}
+            variants={heroItem}
+            initial="hidden"
+            animate="visible"
             className="mb-8 text-center px-4"
           >
             <Image
@@ -327,165 +344,99 @@ export default function HomePage() {
           ) : (
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredProperties.map((property) => (
-                  <Card
+                {featuredProperties.map((property, idx) => (
+                  <motion.div
                     key={property.id}
-                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.45, ease: "easeOut", delay: Math.min(idx * 0.05, 0.2) }}
+                    whileHover={{ scale: 1.02 }}
                   >
-                    <div className="relative overflow-hidden">
-                      <Link href={`/propiedades/${property.id}`}>
-                        <div className="relative cursor-pointer h-48">
-                          {property.images && property.images.length > 0 ? (
-                            <Image
-                              src={property.images[0]}
-                              alt={property.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = "/placeholder.svg";
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                              <div className="text-gray-400 text-center">
-                                <div className="w-16 h-16 bg-gray-600 rounded mx-auto mb-3"></div>
-                                <p>Sin imagen</p>
+                    <Card
+                      className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
+                    >
+                      <div className="relative overflow-hidden">
+                        <Link href={`/propiedades/${property.id}`}>
+                          <div className="relative cursor-pointer h-48">
+                            {property.images && property.images.length > 0 ? (
+                              <Image
+                                src={property.images[0]}
+                                alt={property.title}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = "/placeholder.svg";
+                                }}
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gray-700 flex items-center justify-center">
+                                <div className="text-gray-400 text-center">
+                                  <div className="w-16 h-16 bg-gray-600 rounded mx-auto mb-3"></div>
+                                  <p>Sin imagen</p>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* Status badges */}
+                            <div className="absolute top-4 left-4">
+                              <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
+                                {property.operation_type === "venta" ? "VENTA" : "ALQUILER"}
                               </div>
                             </div>
-                          )}
 
-                          {/* Status badges */}
-                          <div className="absolute top-4 left-4">
-                            <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
-                              {property.operation_type === "venta"
-                                ? "VENTA"
-                                : "ALQUILER"}
-                            </div>
+                            {/* Featured badge */}
+                            {property.featured && (
+                              <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-1 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
+                                <Eye className="w-4 h-4" />
+                                DESTACADA
+                              </div>
+                            )}
                           </div>
-
-                          {/* Featured badge */}
-                          {property.featured && (
-                            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
-                              <Eye className="w-4 h-4" />
-                              DESTACADA
-                            </div>
-                          )}
-
-                          {/* Favorite button */}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                          >
-                            <Heart className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </Link>
-                    </div>
-
-                    <CardContent className="p-4 flex flex-col h-full">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <Link href={`/propiedades/${property.id}`}>
-                            <h3 className="font-bold text-white text-lg mb-2 hover:text-orange-300 transition-colors cursor-pointer">
-                              {property.title}
-                            </h3>
-                          </Link>
-                          <div className="flex items-center text-orange-300 font-medium mb-1">
-                            <MapPin className="w-4 h-4 mr-2" />
-                            {property.neighborhood}, Reconquista
-                          </div>
-                        </div>
-                        <div className="text-right ml-2">
-                          <div className="text-xl font-bold text-white mb-1">
-                            {property.currency}${" "}
-                            {property.price.toLocaleString()}
-                          </div>
-                          <div className="text-gray-400 text-xs">
-                            {property.operation_type === "alquiler"
-                              ? "por mes"
-                              : ""}
-                          </div>
-                        </div>
+                        </Link>
                       </div>
 
-                      <div className="flex-1">
-                        {/* Property Details */}
-                        {(property.bedrooms ||
-                          property.bathrooms ||
-                          property.area_m2) && (
-                          <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
+                      <CardContent className="p-5 flex-1 flex flex-col justify-between">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1">
+                            <Link href={`/propiedades/${property.id}`}>
+                              <h3 className="font-bold text-white text-lg mb-2 transition-colors cursor-pointer bg-gradient-to-r from-orange-400 to-orange-400 bg-[length:0%_2px] bg-left-bottom bg-no-repeat group-hover:bg-[length:100%_2px]">
+                                {property.title}
+                              </h3>
+                            </Link>
+                            <div className="flex items-center text-orange-300 font-medium mb-1">
+                              <MapPin className="w-4 h-4 mr-2" />
+                              {property.neighborhood}, Reconquista
+                            </div>
+                          </div>
+                          <div className="text-right ml-4">
+                            <div className="text-2xl font-bold text-white mb-1">
+                              {property.currency}$ {property.price.toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-4 text-gray-300">
                             {property.bedrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bed className="w-4 h-4 mr-1 text-orange-300" />
-                                <span className="font-medium">
-                                  {property.bedrooms}
-                                </span>
-                              </div>
+                              <span className="flex items-center"><Bed className="w-4 h-4 mr-1 text-orange-300" /> {property.bedrooms}</span>
                             )}
                             {property.bathrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bath className="w-4 h-4 mr-1 text-orange-300" />
-                                <span className="font-medium">
-                                  {property.bathrooms}
-                                </span>
-                              </div>
+                              <span className="flex items-center"><Bath className="w-4 h-4 mr-1 text-orange-300" /> {property.bathrooms}</span>
                             )}
-                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                              <Square className="w-4 h-4 mr-1 text-orange-300" />
-                              <span className="font-medium">
-                                {property.area_m2}m²
-                              </span>
-                            </div>
+                            {property.area_m2 && (
+                              <span className="flex items-center"><Square className="w-4 h-4 mr-1 text-orange-300" /> {property.area_m2}m²</span>
+                            )}
                           </div>
-                        )}
 
-                        {/* Features */}
-                        {property.features && property.features.length > 0 && (
-                          <div className="mb-4">
-                            <div className="flex flex-wrap gap-2">
-                              {property.features.slice(0, 3).map((feature, i) => (
-                                <span
-                                  key={i}
-                                  className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium"
-                                >
-                                  {feature}
-                                </span>
-                              ))}
-                              {property.features.length > 3 && (
-                                <span className="text-gray-400 text-xs px-2 py-1">
-                                  +{property.features.length - 3} más
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Action Buttons - Always at bottom */}
-                      <div className="flex gap-2 pt-2 border-t border-gray-700/50 mt-auto">
-                        <Button
-                          className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
-                          onClick={() => handlePropertyInterest(property)}
-                        >
-                          Me interesa <ArrowRight className="w-3 h-3 ml-1" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm rounded-xl"
-                          onClick={() => handlePropertyInterest(property)}
-                        >
-                          <MessageCircle className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
+                          <Button className="bg-gradient-to-r from-orange-600/90 to-orange-500/90 text-white border border-orange-500/30 px-4 py-2 rounded-lg">
+                            Ver más <ArrowRight className="w-4 h-4 ml-2" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 ))}
               </div>
 
