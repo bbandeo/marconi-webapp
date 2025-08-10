@@ -10,7 +10,7 @@ Este documento detalla las mejoras de diseño recomendadas para transformar el s
 
 **Archivo:** `app/globals.css`
 
-```css
+\`\`\`css
 /* Reemplazar los colores actuales con esta paleta premium */
 :root {
   --color-primary: #1a1a1a;
@@ -22,13 +22,13 @@ Este documento detalla las mejoras de diseño recomendadas para transformar el s
 }
 
 /* Eliminar o reducir el uso de brand-orange (#ff6600) */
-```
+\`\`\`
 
 ### 2. Mejora del Header/Navegación
 
 **Archivo:** `app/page.tsx` - Líneas 148-197
 
-```tsx
+\`\`\`tsx
 // Reemplazar el header actual con:
 <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 
   ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}`}>
@@ -46,7 +46,7 @@ Este documento detalla las mejoras de diseño recomendadas para transformar el s
     </div>
   </div>
 </header>
-```
+\`\`\`
 
 ### 3. Hero Section Premium
 
@@ -58,7 +58,7 @@ Este documento detalla las mejoras de diseño recomendadas para transformar el s
 - Añadir barra de búsqueda integrada con diseño glassmorphism
 - Overlay más sutil en la imagen de fondo
 
-```tsx
+\`\`\`tsx
 // Estructura simplificada del Hero
 <section className="relative h-screen">
   {/* Imagen de fondo con overlay sutil */}
@@ -79,7 +79,7 @@ Este documento detalla las mejoras de diseño recomendadas para transformar el s
     </div>
   </div>
 </section>
-```
+\`\`\`
 
 ### 4. Cards de Propiedades Refinadas
 
@@ -91,7 +91,7 @@ Este documento detalla las mejoras de diseño recomendadas para transformar el s
 - Usar espaciado generoso
 - CTAs con diseño ghost/outline
 
-```tsx
+\`\`\`tsx
 <Card className="group bg-white border-0 shadow-sm hover:shadow-xl transition-all duration-500">
   {/* Imagen con aspect ratio 4:3 */}
   <div className="relative aspect-[4/3] overflow-hidden">
@@ -114,13 +114,13 @@ Este documento detalla las mejoras de diseño recomendadas para transformar el s
     <Button className="bg-gray-900">Contactar</Button>
   </CardContent>
 </Card>
-```
+\`\`\`
 
 ### 5. Sección de Estadísticas Minimalista
 
 **Archivo:** `app/page.tsx` - Líneas 423-457
 
-```tsx
+\`\`\`tsx
 <section className="py-24 bg-gray-50">
   <div className="container mx-auto px-6">
     <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
@@ -139,7 +139,7 @@ Este documento detalla las mejoras de diseño recomendadas para transformar el s
     </div>
   </div>
 </section>
-```
+\`\`\`
 
 ## 📋 Checklist de Implementación
 

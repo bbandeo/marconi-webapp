@@ -26,13 +26,13 @@ For ANY numeric value change in configuration files:
 ### Common Risky Configuration Patterns
 
 #### Connection Pool Settings
-```
+\`\`\`
 # DANGER ZONES - Always flag these:
 - pool size reduced (can cause connection starvation)
 - pool size dramatically increased (can overload database)
 - timeout values changed (can cause cascading failures)
 - idle connection settings modified (affects resource usage)
-```
+\`\`\`
 Questions to ask:
 - "How many concurrent users does this support?"
 - "What happens when all connections are in use?"
@@ -40,25 +40,25 @@ Questions to ask:
 - "What's your database's max connection limit?"
 
 #### Timeout Configurations
-```
+\`\`\`
 # HIGH RISK - These cause cascading failures:
 - Request timeouts increased (can cause thread exhaustion)
 - Connection timeouts reduced (can cause false failures)
 - Read/write timeouts modified (affects user experience)
-```
+\`\`\`
 Questions to ask:
 - "What's the 95th percentile response time in production?"
 - "How will this interact with upstream/downstream timeouts?"
 - "What happens when this timeout is hit?"
 
 #### Memory and Resource Limits
-```
+\`\`\`
 # CRITICAL - Can cause OOM or waste resources:
 - Heap size changes
 - Buffer sizes
 - Cache limits
 - Thread pool sizes
-```
+\`\`\`
 Questions to ask:
 - "What's the current memory usage pattern?"
 - "Have you profiled this under load?"
@@ -68,19 +68,19 @@ Questions to ask:
 
 #### Database Connection Pools
 Critical patterns to review:
-```
+\`\`\`
 # Common outage causes:
 - Maximum pool size too low → connection starvation
 - Connection acquisition timeout too low → false failures  
 - Idle timeout misconfigured → excessive connection churn
 - Connection lifetime exceeding database timeout → stale connections
 - Pool size not accounting for concurrent workers → resource contention
-```
+\`\`\`
 Key formula: `pool_size >= (threads_per_worker × worker_count)`
 
 #### Security Configuration  
 High-risk patterns:
-```
+\`\`\`
 # CRITICAL misconfigurations:
 - Debug/development mode enabled in production
 - Wildcard host allowlists (accepting connections from anywhere)
@@ -88,17 +88,17 @@ High-risk patterns:
 - Exposed management endpoints or admin interfaces
 - SQL query logging enabled (information disclosure)
 - Verbose error messages revealing system internals
-```
+\`\`\`
 
 #### Application Settings
 Danger zones:
-```
+\`\`\`
 # Connection and caching:
 - Connection age limits (0 = no pooling, too high = stale data)
 - Cache TTLs that don't match usage patterns
 - Reaping/cleanup frequencies affecting resource recycling
 - Queue depths and worker ratios misaligned
-```
+\`\`\`
 
 ### Impact Analysis Requirements
 

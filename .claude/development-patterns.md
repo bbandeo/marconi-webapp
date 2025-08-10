@@ -3,7 +3,7 @@
 ## Common Component Patterns
 
 ### 1. Admin Page Layout Pattern
-```tsx
+\`\`\`tsx
 'use client'
 
 import { useState } from 'react'
@@ -48,10 +48,10 @@ export default function AdminPage() {
     </div>
   )
 }
-```
+\`\`\`
 
 ### 2. Form Component Pattern
-```tsx
+\`\`\`tsx
 'use client'
 
 import { useState } from 'react'
@@ -144,10 +144,10 @@ export default function EntityForm({ initialData }: { initialData?: FormData }) 
     </form>
   )
 }
-```
+\`\`\`
 
 ### 3. API Route Pattern
-```typescript
+\`\`\`typescript
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase'
 import { z } from 'zod'
@@ -211,12 +211,12 @@ export async function POST(request: NextRequest) {
     )
   }
 }
-```
+\`\`\`
 
 ## Styling Patterns
 
 ### Color Scheme
-```css
+\`\`\`css
 /* Primary brand colors */
 .text-brand-orange { color: #ea580c; }
 .bg-brand-orange { background-color: #ea580c; }
@@ -242,10 +242,10 @@ export async function POST(request: NextRequest) {
 .btn-secondary {
   @apply bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors;
 }
-```
+\`\`\`
 
 ### Responsive Patterns
-```tsx
+\`\`\`tsx
 // Mobile-first responsive design
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
   {/* Cards */}
@@ -259,12 +259,12 @@ export async function POST(request: NextRequest) {
 
 // Responsive flex
 <div className="flex flex-col sm:flex-row gap-4">
-```
+\`\`\`
 
 ## Data Fetching Patterns
 
 ### Custom Hook Pattern
-```typescript
+\`\`\`typescript
 import { useState, useEffect } from 'react'
 
 interface UseDataOptions {
@@ -303,12 +303,12 @@ export function useData<T>(endpoint: string, options: UseDataOptions = {}) {
 
   return { data, loading, error, refetch: fetchData }
 }
-```
+\`\`\`
 
 ## Error Handling Patterns
 
 ### Client-side Error Display
-```tsx
+\`\`\`tsx
 interface ErrorDisplayProps {
   error: string | null
   onRetry?: () => void
@@ -338,10 +338,10 @@ export function ErrorDisplay({ error, onRetry }: ErrorDisplayProps) {
     </div>
   )
 }
-```
+\`\`\`
 
 ### Loading States
-```tsx
+\`\`\`tsx
 export function LoadingSpinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -355,11 +355,11 @@ export function LoadingSpinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
     </div>
   )
 }
-```
+\`\`\`
 
 ## Common Spanish Text Patterns
 
-```typescript
+\`\`\`typescript
 // Common Spanish labels and messages
 export const labels = {
   // Forms
@@ -402,4 +402,4 @@ export const validationMessages = {
   phone: 'Ingrese un teléfono válido',
   number: 'Ingrese un número válido',
 }
-```
+\`\`\`
