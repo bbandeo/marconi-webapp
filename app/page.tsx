@@ -89,18 +89,6 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isClient]);
 
-  /* 
-
-
-  const handleSearch = () => {
-    const params = new URLSearchParams()
-    if (searchTerm) params.set("search", searchTerm)
-    if (operationType) params.set("operation", operationType)
-    if (propertyType) params.set("type", propertyType)
-
-    window.location.href = `/propiedades?${params.toString()}`
-  } */
-
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat("es-AR", {
       style: "currency",
@@ -261,6 +249,7 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
       {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
       <section
         id="propiedades"
@@ -511,16 +500,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section with softened background */}
       <section className="relative isolate py-20 overflow-hidden">
         {/* Background layers to soften the solid brand color */}
         <div aria-hidden="true" className="absolute inset-0 -z-10">
           {/* Base brand background */}
           <div className="absolute inset-0 bg-brand-orange" />
-
           {/* Subtle dark overlay to lower contrast */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/10 to-black/20" />
-
           {/* Soft radial highlight with blur to smooth the field */}
           <div className="pointer-events-none absolute left-1/2 top-[-10%] h-[50rem] w-[50rem] -translate-x-1/2 rounded-full bg-white/15 blur-3xl opacity-30" />
         </div>
