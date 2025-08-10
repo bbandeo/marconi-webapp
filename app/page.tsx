@@ -90,7 +90,7 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isClient]);
 
-  /* 
+  /*
 
 
   const handleSearch = () => {
@@ -265,6 +265,25 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Decorative Separator */}
+      <section className="py-8 bg-gray-900">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center gap-6">
+            {/* Left line */}
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent to-orange-500/60 max-w-xs"></div>
+
+            {/* Central icon */}
+            <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
+              <Home className="w-4 h-4 text-white" />
+            </div>
+
+            {/* Right line */}
+            <div className="flex-1 h-px bg-gradient-to-l from-transparent to-orange-500/60 max-w-xs"></div>
+          </div>
+        </div>
+      </section>
+
       {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
       <section
         id="propiedades"
