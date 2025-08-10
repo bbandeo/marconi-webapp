@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 import {
   Search,
   MapPin,
@@ -16,19 +16,18 @@ import {
   Award,
   Heart,
   Eye,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { getOptimizedImageUrl } from "@/lib/cloudinary";
-import Link from "next/link";
-import Image from "next/image";
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent } from "@/components/ui/card"
+import { getOptimizedImageUrl } from "@/lib/cloudinary"
+import Link from "next/link"
+import Image from "next/image"
 
 // Importar servicios
-import { useIsClient } from "@/hooks/use-is-client";
-import { PropertyService } from "@/services/properties";
-import type { Property } from "@/lib/supabase";
+import { useIsClient } from "@/hooks/use-is-client"
+import { PropertyService } from "@/services/properties"
+import type { Property } from "@/lib/supabase"
 
 export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
@@ -204,22 +203,19 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src={
-              getOptimizedImageUrl("IMG_2850_c7gzcr", {
-                width: 1920,
-                height: 1080,
-                // crop: "none",
-                gravity: "south",
-                quality: "auto",
-                format: "auto",
-              }) || "/placeholder.svg"
-            }
-            alt="Reconquista - Marconi Inmobiliaria"
-            fill
-            className="object-cover"
+            src={getOptimizedImageUrl("IMG_2850_c7gzcr", {
+              width: 1920,
+              height: 1080,
+              gravity: "south",
+              quality: "auto",
+              format: "auto",
+             || \"/placeholder.svg\"}) || \"/placeholder.svg"}\
+            alt=\"Reconquista - Marconi Inmobiliaria"
+            fill\
+            className="object-cover"\
             priority
           />
-          {/* Subtle dark overlay for better text readability */}
+          {/* Subtle dark overlay for better text readability */}\
           <div className="absolute inset-0 bg-black/40" />
         </div>
 
@@ -298,7 +294,7 @@ export default function HomePage() {
                         <div className="relative cursor-pointer h-48">
                           {property.images && property.images.length > 0 ? (
                             <Image
-                              src={property.images[0]}
+                              src={property.images[0] || "/placeholder.svg"}
                               alt={property.title}
                               fill
                               className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -516,7 +512,19 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-brand-orange">
+      <section className="relative isolate py-20 overflow-hidden">
+        {/* Background layers to soften the solid brand color */}
+        <div aria-hidden="true" className="absolute inset-0 -z-10">
+          {/* Base brand background */}
+          <div className="absolute inset-0 bg-brand-orange" />
+
+          {/* Subtle dark overlay to lower contrast */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/10 to-black/20" />
+
+          {/* Soft radial highlight with blur to smooth the field */}
+          <div className="pointer-events-none absolute left-1/2 top-[-10%] h-[50rem] w-[50rem] -translate-x-1/2 rounded-full bg-white/15 blur-3xl opacity-30" />
+        </div>
+
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -617,12 +625,10 @@ export default function HomePage() {
           </div>
 
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>
-              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
-            </p>
+            <p>&copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
     </div>
-  );
+  );\
 }
