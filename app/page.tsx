@@ -611,7 +611,7 @@ export default function HomePage() {
               <ul className="space-y-2 text-gray-400">
                 <li>Reconquista, Santa Fe</li>
                 <li>+54 9 3482 308100</li>
-                <li>info@marconiinmobiliaria.com</li>
+                <li>marconinegociosinmobiliarios@hotmail.com</li>
               </ul>
             </div>
           </div>

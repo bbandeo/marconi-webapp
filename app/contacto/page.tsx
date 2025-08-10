@@ -98,8 +98,8 @@ export default function ContactoPage() {
     {
       icon: Mail,
       title: "Email",
-      content: "info@marconiinmobiliaria.com",
-      action: "mailto:info@marconiinmobiliaria.com",
+      content: "marconinegociosinmobiliarios@hotmail.com",
+      action: "mailto:marconinegociosinmobiliarios@hotmail.com",
       color: "text-blue-500",
     },
   ];
@@ -428,7 +428,7 @@ export default function ContactoPage() {
                           <h3 className="font-semibold text-white mb-1">Contacto Directo</h3>
                           <p className="text-gray-300 mb-1">Teléfono: +54 3482 308100</p>
                           <p className="text-gray-300 mb-1">WhatsApp: +54 9 3482 308100</p>
-                          <p className="text-gray-300">Email: info@marconiinmobiliaria.com</p>
+                          <p className="text-gray-300">Email: marconinegociosinmobiliarios@hotmail.com</p>
                         </div>
                       </div>
                     </CardContent>
@@ -670,7 +670,7 @@ export default function ContactoPage() {
                 <li>Jorge Newbery 1562</li>
                 <li>Reconquista, Santa Fe</li>
                 <li>+54 3482 308100</li>
-                <li>info@marconiinmobiliaria.com</li>
+                <li>marconinegociosinmobiliarios@hotmail.com</li>
               </ul>
             </div>
           </div>

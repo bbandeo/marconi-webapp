@@ -6,7 +6,7 @@ import { Save, User, Bell, Shield, Globe } from 'lucide-react'
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
     name: 'Floriana Marconi',
-    email: 'floriana@marconiinmobiliaria.com',
+    email: 'marconinegociosinmobiliarios@hotmail.com',
     phone: '+54 9 3482 308100',
     company: 'Marconi Inmobiliaria',
     address: 'Belgrano 123, Reconquista, Santa Fe',

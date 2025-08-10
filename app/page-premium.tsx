@@ -506,7 +506,7 @@ export default function PremiumHomePage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <Mail className="w-4 h-4" />
-                  info@marconi.com
+                  marconinegociosinmobiliarios@hotmail.com
                 </li>
               </ul>
             </div>

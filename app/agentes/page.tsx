@@ -46,7 +46,7 @@ const agents: Agent[] = [
     role: "Gestor Comercial y CEO",
     specialization: "Propiedades Residenciales y Comerciales",
     phone: "+54 9 3482 704694",
-    email: "gustavo@marconiinmobiliaria.com",
+    email: "marconinegociosinmobiliarios@hotmail.com",
     image: "gustavo_vdczse",
     description: "CEO y fundador de Marconi Inmobiliaria, con más de 15 años de experiencia en el mercado inmobiliario de Reconquista. Especialista en propiedades residenciales y comerciales, liderando el equipo con visión estratégica y compromiso total con la satisfacción del cliente.",
     achievements: [
@@ -63,7 +63,7 @@ const agents: Agent[] = [
     role: "Gestor comercial",
     specialization: "Propiedades Comerciales",
     phone: "+54 9 3482 219676",
-    email: "ramon@marconiinmobiliaria.com",
+    email: "marconinegociosinmobiliarios@hotmail.com",
     image: "ramon_iyryyc",
     description: "Gestor comercial especializado en propiedades comerciales e inversiones. Con amplia experiencia en el mercado local, ayuda a empresarios y emprendedores a encontrar la ubicación perfecta para sus negocios en Reconquista y zona.",
     achievements: [
@@ -80,7 +80,7 @@ const agents: Agent[] = [
     role: "Gestora comercial",
     specialization: "Propiedades Residenciales",
     phone: "+54 9 3482 653547",
-    email: "priscila@marconiinmobiliaria.com",
+    email: "marconinegociosinmobiliarios@hotmail.com",
     image: "priscila_gbc46h",
     description: "Gestora comercial especializada en propiedades residenciales. Su enfoque personalizado y atención al detalle la convierten en la elección ideal para familias que buscan su hogar perfecto en Reconquista.",
     achievements: [
@@ -97,7 +97,7 @@ const agents: Agent[] = [
     role: "Community manager inmobiliario",
     specialization: "Marketing Digital Inmobiliario",
     phone: "+54 9 3482 755308",
-    email: "facundo@marconiinmobiliaria.com",
+    email: "marconinegociosinmobiliarios@hotmail.com",
     image: "facundo_axinkj",
     description: "Community Manager especializado en marketing digital inmobiliario. Se encarga de la presencia online de la empresa y de conectar propiedades con potenciales compradores a través de estrategias digitales innovadoras.",
     achievements: [
@@ -114,7 +114,7 @@ const agents: Agent[] = [
     role: "Community manager inmobiliario",
     specialization: "Marketing Digital y Comunicaciones",
     phone: "+54 9 3487 229722",
-    email: "micaela@marconiinmobiliaria.com",
+    email: "marconinegociosinmobiliarios@hotmail.com",
     image: "micaela_rl56r5",
     description: "Community Manager especializada en comunicaciones digitales y marketing inmobiliario. Trabaja en conjunto con el equipo para crear contenido atractivo y mantener una comunicación fluida con clientes actuales y potenciales.",
     achievements: [
@@ -131,7 +131,7 @@ const agents: Agent[] = [
     role: "Corredor Inmobiliario",
     specialization: "Transacciones Inmobiliarias",
     phone: "+54 9 3482 261937",
-    email: "bruno@marconiinmobiliaria.com",
+    email: "marconinegociosinmobiliarios@hotmail.com",
     image: "bruno_aqcgnn",
     description: "Corredor inmobiliario matriculado con amplia experiencia en transacciones inmobiliarias. Se especializa en asesorar legalmente las operaciones y garantizar que todos los procesos se realicen de manera correcta y segura.",
     achievements: [
@@ -638,7 +638,7 @@ export default function AgentesPage() {
               <ul className="space-y-2 text-gray-400">
                 <li>Reconquista, Santa Fe</li>
                 <li>+54 9 3482 308100</li>
-                <li>info@marconiinmobiliaria.com</li>
+                <li>marconinegociosinmobiliarios@hotmail.com</li>
               </ul>
             </div>
           </div>
