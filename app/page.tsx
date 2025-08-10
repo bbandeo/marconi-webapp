@@ -516,18 +516,21 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-brand-orange">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-20 bg-gradient-to-br from-amber-600/80 via-orange-600/70 to-orange-500/60 relative overflow-hidden">
+        {/* Soft radial highlights */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.1)_0%,transparent_70%)]"></div>
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="max-w-3xl mx-auto"
           >
-            <h2 className="text-4xl font-museo font-medium text-white mb-6">
+            <h2 className="text-4xl font-museo font-medium text-white mb-6 drop-shadow-lg">
               ¿Listo para encontrar tu próximo hogar?
             </h2>
-            <p className="text-xl text-orange-100 mb-8">
+            <p className="text-xl text-orange-50 mb-8 drop-shadow-sm">
               Nuestro equipo de expertos está aquí para ayudarte en cada paso
               del camino
             </p>
