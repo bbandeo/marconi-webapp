@@ -27,6 +27,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
 import Link from "next/link";
+import { MapThumbnail } from "@/components/MapThumbnail";
 
 export default function ContactoPage() {
   const [contactForm, setContactForm] = useState({
@@ -495,26 +496,26 @@ export default function ContactoPage() {
             transition={{ delay: 0.2 }}
             className="bg-gray-800 rounded-lg p-6 border border-gray-700"
           >
-            <div className="aspect-video bg-gray-700 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-12 h-12 text-brand-orange mx-auto mb-4" />
-                <p className="text-white font-semibold mb-2">Mapa de Google Maps</p>
-                <p className="text-gray-400 text-sm">Jorge Newbery 1562, Reconquista, Santa Fe</p>
-                <Button
-                  className="mt-4 bg-brand-orange hover:bg-brand-orange/90 text-white"
-                  asChild
-                >
-                  <a
-                    href="https://maps.google.com/?q=Reconquista,+Santa+Fe,+Argentina"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Globe className="w-4 h-4 mr-2" />
-                    Ver en Google Maps
-                  </a>
-                </Button>
-              </div>
+            <div className="relative rounded-lg overflow-hidden bg-gray-700">
+              <MapThumbnail 
+                query="Jorge Newbery 1562, Reconquista, Santa Fe, Argentina"
+                className="w-full aspect-video"
+                title="Mapa de la inmobiliaria"
+              />
             </div>
+            <Button
+              className="mt-4 bg-brand-orange hover:bg-brand-orange/90 text-white"
+              asChild
+            >
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=Jorge%20Newbery%201562%2C%20Reconquista%2C%20Santa%20Fe%2C%20Argentina"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Globe className="w-4 h-4 mr-2" />
+                Ver en Google Maps
+              </a>
+            </Button>
           </motion.div>
         </div>
       </section>
