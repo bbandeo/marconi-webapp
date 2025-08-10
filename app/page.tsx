@@ -291,93 +291,12 @@ export default function HomePage() {
       >
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
-            {/* Enhanced Title with Multiple Effects */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="relative"
-            >
-              {/* Background glow effect */}
-              <div className="absolute inset-0 blur-3xl opacity-20">
-                <h2 className="text-3xl md:text-5xl font-bold text-orange-500 mb-6">
-                  PROPIEDADES DESTACADAS
-                </h2>
-              </div>
-
-              {/* Main title with gradient and animation */}
-              <h2 className="relative text-3xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white via-orange-100 to-white bg-clip-text text-transparent animate-pulse">
-                PROPIEDADES{" "}
-                <span className="relative inline-block">
-                  <span className="bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent animate-pulse">
-                    DESTACADAS
-                  </span>
-                  {/* Underline decoration */}
-                  <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent transform scale-x-0 animate-pulse group-hover:scale-x-100 transition-transform duration-500"></div>
-                </span>
-              </h2>
-
-              {/* Decorative elements */}
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 180, 360]
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                  className="w-2 h-2 bg-orange-500 rounded-full"
-                ></motion.div>
-                
-                <div className="w-16 h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent"></div>
-                
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.5, 1],
-                    opacity: [1, 0.5, 1]
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 0.5
-                  }}
-                  className="w-1 h-1 bg-white rounded-full"
-                ></motion.div>
-                
-                <div className="w-16 h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent"></div>
-                
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                    rotate: [0, -180, -360]
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: 1
-                  }}
-                  className="w-2 h-2 bg-orange-500 rounded-full"
-                ></motion.div>
-              </div>
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="text-lg text-gray-300 mb-8 relative"
-            >
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
+            </h2>
+            <p className="text-lg text-gray-300 mb-8">
               Las mejores oportunidades de inversión en Reconquista
-              {/* Subtle accent line */}
-              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-px bg-gradient-to-r from-transparent via-orange-400/50 to-transparent"></div>
-            </motion.p>
+            </p>
           </div>
 
           {loadingProperties ? (
