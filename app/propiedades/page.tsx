@@ -73,6 +73,23 @@ export default function PropiedadesPage() {
     fetchProperties()
   }, [])
 
+  // Inicializar filtros desde query params
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const url = new URL(window.location.href)
+    const search = url.searchParams.get('search') || ""
+    const operation = url.searchParams.get('operation') || "all"
+    const type = url.searchParams.get('type') || "all"
+    const min = url.searchParams.get('min') || ""
+    const max = url.searchParams.get('max') || ""
+
+    setSearchTerm(search)
+    setOperationFilter(operation)
+    setTypeFilter(type)
+    setMinPrice(min)
+    setMaxPrice(max)
+  }, [])
+
   // Apply filters
   useEffect(() => {
     let filtered = [...properties]
