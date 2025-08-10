@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import { motion, type MotionProps } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
@@ -35,17 +36,48 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+    VariantProps<typeof buttonVariants>,
+    Omit<MotionProps, "className"> {
   asChild?: boolean
+  withMotion?: boolean
+  withRipple?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? Slot : "button"
+  (
+    { className, variant, size, asChild = false, withMotion = true, withRipple = true, onClick, ...props },
+    ref
+  ) => {
+    const Comp: any = asChild ? Slot : withMotion ? motion.button : "button"
+
+    const handleClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+      if (withRipple) {
+        const target = e.currentTarget
+        const rect = target.getBoundingClientRect()
+        const ripple = document.createElement("span")
+        const size = Math.max(rect.width, rect.height)
+        const left = e.clientX - rect.left - size / 2
+        const top = e.clientY - rect.top - size / 2
+        ripple.className = "btn-ripple"
+        ripple.style.width = ripple.style.height = `${size}px`
+        ripple.style.left = `${left}px`
+        ripple.style.top = `${top}px`
+        target.appendChild(ripple)
+        setTimeout(() => {
+          ripple.remove()
+        }, 600)
+      }
+      onClick?.(e)
+    }
+
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
+        ref={ref as any}
+        className={cn("ripple-container", buttonVariants({ variant, size, className }))}
+        onClick={handleClick}
+        whileHover={withMotion ? { scale: 1.02 } : undefined}
+        whileTap={withMotion ? { scale: 0.98 } : undefined}
+        transition={withMotion ? { type: "spring", stiffness: 380, damping: 22 } : undefined}
         {...props}
       />
     )
