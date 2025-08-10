@@ -486,7 +486,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8"
           >
             {[
               { icon: Home, number: "500+", label: "Propiedades Vendidas" },
@@ -515,43 +515,77 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-brand-orange">
-        <div className="container mx-auto px-4 text-center">
+      {/* CTA Section - Enhanced with gradients and animations */}
+      <section className="relative py-20 overflow-hidden">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-brand-orange to-orange-600">
+          {/* Animated overlay patterns */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse"></div>
+            <div className="absolute bottom-0 right-0 w-80 h-80 bg-yellow-300 rounded-full mix-blend-overlay filter blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            <div className="absolute top-1/2 left-1/3 w-64 h-64 bg-red-300 rounded-full mix-blend-overlay filter blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+          </div>
+
+          {/* Subtle geometric pattern overlay */}
+          <div 
+            className="absolute inset-0 opacity-5"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          ></div>
+        </div>
+
+        <div className="container mx-auto px-4 text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="max-w-3xl mx-auto"
+            transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl font-museo font-medium text-white mb-6">
+            <motion.h2 
+              className="text-3xl md:text-5xl font-bold text-white mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
               ¿Listo para encontrar tu próximo hogar?
-            </h2>
-            <p className="text-xl text-orange-100 mb-8">
-              Nuestro equipo de expertos está aquí para ayudarte en cada paso
-              del camino
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/propiedades">
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-white/90 mb-8 max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.8 }}
+            >
+              Nuestro equipo de expertos está aquí para ayudarte en cada paso del camino
+            </motion.p>
+            <motion.div 
+              className="flex flex-col md:flex-row gap-4 justify-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   size="lg"
-                  variant="secondary"
-                  className="bg-white text-brand-orange hover:bg-gray-100"
+                  className="bg-white text-brand-orange hover:bg-gray-100 font-semibold px-8 shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   Explorar Propiedades
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </Link>
-              <Link href="/contacto">
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange bg-transparent"
+                  className="border-2 border-white text-white hover:bg-white hover:text-brand-orange font-semibold px-8 backdrop-blur-sm bg-white/10 hover:bg-white transition-all duration-300"
                 >
                   Contactar Agente
                 </Button>
-              </Link>
-            </div>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
