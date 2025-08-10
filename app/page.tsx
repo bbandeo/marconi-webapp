@@ -24,6 +24,8 @@ import { Badge } from "@/components/ui/badge";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // Importar servicios
 import { useIsClient } from "@/hooks/use-is-client";
@@ -47,6 +49,14 @@ export default function HomePage() {
   });
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Estado búsqueda avanzada
+  const [searchTerm, setSearchTerm] = useState("");
+  const [operationType, setOperationType] = useState<string | undefined>(undefined);
+  const [propertyType, setPropertyType] = useState<string | undefined>(undefined);
+  const [priceMin, setPriceMin] = useState<string | undefined>(undefined);
+  const [priceMax, setPriceMax] = useState<string | undefined>(undefined);
+  const router = useRouter();
 
   const stats = [
     { number: "200+", label: "Propiedades Vendidas" },
@@ -90,17 +100,15 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isClient]);
 
-  /* 
-
-
   const handleSearch = () => {
-    const params = new URLSearchParams()
-    if (searchTerm) params.set("search", searchTerm)
-    if (operationType) params.set("operation", operationType)
-    if (propertyType) params.set("type", propertyType)
-
-    window.location.href = `/propiedades?${params.toString()}`
-  } */
+    const params = new URLSearchParams();
+    if (searchTerm) params.set("search", searchTerm);
+    if (operationType) params.set("operation", operationType);
+    if (propertyType) params.set("type", propertyType);
+    if (priceMin) params.set("min", priceMin);
+    if (priceMax) params.set("max", priceMax);
+    router.push(`/propiedades?${params.toString()}`);
+  };
 
   const formatPrice = (price: number, currency: string) => {
     return new Intl.NumberFormat("es-AR", {
@@ -130,9 +138,7 @@ export default function HomePage() {
   const handlePropertyInterest = (property: Property) => {
     setContactForm((prev) => ({
       ...prev,
-      message: `Hola, me interesa la propiedad: ${property.title} (${
-        property.currency
-      }$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
+      message: `Hola, me interesa la propiedad: ${property.title} (${property.currency}$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
       propertyId: property.id,
     }));
 
@@ -189,6 +195,11 @@ export default function HomePage() {
                 <Input
                   placeholder="Buscar propiedades..."
                   className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSearch();
+                  }}
                 />
               </div>
             </div>
@@ -220,90 +231,107 @@ export default function HomePage() {
             priority
           />
           {/* Subtle dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
 
         {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center">
-          {/* Centered Impact Text */}
-          <div className="flex-1 flex items-center justify-center w-full">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full"
-            >
-              <div
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                className="w-full p-20 flex justify-center"
-              >
-                <Image
-                  src="/assets/impact_text/vivilaexperiencia.PNG"
-                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                  width={800}
-                  height={200}
-                  priority
-                />
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Company Branding at Bottom */}
+        <div className="relative z-10 h-full flex flex-col justify-center items-center px-6">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0, duration: 0.4 }}
-            className="mb-8 text-center px-4"
+            transition={{ duration: 0.6 }}
+            className="w-full max-w-5xl text-center"
           >
-            <Image
-              src="/assets/logos/marconi_header_orangewhite.png"
-              alt="Marconi Inmobiliaria"
-              width={400}
-              height={120}
-              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
-            />
+            <h1 className="text-white font-serif font-light tracking-tight text-4xl md:text-6xl leading-tight mb-4">
+              Encontrá tu <span className="text-orange-400">hogar ideal</span>
+            </h1>
+            <p className="text-gray-200/90 text-base md:text-lg max-w-3xl mx-auto mb-8">
+              Compra, alquiler y oportunidades de inversión en Reconquista y alrededores.
+            </p>
+
+            {/* Advanced Search Bar */}
+            <div className="bg-gray-900/70 backdrop-blur-md border border-white/10 rounded-2xl p-3 md:p-4 shadow-2xl">
+              <div className="flex flex-col md:flex-row gap-3 md:items-center">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Input
+                    placeholder="Ubicación, barrio, calle..."
+                    className="pl-12 h-12 bg-transparent text-white placeholder:text-gray-400 border-gray-700"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleSearch();
+                    }}
+                  />
+                </div>
+                <Select onValueChange={(v) => setOperationType(v)}>
+                  <SelectTrigger className="w-full md:w-44 h-12 bg-gray-800/60 border-gray-700 text-white">
+                    <SelectValue placeholder="Operación" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sale">Venta</SelectItem>
+                    <SelectItem value="rent">Alquiler</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select onValueChange={(v) => setPropertyType(v)}>
+                  <SelectTrigger className="w-full md:w-48 h-12 bg-gray-800/60 border-gray-700 text-white">
+                    <SelectValue placeholder="Tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="house">Casa</SelectItem>
+                    <SelectItem value="apartment">Departamento</SelectItem>
+                    <SelectItem value="terreno">Terreno</SelectItem>
+                    <SelectItem value="commercial">Comercial</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select onValueChange={(v) => setPriceMin(v)}>
+                  <SelectTrigger className="w-full md:w-40 h-12 bg-gray-800/60 border-gray-700 text-white">
+                    <SelectValue placeholder="Desde (USD)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10000">10k</SelectItem>
+                    <SelectItem value="20000">20k</SelectItem>
+                    <SelectItem value="50000">50k</SelectItem>
+                    <SelectItem value="100000">100k</SelectItem>
+                    <SelectItem value="200000">200k</SelectItem>
+                    <SelectItem value="500000">500k</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select onValueChange={(v) => setPriceMax(v)}>
+                  <SelectTrigger className="w-full md:w-40 h-12 bg-gray-800/60 border-gray-700 text-white">
+                    <SelectValue placeholder="Hasta (USD)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="100000">100k</SelectItem>
+                    <SelectItem value="200000">200k</SelectItem>
+                    <SelectItem value="300000">300k</SelectItem>
+                    <SelectItem value="500000">500k</SelectItem>
+                    <SelectItem value="1000000">1M</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  size="lg"
+                  className="h-12 px-6 bg-orange-600 hover:bg-orange-500 text-white font-medium"
+                  onClick={handleSearch}
+                >
+                  Buscar
+                </Button>
+              </div>
+            </div>
+
+            {/* Helper shortcuts */}
+            <div className="mt-4 flex flex-wrap gap-2 justify-center text-xs text-gray-300">
+              <span className="px-2 py-1 rounded-full bg-white/5 border border-white/10">Casas con patio</span>
+              <span className="px-2 py-1 rounded-full bg-white/5 border border-white/10">Departamentos céntricos</span>
+              <span className="px-2 py-1 rounded-full bg-white/5 border border-white/10">Terrenos grandes</span>
+            </div>
           </motion.div>
         </div>
       </section>
-      
-      {/* Premium Angular Transition */}
-      <div className="relative overflow-hidden">
-        {/* Main angular section */}
-        <div className="relative h-20 bg-gradient-to-b from-gray-900 via-gray-800 to-black">
-          {/* Angular cut overlay */}
-          <div 
-            className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-amber-400/10 to-orange-500/20"
-            style={{
-              clipPath: 'polygon(0 0, 100% 0, 95% 100%, 5% 100%)'
-            }}
-          />
-          
-          {/* Decorative elements */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center space-x-6"
-          >
-            {/* Left decoration */}
-            <div className="h-px w-20 bg-gradient-to-r from-transparent to-orange-500" />
-            
-            {/* Center element */}
-            <div className="relative">
-              <div className="w-3 h-3 bg-orange-500 rotate-45 shadow-lg shadow-orange-500/50" />
-              <div className="absolute -top-1 -left-1 w-5 h-5 border border-orange-500/30 rotate-45" />
-            </div>
-            
-            {/* Right decoration */}
-            <div className="h-px w-20 bg-gradient-to-l from-transparent to-orange-500" />
-          </motion.div>
-        </div>
-        
-        {/* Bottom highlight */}
-        <div className="h-0.5 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
-      </div>
-      
+
+      {/* Premium Angular Transition -> Sutil divisor */}
+      <div className="h-px bg-gradient-to-r from-transparent via-orange-500/60 to-transparent" />
+
       {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
       <section
         id="propiedades"
