@@ -265,6 +265,45 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+      
+      {/* Premium Angular Transition */}
+      <div className="relative overflow-hidden">
+        {/* Main angular section */}
+        <div className="relative h-20 bg-gradient-to-b from-gray-900 via-gray-800 to-black">
+          {/* Angular cut overlay */}
+          <div 
+            className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-amber-400/10 to-orange-500/20"
+            style={{
+              clipPath: 'polygon(0 0, 100% 0, 95% 100%, 5% 100%)'
+            }}
+          />
+          
+          {/* Decorative elements */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center space-x-6"
+          >
+            {/* Left decoration */}
+            <div className="h-px w-20 bg-gradient-to-r from-transparent to-orange-500" />
+            
+            {/* Center element */}
+            <div className="relative">
+              <div className="w-3 h-3 bg-orange-500 rotate-45 shadow-lg shadow-orange-500/50" />
+              <div className="absolute -top-1 -left-1 w-5 h-5 border border-orange-500/30 rotate-45" />
+            </div>
+            
+            {/* Right decoration */}
+            <div className="h-px w-20 bg-gradient-to-l from-transparent to-orange-500" />
+          </motion.div>
+        </div>
+        
+        {/* Bottom highlight */}
+        <div className="h-0.5 bg-gradient-to-r from-transparent via-orange-500/50 to-transparent" />
+      </div>
+      
       {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
       <section
         id="propiedades"
