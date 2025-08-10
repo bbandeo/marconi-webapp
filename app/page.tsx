@@ -143,66 +143,116 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <motion.div 
+      className="min-h-screen bg-gray-900"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
+      <motion.header 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className={`sticky top-0 z-50 transition-all duration-500 ease-out ${
+          scrolled 
+            ? 'bg-gray-900/95 backdrop-blur-md border-b border-gray-800/50 shadow-2xl h-16' 
+            : 'bg-gray-900 border-b border-gray-800 shadow-md h-16 md:h-20'
+        }`}
+      >
         <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
+          <div className="flex items-center justify-between h-full">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/assets/logos/marconi_header_orangewhite.png"
-                alt="Marconi Inmobiliaria"
-                width={140}
-                height={45}
-                className="h-8 md:h-10 w-auto"
-                priority
-              />
-            </Link>
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Link href="/" className="flex items-center space-x-2">
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Image
+                    src="/assets/logos/marconi_header_orangewhite.png"
+                    alt="Marconi Inmobiliaria"
+                    width={140}
+                    height={45}
+                    className={`w-auto transition-all duration-300 ${
+                      scrolled ? 'h-7' : 'h-8 md:h-10'
+                    }`}
+                    priority
+                  />
+                </motion.div>
+              </Link>
+            </motion.div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                PROPIEDADES
-              </Link>
-              <Link
-                href="/agentes"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                AGENTES
-              </Link>
-              <Link
-                href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                CONTACTO
-              </Link>
-            </nav>
+            <motion.nav 
+              className="hidden md:flex items-center space-x-8"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              {['PROPIEDADES', 'AGENTES', 'CONTACTO'].map((item, index) => (
+                <motion.div
+                  key={item}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.5 + (index * 0.1) }}
+                >
+                  <Link
+                    href={`/${item.toLowerCase()}`}
+                    className="text-gray-300 hover:text-white transition-all duration-300 relative group"
+                  >
+                    <span className="relative z-10">{item}</span>
+                    <motion.div
+                      className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-amber-400"
+                      whileHover={{ width: "100%" }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.nav>
 
             {/* Mobile Search Bar */}
-            <div className="md:hidden flex-1 max-w-xs ml-4">
+            <motion.div 
+              className="md:hidden flex-1 max-w-xs ml-4"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+            >
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Buscar propiedades..."
-                  className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
+                  className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange transition-all duration-300 focus:shadow-lg focus:shadow-orange-500/20"
                 />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
 
         {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
-      </header>
+        <motion.div 
+          className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1, delay: 0.8 }}
+        />
+      </motion.header>
 
       {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[92vh] flex flex-col">
-        {/* Background Image */}
-        <div className="absolute inset-0">
+      <section className="relative h-[60vh] md:h-[92vh] flex flex-col overflow-hidden">
+        {/* Background Image with parallax */}
+        <motion.div 
+          className="absolute inset-0 will-change-transform"
+          style={{ 
+            y: (isClient && scrolled) ? -50 : 0 
+          }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
           <Image
             src={
               getOptimizedImageUrl("IMG_2850_c7gzcr", {
@@ -216,52 +266,110 @@ export default function HomePage() {
             }
             alt="Reconquista - Marconi Inmobiliaria"
             fill
-            className="object-cover"
+            className="object-cover scale-110"
             priority
           />
-          {/* Subtle dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
+          {/* Enhanced overlay with gradient */}
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5 }}
+          />
+          {/* Cinematic vignette */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
+        </motion.div>
 
         {/* Content */}
         <div className="relative z-10 h-full flex flex-col justify-center items-center">
           {/* Centered Impact Text */}
           <div className="flex-1 flex items-center justify-center w-full">
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              initial={{ opacity: 0, y: 60, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ 
+                duration: 0.8, 
+                ease: "easeOut",
+                delay: 0.5
+              }}
               className="w-full"
             >
-              <div
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                className="w-full p-20 flex justify-center"
+              <motion.div
+                className="w-full p-8 md:p-20 flex justify-center backdrop-blur-sm rounded-2xl"
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
+                whileHover={{ 
+                  backgroundColor: "rgba(0, 0, 0, 0.4)",
+                  scale: 1.02
+                }}
+                transition={{ duration: 0.3 }}
               >
-                <Image
-                  src="/assets/impact_text/vivilaexperiencia.PNG"
-                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                  width={800}
-                  height={200}
-                  priority
-                />
-              </div>
+                <motion.div
+                  initial={{ opacity: 0, filter: "blur(20px)" }}
+                  animate={{ opacity: 1, filter: "blur(0px)" }}
+                  transition={{ 
+                    duration: 1.2, 
+                    delay: 0.8,
+                    ease: "easeOut"
+                  }}
+                >
+                  <Image
+                    src="/assets/impact_text/vivilaexperiencia.PNG"
+                    alt="Viví la experiencia de encontrar tu lugar en el mundo"
+                    width={800}
+                    height={200}
+                    priority
+                    className="drop-shadow-2xl"
+                  />
+                </motion.div>
+              </motion.div>
             </motion.div>
           </div>
 
           {/* Company Branding at Bottom */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0, duration: 0.4 }}
+            transition={{ 
+              delay: 1.2, 
+              duration: 0.6,
+              ease: "easeOut"
+            }}
             className="mb-8 text-center px-4"
           >
-            <Image
-              src="/assets/logos/marconi_header_orangewhite.png"
-              alt="Marconi Inmobiliaria"
-              width={400}
-              height={120}
-              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
-            />
+            <motion.div
+              whileHover={{ 
+                scale: 1.05,
+                filter: "brightness(1.1)"
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              <Image
+                src="/assets/logos/marconi_header_orangewhite.png"
+                alt="Marconi Inmobiliaria"
+                width={400}
+                height={120}
+                className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3 drop-shadow-2xl"
+              />
+            </motion.div>
+            
+            {/* Subtle tagline animation */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                delay: 1.5, 
+                duration: 0.5
+              }}
+              className="text-white/80 text-sm md:text-base font-light tracking-wide"
+            >
+              <motion.div
+                className="w-16 h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent mx-auto mb-2"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ delay: 1.8, duration: 0.8 }}
+              />
+              Tu hogar ideal te está esperando
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -310,14 +418,39 @@ export default function HomePage() {
         className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden"
       >
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+          <motion.div 
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.h2 
+              className="text-3xl md:text-5xl font-bold text-white mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
-            </h2>
-            <p className="text-lg text-gray-300 mb-8">
+            </motion.h2>
+            <motion.div
+              className="w-24 h-1 bg-gradient-to-r from-orange-500 to-amber-400 mx-auto rounded-full mb-6"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            />
+            <motion.p 
+              className="text-lg text-gray-300 mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+            >
               Las mejores oportunidades de inversión en Reconquista
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           {loadingProperties ? (
             <div className="text-center py-12">
@@ -327,25 +460,52 @@ export default function HomePage() {
           ) : (
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredProperties.map((property) => (
-                  <Card
+                {featuredProperties.map((property, index) => (
+                  <motion.div
                     key={property.id}
-                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
+                    initial={{ opacity: 0, y: 60 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ 
+                      duration: 0.6, 
+                      delay: index * 0.1,
+                      ease: "easeOut"
+                    }}
+                    whileHover={{ y: -8 }}
                   >
+                    <Card className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-orange-500/40 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 backdrop-blur-sm h-full flex flex-col"
+                    >
                     <div className="relative overflow-hidden">
                       <Link href={`/propiedades/${property.id}`}>
-                        <div className="relative cursor-pointer h-48">
+                        <motion.div 
+                          className="relative cursor-pointer h-48"
+                          whileHover={{ scale: 1.02 }}
+                          transition={{ duration: 0.4 }}
+                        >
                           {property.images && property.images.length > 0 ? (
-                            <Image
-                              src={property.images[0]}
-                              alt={property.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = "/placeholder.svg";
-                              }}
-                            />
+                            <motion.div
+                              className="relative w-full h-full"
+                              whileHover={{ scale: 1.05 }}
+                              transition={{ duration: 0.6, ease: "easeOut" }}
+                            >
+                              <Image
+                                src={property.images[0]}
+                                alt={property.title}
+                                fill
+                                className="object-cover"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = "/placeholder.svg";
+                                }}
+                              />
+                              {/* Premium overlay on hover */}
+                              <motion.div
+                                className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+                                initial={{ opacity: 0 }}
+                                whileHover={{ opacity: 1 }}
+                                transition={{ duration: 0.3 }}
+                              />
+                            </motion.div>
                           ) : (
                             <div className="w-full h-full bg-gray-700 flex items-center justify-center">
                               <div className="text-gray-400 text-center">
@@ -356,35 +516,52 @@ export default function HomePage() {
                           )}
 
                           {/* Status badges */}
-                          <div className="absolute top-4 left-4">
+                          <motion.div 
+                            className="absolute top-4 left-4"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.3, delay: 0.1 }}
+                          >
                             <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
                               {property.operation_type === "venta"
                                 ? "VENTA"
                                 : "ALQUILER"}
                             </div>
-                          </div>
+                          </motion.div>
 
                           {/* Featured badge */}
                           {property.featured && (
-                            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
+                            <motion.div 
+                              className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.3, delay: 0.2 }}
+                              whileHover={{ scale: 1.05 }}
+                            >
                               <Eye className="w-4 h-4" />
                               DESTACADA
-                            </div>
+                            </motion.div>
                           )}
 
                           {/* Favorite button */}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
+                          <motion.div
+                            className="absolute bottom-4 right-4"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
                           >
-                            <Heart className="w-4 h-4" />
-                          </Button>
-                        </div>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg transition-all duration-300 hover:shadow-orange-500/20"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                            >
+                              <Heart className="w-4 h-4" />
+                            </Button>
+                          </motion.div>
+                        </motion.div>
                       </Link>
                     </div>
 
@@ -392,9 +569,18 @@ export default function HomePage() {
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <Link href={`/propiedades/${property.id}`}>
-                            <h3 className="font-bold text-white text-lg mb-2 hover:text-orange-300 transition-colors cursor-pointer">
-                              {property.title}
-                            </h3>
+                            <motion.h3 
+                              className="font-bold text-white text-lg mb-2 cursor-pointer relative group"
+                              whileHover={{ color: "#fed7aa" }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <span className="relative z-10">{property.title}</span>
+                              <motion.div
+                                className="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-500 to-amber-400"
+                                whileHover={{ width: "100%" }}
+                                transition={{ duration: 0.4, ease: "easeOut" }}
+                              />
+                            </motion.h3>
                           </Link>
                           <div className="flex items-center text-orange-300 font-medium mb-1">
                             <MapPin className="w-4 h-4 mr-2" />
@@ -469,23 +655,44 @@ export default function HomePage() {
 
                       {/* Action Buttons - Always at bottom */}
                       <div className="flex gap-2 pt-2 border-t border-gray-700/50 mt-auto">
-                        <Button
-                          className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
+                        <motion.div className="flex-1">
+                          <motion.button
+                            className="w-full bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm text-sm font-medium rounded-xl shadow-lg px-4 py-2 flex items-center justify-center gap-1"
+                            onClick={() => handlePropertyInterest(property)}
+                            whileHover={{ 
+                              scale: 1.02,
+                              boxShadow: "0 10px 25px rgba(251, 146, 60, 0.3)"
+                            }}
+                            whileTap={{ scale: 0.98 }}
+                            transition={{ 
+                              type: "spring", 
+                              stiffness: 400, 
+                              damping: 17 
+                            }}
+                          >
+                            Me interesa <ArrowRight className="w-3 h-3 ml-1" />
+                          </motion.button>
+                        </motion.div>
+                        <motion.button
+                          className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm rounded-xl p-2 border transition-all duration-300"
                           onClick={() => handlePropertyInterest(property)}
-                        >
-                          Me interesa <ArrowRight className="w-3 h-3 ml-1" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm rounded-xl"
-                          onClick={() => handlePropertyInterest(property)}
+                          whileHover={{ 
+                            scale: 1.05,
+                            backgroundColor: "rgba(55, 65, 81, 0.6)"
+                          }}
+                          whileTap={{ scale: 0.95 }}
+                          transition={{ 
+                            type: "spring", 
+                            stiffness: 400, 
+                            damping: 17 
+                          }}
                         >
                           <MessageCircle className="w-4 h-4" />
-                        </Button>
+                        </motion.button>
                       </div>
                     </CardContent>
                   </Card>
+                  </motion.div>
                 ))}
               </div>
 
@@ -501,30 +708,71 @@ export default function HomePage() {
                 </div>
               )}
 
-              <div className="text-center mt-8">
+              <motion.div 
+                className="text-center mt-8"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+              >
                 <Link href="/propiedades">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
+                  <motion.button
+                    className="px-8 py-4 border-2 border-orange-500 text-orange-500 bg-transparent font-semibold rounded-xl backdrop-blur-sm flex items-center justify-center gap-2 mx-auto"
+                    whileHover={{ 
+                      scale: 1.05,
+                      backgroundColor: "#ff6600",
+                      color: "white",
+                      boxShadow: "0 15px 35px rgba(251, 146, 60, 0.4)"
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ 
+                      type: "spring", 
+                      stiffness: 400, 
+                      damping: 17 
+                    }}
                   >
-                    Ver todas las propiedades{" "}
-                    <ArrowRight className="w-4 h-4 ml-1" />
-                  </Button>
+                    Ver todas las propiedades
+                    <motion.div
+                      whileHover={{ x: 5 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ArrowRight className="w-4 h-4" />
+                    </motion.div>
+                  </motion.button>
                 </Link>
-              </div>
+              </motion.div>
             </>
           )}
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-gray-900 relative overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-10 left-1/4 w-32 h-32 border border-orange-500/20 rounded-full" />
+          <div className="absolute bottom-10 right-1/4 w-24 h-24 border border-amber-400/20 rounded-full" />
+        </div>
+        
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              NUESTROS <span className="text-orange-500">LOGROS</span>
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-orange-500 to-amber-400 mx-auto rounded-full" />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-8"
           >
             {[
@@ -535,19 +783,45 @@ export default function HomePage() {
             ].map((stat, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
+                transition={{ 
+                  delay: index * 0.15,
+                  duration: 0.6,
+                  ease: "easeOut"
+                }}
+                whileHover={{ 
+                  y: -10,
+                  scale: 1.05
+                }}
+                className="text-center group cursor-pointer"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-4">
-                  <stat.icon className="h-8 w-8 text-brand-orange" />
-                </div>
-                <div className="text-3xl font-museo font-medium text-white mb-2">
+                <motion.div 
+                  className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-orange-500/20 via-orange-500/10 to-amber-400/20 rounded-full mb-6 backdrop-blur-sm border border-orange-500/20 group-hover:border-orange-500/40 transition-all duration-300"
+                  whileHover={{
+                    boxShadow: "0 15px 35px rgba(251, 146, 60, 0.3)",
+                    backgroundColor: "rgba(251, 146, 60, 0.1)"
+                  }}
+                >
+                  <stat.icon className="h-10 w-10 text-orange-500 group-hover:text-orange-400 transition-colors duration-300" />
+                </motion.div>
+                <motion.div 
+                  className="text-4xl font-bold text-white mb-2 group-hover:text-orange-100 transition-colors duration-300"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: index * 0.15 + 0.3 }}
+                >
                   {stat.number}
-                </div>
-                <div className="text-gray-400">{stat.label}</div>
+                </motion.div>
+                <motion.div 
+                  className="text-gray-400 font-medium group-hover:text-gray-300 transition-colors duration-300"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: index * 0.15 + 0.4 }}
+                >
+                  {stat.label}
+                </motion.div>
               </motion.div>
             ))}
           </motion.div>
@@ -573,27 +847,58 @@ export default function HomePage() {
               Nuestro equipo de expertos está aquí para ayudarte en cada paso
               del camino
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
               <Link href="/propiedades">
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="bg-white text-brand-orange hover:bg-gray-100"
+                <motion.button
+                  className="px-8 py-4 bg-white text-brand-orange font-semibold rounded-xl shadow-lg flex items-center justify-center gap-2 min-w-[200px]"
+                  whileHover={{ 
+                    scale: 1.05,
+                    boxShadow: "0 15px 35px rgba(255, 255, 255, 0.3)",
+                    backgroundColor: "#f9fafb"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 400, 
+                    damping: 17 
+                  }}
                 >
                   Explorar Propiedades
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+                  <motion.div
+                    whileHover={{ x: 5 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ArrowRight className="h-5 w-5" />
+                  </motion.div>
+                </motion.button>
               </Link>
               <Link href="/contacto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange bg-transparent"
+                <motion.button
+                  className="px-8 py-4 border-2 border-white text-white font-semibold rounded-xl bg-transparent backdrop-blur-sm flex items-center justify-center min-w-[200px]"
+                  whileHover={{ 
+                    scale: 1.05,
+                    backgroundColor: "white",
+                    color: "#ff6600",
+                    borderColor: "white",
+                    boxShadow: "0 15px 35px rgba(255, 255, 255, 0.2)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ 
+                    type: "spring", 
+                    stiffness: 400, 
+                    damping: 17 
+                  }}
                 >
                   Contactar Agente
-                </Button>
+                </motion.button>
               </Link>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
@@ -665,6 +970,6 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
-    </div>
+    </motion.div>
   );
 }
