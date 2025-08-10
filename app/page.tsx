@@ -130,9 +130,7 @@ export default function HomePage() {
   const handlePropertyInterest = (property: Property) => {
     setContactForm((prev) => ({
       ...prev,
-      message: `Hola, me interesa la propiedad: ${property.title} (${
-        property.currency
-      }$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
+      message: `Hola, me interesa la propiedad: ${property.title} (${property.currency}$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
       propertyId: property.id,
     }));
 
@@ -145,8 +143,8 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-        <div className="w-full px-6">
+      <header className={`sticky top-0 z-50 transition-all ${scrolled ? "bg-gray-900/80 backdrop-blur border-b border-gray-800 shadow-md" : "bg-transparent"}`}>
+        <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-2">
@@ -196,7 +194,9 @@ export default function HomePage() {
         </div>
 
         {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
+        {scrolled && (
+          <div className="w-full h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
+        )}
       </header>
 
       {/* Hero Section */}
@@ -221,6 +221,11 @@ export default function HomePage() {
           />
           {/* Subtle dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/40" />
+          {/* Soft pattern overlay */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06)_0%,transparent_60%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] bg-[size:20px_20px] opacity-20" />
+          </div>
         </div>
 
         {/* Content */}
@@ -233,17 +238,16 @@ export default function HomePage() {
               transition={{ duration: 0.4, ease: "easeOut" }}
               className="w-full"
             >
-              <div
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                className="w-full p-20 flex justify-center"
-              >
-                <Image
-                  src="/assets/impact_text/vivilaexperiencia.PNG"
-                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                  width={800}
-                  height={200}
-                  priority
-                />
+              <div className="w-full flex justify-center px-4">
+                <div className="backdrop-blur-sm bg-black/30 border border-white/10 rounded-2xl shadow-2xl p-6 md:p-10">
+                  <Image
+                    src="/assets/impact_text/vivilaexperiencia.PNG"
+                    alt="Viví la experiencia de encontrar tu lugar en el mundo"
+                    width={800}
+                    height={200}
+                    priority
+                  />
+                </div>
               </div>
             </motion.div>
           </div>
@@ -264,12 +268,19 @@ export default function HomePage() {
             />
           </motion.div>
         </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10">
+          <div className="h-10 w-10 rounded-full border border-white/20 flex items-center justify-center text-white/70 animate-bounce">
+            <ArrowRight className="h-5 w-5 rotate-90" />
+          </div>
+        </div>
       </section>
       
       {/* Premium Angular Transition */}
       <div className="relative overflow-hidden">
         {/* Main angular section */}
-        <div className="relative h-20 bg-gradient-to-b from-gray-900 via-gray-800 to-black">
+        <div className="relative h-16 bg-gradient-to-b from-gray-900 via-gray-800 to-black">
           {/* Angular cut overlay */}
           <div 
             className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-amber-400/10 to-orange-500/20"
@@ -330,11 +341,11 @@ export default function HomePage() {
                 {featuredProperties.map((property) => (
                   <Card
                     key={property.id}
-                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
+                    className="bg-gray-800/90 backdrop-blur rounded-2xl overflow-hidden ring-1 ring-gray-700/40 group hover:ring-gray-500/60 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 h-full flex flex-col"
                   >
                     <div className="relative overflow-hidden">
                       <Link href={`/propiedades/${property.id}`}>
-                        <div className="relative cursor-pointer h-48">
+                        <div className="relative cursor-pointer aspect-[16/10]">
                           {property.images && property.images.length > 0 ? (
                             <Image
                               src={property.images[0]}
@@ -357,7 +368,7 @@ export default function HomePage() {
 
                           {/* Status badges */}
                           <div className="absolute top-4 left-4">
-                            <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
+                            <div className="bg-gray-900/80 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-full font-medium text-xs backdrop-blur-md shadow-lg">
                               {property.operation_type === "venta"
                                 ? "VENTA"
                                 : "ALQUILER"}
@@ -366,7 +377,7 @@ export default function HomePage() {
 
                           {/* Featured badge */}
                           {property.featured && (
-                            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
+                            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-full text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
                               <Eye className="w-4 h-4" />
                               DESTACADA
                             </div>
@@ -376,7 +387,7 @@ export default function HomePage() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
+                            className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-full p-2.5 shadow-lg"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -419,9 +430,9 @@ export default function HomePage() {
                         {(property.bedrooms ||
                           property.bathrooms ||
                           property.area_m2) && (
-                          <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
+                          <div className="flex items-center gap-3 text-gray-300 mb-4 text-sm">
                             {property.bedrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
+                              <div className="flex items-center bg-gray-700/30 border border-gray-600/40 px-2.5 py-1 rounded-full">
                                 <Bed className="w-4 h-4 mr-1 text-orange-300" />
                                 <span className="font-medium">
                                   {property.bedrooms}
@@ -429,14 +440,14 @@ export default function HomePage() {
                               </div>
                             )}
                             {property.bathrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
+                              <div className="flex items-center bg-gray-700/30 border border-gray-600/40 px-2.5 py-1 rounded-full">
                                 <Bath className="w-4 h-4 mr-1 text-orange-300" />
                                 <span className="font-medium">
                                   {property.bathrooms}
                                 </span>
                               </div>
                             )}
-                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
+                            <div className="flex items-center bg-gray-700/30 border border-gray-600/40 px-2.5 py-1 rounded-full">
                               <Square className="w-4 h-4 mr-1 text-orange-300" />
                               <span className="font-medium">
                                 {property.area_m2}m²
@@ -452,7 +463,7 @@ export default function HomePage() {
                               {property.features.slice(0, 3).map((feature, i) => (
                                 <span
                                   key={i}
-                                  className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium"
+                                  className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2.5 py-1 rounded-full text-xs font-medium"
                                 >
                                   {feature}
                                 </span>
@@ -468,7 +479,7 @@ export default function HomePage() {
                       </div>
 
                       {/* Action Buttons - Always at bottom */}
-                      <div className="flex gap-2 pt-2 border-t border-gray-700/50 mt-auto">
+                      <div className="flex gap-2 pt-2 border-t border-gray-700/40 mt-auto">
                         <Button
                           className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
                           onClick={() => handlePropertyInterest(property)}
@@ -525,7 +536,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
           >
             {[
               { icon: Home, number: "500+", label: "Propiedades Vendidas" },
@@ -539,9 +550,9 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="text-center"
+                className="text-center bg-gray-800/40 backdrop-blur rounded-2xl ring-1 ring-white/5 p-6 hover:-translate-y-0.5 transition-transform"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 ring-1 ring-orange-500/20 rounded-full mb-4">
                   <stat.icon className="h-8 w-8 text-brand-orange" />
                 </div>
                 <div className="text-3xl font-museo font-medium text-white mb-2">
