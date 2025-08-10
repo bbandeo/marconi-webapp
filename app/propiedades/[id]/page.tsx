@@ -31,6 +31,7 @@ import {
   Home
 } from "lucide-react"
 import type { Property as PropertyType } from "@/lib/supabase"
+import { MapThumbnail } from "@/components/MapThumbnail"
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -407,21 +408,19 @@ export default function PropertyDetailPage() {
               <Card className="bg-gray-800 border-gray-700 mt-6">
                 <CardContent className="p-6">
                   <h3 className="text-xl font-semibold text-white mb-4">Ubicación</h3>
-                  <div className="relative h-80 rounded-lg overflow-hidden bg-gray-700 flex items-center justify-center">
-                    {/* Static map placeholder - easily replaceable with actual Google Maps */}
-                    <div className="text-center text-gray-400">
-                      <MapPin className="w-12 h-12 mx-auto mb-3 text-brand-orange" />
-                      <p className="font-medium text-white text-lg">{property.address}</p>
-                      <p className="text-gray-300">{property.neighborhood}, {property.city}</p>
-                      <p className="text-sm mt-3 text-gray-400">Mapa interactivo próximamente</p>
-                      <Button 
-                        className="mt-4 bg-brand-orange hover:bg-brand-orange/90"
-                        onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${property.address}, ${property.neighborhood}, ${property.city}`)}`)}
-                      >
-                        Ver en Google Maps
-                      </Button>
-                    </div>
+                  <div className="relative h-80 rounded-lg overflow-hidden bg-gray-700">
+                    <MapThumbnail 
+                      query={`${property.address}, ${property.neighborhood}, ${property.city}`}
+                      className="h-80"
+                      title={`Mapa de ${property.address}`}
+                    />
                   </div>
+                  <Button 
+                    className="mt-4 bg-brand-orange hover:bg-brand-orange/90"
+                    onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${property.address}, ${property.neighborhood}, ${property.city}`)}`)}
+                  >
+                    Ver en Google Maps
+                  </Button>
                 </CardContent>
               </Card>
             )}

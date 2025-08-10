@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Link from "next/link";
 import Image from "next/image";
+import { MapThumbnail } from "@/components/MapThumbnail";
 
 // Importar servicios
 import { useIsClient } from "@/hooks/use-is-client";
@@ -903,6 +904,36 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Map Thumbnail Section - Dirección de la inmobiliaria */}
+      <section className="py-16 bg-gray-900">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+            <div className="lg:col-span-1">
+              <h3 className="text-2xl font-bold text-white mb-2">Nuestra ubicación</h3>
+              <p className="text-gray-300">Jorge Newbery 1562, Reconquista, Santa Fe, Argentina</p>
+              <div className="mt-4">
+                <Link 
+                  href="https://www.google.com/maps/search/?api=1&query=Jorge%20Newbery%201562%2C%20Reconquista%2C%20Santa%20Fe%2C%20Argentina"
+                  target="_blank"
+                  className="inline-flex items-center text-brand-orange hover:text-orange-400"
+                >
+                  <span className="underline">Ver en Google Maps</span>
+                </Link>
+              </div>
+            </div>
+            <div className="lg:col-span-2">
+              <div className="relative rounded-xl overflow-hidden border border-gray-700 bg-gray-800">
+                <MapThumbnail 
+                  query="Jorge Newbery 1562, Reconquista, Santa Fe, Argentina"
+                  className="w-full aspect-video"
+                  title="Mapa de la inmobiliaria"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+ 
       {/* Footer */}
       <footer className="bg-gray-800 border-t border-gray-700 py-12">
         <div className="container mx-auto px-4">
