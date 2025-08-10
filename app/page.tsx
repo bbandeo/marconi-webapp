@@ -29,11 +29,19 @@ import Image from "next/image";
 import { useIsClient } from "@/hooks/use-is-client";
 import { PropertyService } from "@/services/properties";
 import type { Property } from "@/lib/supabase";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { LeadsService } from "@/services/leads";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const isClient = useIsClient();
+  const router = useRouter();
+  const { toast } = useToast();
 
   // Estados para datos del backend
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
@@ -47,6 +55,11 @@ export default function HomePage() {
   });
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Estado buscador (hero)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [operationType, setOperationType] = useState("all");
+  const [propertyType, setPropertyType] = useState("all");
 
   const stats = [
     { number: "200+", label: "Propiedades Vendidas" },
@@ -130,9 +143,7 @@ export default function HomePage() {
   const handlePropertyInterest = (property: Property) => {
     setContactForm((prev) => ({
       ...prev,
-      message: `Hola, me interesa la propiedad: ${property.title} (${
-        property.currency
-      }$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
+      message: `Hola, me interesa la propiedad: ${property.title} (${property.currency}$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
       propertyId: property.id,
     }));
 
@@ -140,6 +151,55 @@ export default function HomePage() {
     document
       .getElementById("contact-form")
       ?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const params = new URLSearchParams();
+    if (searchTerm) params.set("search", searchTerm);
+    if (operationType !== "all") params.set("operation", operationType);
+    if (propertyType !== "all") params.set("type", propertyType);
+    router.push(`/propiedades${params.toString() ? `?${params.toString()}` : ""}`);
+  };
+
+  const handleSubmitContact = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitLoading(true);
+    try {
+      await LeadsService.createLead({
+        name: contactForm.name,
+        email: contactForm.email || null,
+        phone: contactForm.phone || null,
+        message: contactForm.message || null,
+        property_id: contactForm.propertyId,
+        lead_source: "homepage",
+        status: "new",
+        notes: null,
+        last_contact: null,
+        next_action: null,
+        next_action_date: null,
+        priority: "medium",
+        score: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      } as any);
+
+      setSubmitSuccess(true);
+      setContactForm({ name: "", email: "", phone: "", message: "", propertyId: null });
+      toast({
+        title: "Consulta enviada",
+        description: "Te contactaremos a la brevedad.",
+      });
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast({
+        title: "Error al enviar",
+        description: "Por favor, intenta nuevamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setSubmitLoading(false);
+    }
   };
 
   return (
@@ -189,6 +249,12 @@ export default function HomePage() {
                 <Input
                   placeholder="Buscar propiedades..."
                   className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleSearch();
+                  }}
+                  aria-label="Buscar propiedades"
                 />
               </div>
             </div>
@@ -247,6 +313,68 @@ export default function HomePage() {
               </div>
             </motion.div>
           </div>
+
+          {/* Search Panel */}
+          <motion.form
+            onSubmit={handleSearch}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.3 }}
+            className="w-full max-w-5xl mx-auto -mt-6 px-4"
+            aria-label="Buscador de propiedades"
+          >
+            <div className="backdrop-blur-md bg-black/40 border border-white/10 rounded-2xl p-4 md:p-6 shadow-xl">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                <div className="md:col-span-2">
+                  <Label htmlFor="search" className="sr-only">Buscar</Label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <Input
+                      id="search"
+                      placeholder="Barrio, dirección o palabra clave"
+                      className="pl-10 h-11 bg-gray-900/60 border-gray-700 text-white placeholder:text-gray-400"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="operation" className="sr-only">Operación</Label>
+                  <Select value={operationType} onValueChange={setOperationType}>
+                    <SelectTrigger id="operation" className="h-11 bg-gray-900/60 border-gray-700 text-white">
+                      <SelectValue placeholder="Operación" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Operación</SelectItem>
+                      <SelectItem value="sale">Venta</SelectItem>
+                      <SelectItem value="rent">Alquiler</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="type" className="sr-only">Tipo</Label>
+                  <Select value={propertyType} onValueChange={setPropertyType}>
+                    <SelectTrigger id="type" className="h-11 bg-gray-900/60 border-gray-700 text-white">
+                      <SelectValue placeholder="Tipo de propiedad" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Tipo</SelectItem>
+                      <SelectItem value="house">Casa</SelectItem>
+                      <SelectItem value="apartment">Departamento</SelectItem>
+                      <SelectItem value="commercial">Comercial</SelectItem>
+                      <SelectItem value="terreno">Terreno</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex">
+                  <Button type="submit" className="w-full h-11 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-600 hover:to-orange-600">
+                    Buscar
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </motion.form>
 
           {/* Company Branding at Bottom */}
           <motion.div
@@ -320,9 +448,22 @@ export default function HomePage() {
           </div>
 
           {loadingProperties ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto"></div>
-              <p className="text-white mt-4">Cargando propiedades...</p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="bg-gray-800/70 border border-gray-700/40 rounded-xl overflow-hidden animate-pulse">
+                  <div className="h-48 bg-gray-700" />
+                  <div className="p-4 space-y-3">
+                    <div className="h-4 bg-gray-700 rounded w-3/4" />
+                    <div className="h-3 bg-gray-700 rounded w-1/2" />
+                    <div className="flex gap-2">
+                      <div className="h-6 bg-gray-700 rounded w-16" />
+                      <div className="h-6 bg-gray-700 rounded w-16" />
+                      <div className="h-6 bg-gray-700 rounded w-16" />
+                    </div>
+                    <div className="h-9 bg-gray-700 rounded w-full" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : (
             <>
@@ -380,7 +521,9 @@ export default function HomePage() {
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
+                              toast({ title: "Próximamente", description: "Podrás guardar favoritos." });
                             }}
+                            aria-label="Guardar en favoritos"
                           >
                             <Heart className="w-4 h-4" />
                           </Button>
@@ -480,6 +623,7 @@ export default function HomePage() {
                           variant="outline"
                           className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm rounded-xl"
                           onClick={() => handlePropertyInterest(property)}
+                          aria-label="Consultar por la propiedad"
                         >
                           <MessageCircle className="w-4 h-4" />
                         </Button>
@@ -595,6 +739,69 @@ export default function HomePage() {
               </Link>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Contact Section (Formulario) */}
+      <section id="contact-form" className="py-16 bg-gray-900 border-t border-gray-800">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-6 text-center">
+              ¿Te interesó alguna propiedad?
+            </h3>
+            <p className="text-gray-300 text-center mb-8">Dejanos tus datos y nos pondremos en contacto.</p>
+            <Card className="bg-gray-800/80 border-gray-700/60">
+              <CardContent className="p-6">
+                <form onSubmit={handleSubmitContact} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="md:col-span-1">
+                    <Label htmlFor="name">Nombre</Label>
+                    <Input
+                      id="name"
+                      value={contactForm.name}
+                      onChange={(e) => setContactForm((p) => ({ ...p, name: e.target.value }))}
+                      required
+                    />
+                  </div>
+                  <div className="md:col-span-1">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={contactForm.email}
+                      onChange={(e) => setContactForm((p) => ({ ...p, email: e.target.value }))}
+                    />
+                  </div>
+                  <div className="md:col-span-1">
+                    <Label htmlFor="phone">Teléfono</Label>
+                    <Input
+                      id="phone"
+                      value={contactForm.phone}
+                      onChange={(e) => setContactForm((p) => ({ ...p, phone: e.target.value }))}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <Label htmlFor="message">Mensaje</Label>
+                    <Textarea
+                      id="message"
+                      placeholder="Contanos en qué propiedad estás interesado o qué estás buscando"
+                      value={contactForm.message}
+                      onChange={(e) => setContactForm((p) => ({ ...p, message: e.target.value }))}
+                      className="min-h-[120px]"
+                    />
+                  </div>
+                  <div className="md:col-span-2 flex justify-end gap-3">
+                    <Button
+                      type="submit"
+                      disabled={submitLoading}
+                      className="bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-600 hover:to-orange-600"
+                    >
+                      {submitLoading ? "Enviando..." : "Enviar consulta"}
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </section>
 
