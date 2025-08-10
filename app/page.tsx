@@ -291,8 +291,19 @@ export default function HomePage() {
       >
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6 relative inline-block">
+              <span className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent drop-shadow-2xl">
+                PROPIEDADES{" "}
+              </span>
+              <span className="bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent animate-pulse drop-shadow-lg">
+                DESTACADAS
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent opacity-50 blur-sm -z-10">
+                PROPIEDADES{" "}
+                <span className="bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent">
+                  DESTACADAS
+                </span>
+              </div>
             </h2>
             <p className="text-lg text-gray-300 mb-8">
               Las mejores oportunidades de inversión en Reconquista
