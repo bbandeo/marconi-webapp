@@ -29,6 +29,7 @@ import Image from "next/image";
 import { useIsClient } from "@/hooks/use-is-client";
 import { PropertyService } from "@/services/properties";
 import type { Property } from "@/lib/supabase";
+import { MapThumbnail } from "@/components/MapThumbnail";
 
 export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
@@ -512,6 +513,44 @@ export default function HomePage() {
               </motion.div>
             ))}
           </motion.div>
+        </div>
+      </section>
+
+      {/* Mini Map Section */}
+      <section className="py-16 bg-black">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Nuestra <span className="text-brand-orange">Ubicación</span>
+              </h2>
+              <p className="text-gray-300 mb-4">
+                Jorge Newbery 1562, Reconquista, Santa Fe, Argentina
+              </p>
+              <Link href="/contacto">
+                <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white">
+                  Contactanos
+                </Button>
+              </Link>
+            </div>
+            <div className="rounded-lg overflow-hidden border border-gray-700 bg-gray-800">
+              <div className="relative h-64 md:h-80">
+                <MapThumbnail
+                  query="Jorge Newbery 1562, Reconquista, Santa Fe, Argentina"
+                  title="Ubicación de Marconi Inmobiliaria"
+                />
+              </div>
+              <div className="p-3 text-right">
+                <Button
+                  variant="outline"
+                  className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                  onClick={() => window.open("https://www.google.com/maps/search/?api=1&query=Jorge%20Newbery%201562%2C%20Reconquista%2C%20Santa%20Fe%2C%20Argentina")}
+                >
+                  Ver en Google Maps
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
