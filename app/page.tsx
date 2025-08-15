@@ -131,9 +131,7 @@ export default function HomePage() {
   const handlePropertyInterest = (property: Property) => {
     setContactForm((prev) => ({
       ...prev,
-      message: `Hola, me interesa la propiedad: ${property.title} (${
-        property.currency
-      }$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
+      message: `Hola, me interesa la propiedad: ${property.title} (${property.currency}$ ${property.price.toLocaleString()}). Me gustaría recibir más información.`,
       propertyId: property.id,
     }));
 
@@ -146,7 +144,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
+      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md animate-fade-in">
         <div className="w-full px-6">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
@@ -201,7 +199,7 @@ export default function HomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[92vh] flex flex-col">
+      <section className="relative h-[60vh] md:h-[92vh] flex flex-col animate-fade-in">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -272,7 +270,7 @@ export default function HomePage() {
         className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden"
       >
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 animate-fade-in-up">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
               PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
             </h2>
@@ -292,7 +290,7 @@ export default function HomePage() {
                 {featuredProperties.map((property) => (
                   <Card
                     key={property.id}
-                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
+                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col animate-fade-in hover-lift hover-glow"
                   >
                     <div className="relative overflow-hidden">
                       <Link href={`/propiedades/${property.id}`}>
@@ -432,7 +430,7 @@ export default function HomePage() {
                       {/* Action Buttons - Always at bottom */}
                       <div className="flex gap-2 pt-2 border-t border-gray-700/50 mt-auto">
                         <Button
-                          className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
+                          className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg btn-shine"
                           onClick={() => handlePropertyInterest(property)}
                         >
                           Me interesa <ArrowRight className="w-3 h-3 ml-1" />
@@ -468,7 +466,7 @@ export default function HomePage() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
+                    className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent btn-shine"
                   >
                     Ver todas las propiedades{" "}
                     <ArrowRight className="w-4 h-4 ml-1" />
@@ -481,7 +479,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gray-900">
+      <section className="py-20 bg-gray-900 animate-fade-in">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -517,7 +515,7 @@ export default function HomePage() {
       </section>
 
       {/* Mini Map Section */}
-      <section className="py-16 bg-black">
+      <section className="py-16 bg-black animate-fade-in">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
@@ -528,12 +526,12 @@ export default function HomePage() {
                 Jorge Newbery 1562, Reconquista, Santa Fe, Argentina
               </p>
               <Link href="/contacto">
-                <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white">
+                <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white btn-shine">
                   Contactanos
                 </Button>
               </Link>
             </div>
-            <div className="rounded-lg overflow-hidden border border-gray-700 bg-gray-800">
+            <div className="rounded-lg overflow-hidden border border-gray-700 bg-gray-800 hover-lift hover-glow">
               <div className="relative h-64 md:h-80">
                 <MapThumbnail
                   query="Jorge Newbery 1562, Reconquista, Santa Fe, Argentina"
@@ -555,7 +553,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-brand-orange">
+      <section className="py-20 bg-brand-orange animate-fade-in">
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -575,7 +573,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="bg-white text-brand-orange hover:bg-gray-100"
+                  className="bg-white text-brand-orange hover:bg-gray-100 btn-shine"
                 >
                   Explorar Propiedades
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -585,7 +583,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange bg-transparent"
+                  className="border-white text-white hover:bg-white hover:text-brand-orange bg-transparent btn-shine"
                 >
                   Contactar Agente
                 </Button>
