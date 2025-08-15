@@ -474,3 +474,18 @@ body {
     display: block;
   }
 }
+
+/* --- Enhancements appended --- */
+@layer utilities {
+  .divider-gold {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(201, 169, 97, 0.8),
+      transparent
+    );
+  }
+}
+
+html { scroll-behavior: smooth; }
