@@ -14,65 +14,67 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* TEMA CLARO - Para modo administrativo eventual */
+    --background: 0 0% 96%; /* #F5F5F5 - Blanco Hueso */
+    --foreground: 210 13% 16%; /* #212832 - Azul Nocturno */
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 210 13% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 210 13% 16%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 21 84% 56%; /* #F37321 - Naranja Vibrante */
+    --primary-foreground: 0 0% 96%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 13% 16%;
+    --secondary-foreground: 0 0% 96%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 13% 54%; /* #8A9199 - Gris de Soporte */
+    --muted-foreground: 0 0% 96%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 21 84% 56%; /* #F37321 - Naranja Vibrante */
+    --accent-foreground: 0 0% 96%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 96%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 210 13% 54%;
+    --input: 210 13% 54%;
+    --ring: 21 84% 56%;
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* TEMA PREMIUM OSCURO - Modo principal del sitio */
+    --background: 210 13% 16%; /* #212832 - Azul Nocturno */
+    --foreground: 0 0% 96%; /* #F5F5F5 - Blanco Hueso */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 210 13% 16%; /* #212832 - Azul Nocturno */
+    --card-foreground: 0 0% 96%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 210 13% 16%;
+    --popover-foreground: 0 0% 96%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 21 84% 56%; /* #F37321 - Naranja Vibrante */
+    --primary-foreground: 0 0% 96%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 210 13% 20%; /* Variación más clara del azul nocturno */
+    --secondary-foreground: 0 0% 96%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 210 13% 20%;
+    --muted-foreground: 210 13% 54%; /* #8A9199 - Gris de Soporte */
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 21 84% 56%; /* #F37321 - Naranja Vibrante */
+    --accent-foreground: 0 0% 96%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 96%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 210 13% 20%;
+    --input: 210 13% 20%;
+    --ring: 21 84% 56%;
   }
 }
 
@@ -83,4 +85,42 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* CLASES UTILITARIAS PREMIUM - SISTEMA TIPOGRÁFICO */
+@layer utilities {
+  /* Títulos de Impacto (H1) - Bold, Uppercase */
+  .text-display-xl { @apply text-display-xl font-inter font-bold uppercase tracking-wide; }
+  .text-display-lg { @apply text-display-lg font-inter font-bold uppercase tracking-wide; }
+  .text-display-md { @apply text-display-md font-inter font-bold uppercase tracking-wide; }
+  .text-display-sm { @apply text-display-sm font-inter font-bold uppercase tracking-wide; }
+  
+  /* Subtítulos Respirable (H2, H3) - Regular */
+  .text-heading-xl { @apply text-heading-xl font-inter font-normal; }
+  .text-heading-lg { @apply text-heading-lg font-inter font-normal; }
+  .text-heading-md { @apply text-heading-md font-inter font-normal; }
+  .text-heading-sm { @apply text-heading-sm font-inter font-normal; }
+  
+  /* Cuerpo de Texto - Light con Línea Generosa */
+  .text-body-xl { @apply text-body-xl font-inter font-light; }
+  .text-body-lg { @apply text-body-lg font-inter font-light; }
+  .text-body-md { @apply text-body-md font-inter font-light; }
+  .text-body-sm { @apply text-body-sm font-inter font-light; }
+  
+  /* Texto Secundario y Metadatos */
+  .text-caption-lg { @apply text-caption-lg font-inter font-normal text-support-gray; }
+  .text-caption-md { @apply text-caption-md font-inter font-normal text-support-gray; }
+  .text-caption-sm { @apply text-caption-sm font-inter font-normal text-support-gray; }
+  
+  /* Espaciado Premium */
+  .section-premium { @apply py-premium-lg md:py-premium-xl; }
+  .container-premium { @apply px-premium-sm md:px-premium-md; }
+  .card-premium { @apply p-premium-sm md:p-premium-md; }
+  
+  /* Background Premium */
+  .bg-premium-main { @apply bg-night-blue; }
+  .bg-premium-card { @apply bg-night-blue/95 backdrop-blur-sm; }
+  .text-premium-primary { @apply text-bone-white; }
+  .text-premium-secondary { @apply text-support-gray; }
+  .accent-premium { @apply text-vibrant-orange; }
 }
