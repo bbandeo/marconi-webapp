@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Image from "next/image";
 import Link from "next/link";
+import Header from "@/components/Header";
 
 interface Agent {
   id: number;
@@ -210,48 +211,7 @@ export default function AgentesPage() {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-        <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/assets/logos/marconi_header_orangewhite.png"
-                alt="Marconi Inmobiliaria"
-                width={140}
-                height={45}
-                className="h-8 md:h-10 w-auto"
-                priority
-              />
-            </Link>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                PROPIEDADES
-              </Link>
-              <Link
-                href="/agentes"
-                className="text-brand-orange font-semibold"
-              >
-                AGENTES
-              </Link>
-              <Link
-                href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                CONTACTO
-              </Link>
-            </nav>
-          </div>
-        </div>
-        
-        {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
-      </header>
+      <Header showMobileSearch={false} />
 
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-br from-gray-900 to-black">
