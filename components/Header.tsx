@@ -25,7 +25,7 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
     if (isActivePage(path)) {
       return "accent-premium border-b-2 border-vibrant-orange pb-1 font-medium transition-colors";
     }
-    return "text-premium-secondary hover:text-premium-primary transition-colors";
+    return "text-bone-white/80 hover:text-bone-white transition-colors";
   };
 
   // Special case for contacto page - uses vibrant orange
@@ -33,7 +33,7 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
     if (isActivePage("/contacto")) {
       return "accent-premium font-semibold";
     }
-    return "text-premium-secondary hover:text-premium-primary transition-colors";
+    return "text-bone-white/80 hover:text-bone-white transition-colors";
   };
 
   // Special case for agentes page - uses vibrant orange
@@ -41,7 +41,7 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
     if (isActivePage("/agentes")) {
       return "accent-premium font-semibold";
     }
-    return "text-premium-secondary hover:text-premium-primary transition-colors";
+    return "text-bone-white/80 hover:text-bone-white transition-colors";
   };
 
   // Scroll progress tracking
@@ -119,10 +119,10 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
           {showMobileSearch && (
             <div className="md:hidden flex-1 max-w-xs ml-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-support-gray" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-bone-white/60" />
                 <Input
                   placeholder="Buscar propiedades..."
-                  className="pl-10 h-10 bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-support-gray text-sm focus:border-vibrant-orange"
+                  className="pl-10 h-10 bg-premium-card border-support-gray/30 text-bone-white placeholder:text-bone-white/60 text-sm focus:border-vibrant-orange"
                 />
               </div>
             </div>

@@ -137,8 +137,8 @@ export default function HomePage() {
       {/* Header Premium */}
       <Header />
 
-      {/* Hero Section - PREMIUM MINIMALISTA */}
-      <section className="relative section-premium overflow-hidden">
+      {/* Hero Section - PREMIUM CON IMPACT TEXT */}
+      <section className="relative h-[60vh] md:h-[92vh] flex flex-col overflow-hidden">
         {/* Background Image Premium */}
         <div className="absolute inset-0">
           <Image
@@ -161,38 +161,44 @@ export default function HomePage() {
         </div>
 
         {/* Content - ESPACIADO DRAMÁTICO */}
-        <div className="relative z-10 min-h-[90vh] flex flex-col justify-center items-center container-premium">
-          {/* Título de Impacto - MINIMALISTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-center mb-premium-xl"
-          >
-            <h1 className="display-xl text-premium-primary mb-premium-md">
-              ENCONTRÁ TU <span className="accent-premium">LUGAR</span>
-            </h1>
-            <p className="body-xl text-premium-secondary max-w-3xl mx-auto">
-              Experiencia premium en bienes raíces. Acompañamiento profesional para la decisión más importante de tu vida.
-            </p>
-          </motion.div>
+        <div className="relative z-10 h-full flex flex-col justify-center items-center">
+          {/* Impact Text Original - RESTAURADO */}
+          <div className="flex-1 flex items-center justify-center w-full">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="w-full"
+            >
+              <div
+                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+                className="w-full p-20 flex justify-center"
+              >
+                <Image
+                  src="/assets/impact_text/vivilaexperiencia.PNG"
+                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
+                  width={800}
+                  height={200}
+                  priority
+                />
+              </div>
+            </motion.div>
+          </div>
 
-          {/* CTA Premium - ÚNICO Y PROMINENTE */}
+          {/* Company Branding at Bottom */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="text-center"
+            transition={{ delay: 0, duration: 0.4 }}
+            className="mb-8 text-center px-4"
           >
-            <Link href="/propiedades">
-              <Button size="xl" className="mb-4">
-                EXPLORAR PROPIEDADES
-                <ArrowRight className="w-6 h-6 ml-3" />
-              </Button>
-            </Link>
-            <p className="caption-lg text-premium-secondary">
-              +200 propiedades cuidadosamente seleccionadas
-            </p>
+            <Image
+              src="/assets/logos/marconi_header_orangewhite.png"
+              alt="Marconi Inmobiliaria"
+              width={400}
+              height={120}
+              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
+            />
           </motion.div>
         </div>
       </section>
@@ -252,9 +258,9 @@ export default function HomePage() {
                         {/* Overlay Premium Sutil */}
                         <div className="absolute inset-0 bg-gradient-to-t from-night-blue/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         
-                        {/* Status Badge Minimalista */}
+                        {/* Status Badge Minimalista - CONTRASTE MEJORADO */}
                         <div className="absolute top-premium-sm left-premium-sm">
-                          <div className="bg-vibrant-orange text-bone-white px-premium-sm py-2 rounded-xl caption-lg font-medium backdrop-blur-sm">
+                          <div className="bg-night-blue/90 text-bone-white px-premium-sm py-2 rounded-xl caption-lg font-semibold backdrop-blur-md border border-vibrant-orange/30">
                             {property.operation_type === "venta" ? "VENTA" : "ALQUILER"}
                           </div>
                         </div>
@@ -378,8 +384,7 @@ export default function HomePage() {
               <Link href="/propiedades">
                 <Button
                   size="xl"
-                  variant="secondary"
-                  className="bg-bone-white text-vibrant-orange hover:bg-bone-white/90 border-0"
+                  className="bg-night-blue text-bone-white hover:bg-night-blue/90 border border-bone-white/20 shadow-2xl"
                 >
                   EXPLORAR PROPIEDADES
                   <ArrowRight className="ml-3 h-6 w-6" />
@@ -389,7 +394,7 @@ export default function HomePage() {
                 <Button
                   size="xl"
                   variant="outline"
-                  className="border-bone-white/40 text-bone-white hover:bg-bone-white/10 hover:border-bone-white bg-transparent"
+                  className="border-bone-white/60 text-bone-white hover:bg-bone-white/10 hover:border-bone-white bg-transparent"
                 >
                   CONTACTAR EXPERTO
                 </Button>
