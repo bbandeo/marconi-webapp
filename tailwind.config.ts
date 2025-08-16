@@ -28,6 +28,29 @@ const config = {
       },
       colors: {
         "brand-orange": "#ff6600",
+        // Floriana-inspired vibrant palette
+        "floriana": {
+          orange: {
+            50: "#fff7ed",
+            100: "#ffedd5",
+            200: "#fed7aa",
+            300: "#fdba74",
+            400: "#fb923c",
+            500: "#f97316", // Primary vibrant orange
+            600: "#ea580c",
+            700: "#c2410c",
+            800: "#9a3412",
+            900: "#7c2d12",
+          },
+          coral: "#ff7849",
+          peach: "#ff9966",
+          amber: "#ffb84d",
+          gradient: {
+            primary: "linear-gradient(135deg, #ff7849 0%, #ff6600 50%, #ea580c 100%)",
+            secondary: "linear-gradient(45deg, #fb923c 0%, #f97316 100%)",
+            accent: "linear-gradient(90deg, #ff9966 0%, #ff7849 100%)",
+          }
+        },
         // Nueva paleta premium
         "premium": {
           gold: "#c9a961",
@@ -84,10 +107,52 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        // Floriana-inspired animations
+        "float": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "float-slow": {
+          "0%, 100%": { transform: "translateY(0px) rotate(0deg)" },
+          "50%": { transform: "translateY(-15px) rotate(180deg)" },
+        },
+        "pulse-orange": {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(249, 115, 22, 0.4)" },
+          "50%": { boxShadow: "0 0 0 10px rgba(249, 115, 22, 0)" },
+        },
+        "gradient-x": {
+          "0%, 100%": { "background-position": "0% 50%" },
+          "50%": { "background-position": "100% 50%" },
+        },
+        "gradient-y": {
+          "0%, 100%": { "background-position": "50% 0%" },
+          "50%": { "background-position": "50% 100%" },
+        },
+        "shine": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+        "bounce-slow": {
+          "0%, 100%": { transform: "translateY(0)", animationTimingFunction: "cubic-bezier(0,0,0.2,1)" },
+          "50%": { transform: "translateY(-25%)", animationTimingFunction: "cubic-bezier(0.8,0,1,1)" },
+        },
+        "scale-pulse": {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.05)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        // Floriana-inspired animations
+        "float": "float 3s ease-in-out infinite",
+        "float-slow": "float-slow 6s ease-in-out infinite",
+        "pulse-orange": "pulse-orange 2s infinite",
+        "gradient-x": "gradient-x 3s ease infinite",
+        "gradient-y": "gradient-y 3s ease infinite",
+        "shine": "shine 2s ease-in-out infinite",
+        "bounce-slow": "bounce-slow 3s infinite",
+        "scale-pulse": "scale-pulse 2s ease-in-out infinite",
       },
       spacing: {
         xs: "0.5rem", // 8px
