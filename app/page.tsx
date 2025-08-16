@@ -156,49 +156,69 @@ export default function HomePage() {
             className="object-cover"
             priority
           />
-          {/* Overlay Premium - Más sutil y sofisticado */}
-          <div className="absolute inset-0 bg-night-blue/30" />
+          {/* Subtle dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-black/40" />
+          {/* Orange fade overlay - EFECTO DIFUMINADO IMPORTADO */}
+          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
         </div>
 
-        {/* Content - ESPACIADO DRAMÁTICO */}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center">
-          {/* Impact Text Original - RESTAURADO */}
-          <div className="flex-1 flex items-center justify-center w-full">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full"
-            >
-              <div
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                className="w-full p-20 flex justify-center"
-              >
-                <Image
-                  src="/assets/impact_text/vivilaexperiencia.PNG"
-                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                  width={800}
-                  height={200}
-                  priority
-                />
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Company Branding at Bottom */}
+        {/* Content - NUEVA ESTRUCTURA: LOGO ARRIBA + IMPACT TEXT ABAJO */}
+        <div className="relative z-10 h-full flex flex-col justify-between items-center py-premium-xl">
+          {/* Logo Principal Superior - TÍTULO */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0, duration: 0.4 }}
-            className="mb-8 text-center px-4"
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="text-center pt-premium-lg"
           >
             <Image
               src="/assets/logos/marconi_header_orangewhite.png"
               alt="Marconi Inmobiliaria"
-              width={400}
-              height={120}
-              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
+              width={500}
+              height={150}
+              className="h-20 md:h-32 w-auto mx-auto opacity-95"
+              priority
             />
+          </motion.div>
+
+          {/* Impact Text Central - MENSAJE PRINCIPAL */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+            className="flex-1 flex items-center justify-center w-full"
+          >
+            <div
+              style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+              className="w-full py-premium-lg px-premium-md flex justify-center rounded-2xl backdrop-blur-sm"
+            >
+              <Image
+                src="/assets/impact_text/vivilaexperiencia.PNG"
+                alt="Viví la experiencia de encontrar tu lugar en el mundo"
+                width={800}
+                height={200}
+                className="max-w-full h-auto"
+                priority
+              />
+            </div>
+          </motion.div>
+
+          {/* CTA Bottom - LLAMADA A LA ACCIÓN */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
+            className="text-center pb-premium-lg"
+          >
+            <Link href="/propiedades">
+              <Button size="xl" className="mb-premium-sm">
+                EXPLORAR PROPIEDADES
+                <ArrowRight className="w-6 h-6 ml-3" />
+              </Button>
+            </Link>
+            <p className="caption-lg text-bone-white/80">
+              +200 propiedades cuidadosamente seleccionadas
+            </p>
           </motion.div>
         </div>
       </section>
