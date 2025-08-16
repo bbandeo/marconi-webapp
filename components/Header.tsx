@@ -93,7 +93,7 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
               href="/propiedades"
               className={getLinkClassName("/propiedades")}
             >
-              <span className="text-body-md font-medium tracking-wide">
+              <span className="body-md font-medium tracking-wide">
                 PROPIEDADES
               </span>
             </Link>
@@ -101,7 +101,7 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
               href="/agentes"
               className={getAgentesLinkClassName()}
             >
-              <span className="text-body-md font-medium tracking-wide">
+              <span className="body-md font-medium tracking-wide">
                 AGENTES
               </span>
             </Link>
@@ -109,7 +109,7 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
               href="/contacto"
               className={getContactLinkClassName()}
             >
-              <span className="text-body-md font-medium tracking-wide">
+              <span className="body-md font-medium tracking-wide">
                 CONTACTO
               </span>
             </Link>

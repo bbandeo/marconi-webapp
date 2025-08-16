@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-body-md font-medium ring-offset-background transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vibrant-orange focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 shadow-lg",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl body-md font-medium ring-offset-background transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vibrant-orange focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 shadow-lg",
   {
     variants: {
       variant: {
@@ -28,10 +28,10 @@ const buttonVariants = cva(
         link: "text-vibrant-orange underline-offset-4 hover:underline hover:text-vibrant-orange/80",
       },
       size: {
-        sm: "h-9 rounded-lg px-4 text-body-sm",
+        sm: "h-9 rounded-lg px-4 body-sm",
         default: "h-12 px-6 py-3",
-        lg: "h-14 rounded-xl px-8 text-body-lg",
-        xl: "h-16 rounded-2xl px-12 text-heading-sm", // Para CTAs principales
+        lg: "h-14 rounded-xl px-8 body-lg",
+        xl: "h-16 rounded-2xl px-12 heading-sm", // Para CTAs principales
         icon: "h-12 w-12",
       },
     },

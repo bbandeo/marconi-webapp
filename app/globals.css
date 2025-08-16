@@ -90,27 +90,27 @@
 /* CLASES UTILITARIAS PREMIUM - SISTEMA TIPOGRÁFICO */
 @layer utilities {
   /* Títulos de Impacto (H1) - Bold, Uppercase */
-  .text-display-xl { @apply text-display-xl font-inter font-bold uppercase tracking-wide; }
-  .text-display-lg { @apply text-display-lg font-inter font-bold uppercase tracking-wide; }
-  .text-display-md { @apply text-display-md font-inter font-bold uppercase tracking-wide; }
-  .text-display-sm { @apply text-display-sm font-inter font-bold uppercase tracking-wide; }
+  .display-xl { @apply font-inter font-bold uppercase tracking-wide; font-size: 4rem; line-height: 1.1; }
+  .display-lg { @apply font-inter font-bold uppercase tracking-wide; font-size: 3.5rem; line-height: 1.1; }
+  .display-md { @apply font-inter font-bold uppercase tracking-wide; font-size: 3rem; line-height: 1.2; }
+  .display-sm { @apply font-inter font-bold uppercase tracking-wide; font-size: 2.5rem; line-height: 1.2; }
   
   /* Subtítulos Respirable (H2, H3) - Regular */
-  .text-heading-xl { @apply text-heading-xl font-inter font-normal; }
-  .text-heading-lg { @apply text-heading-lg font-inter font-normal; }
-  .text-heading-md { @apply text-heading-md font-inter font-normal; }
-  .text-heading-sm { @apply text-heading-sm font-inter font-normal; }
+  .heading-xl { @apply font-inter font-normal; font-size: 2rem; line-height: 1.3; }
+  .heading-lg { @apply font-inter font-normal; font-size: 1.75rem; line-height: 1.3; }
+  .heading-md { @apply font-inter font-normal; font-size: 1.5rem; line-height: 1.4; }
+  .heading-sm { @apply font-inter font-normal; font-size: 1.25rem; line-height: 1.4; }
   
   /* Cuerpo de Texto - Light con Línea Generosa */
-  .text-body-xl { @apply text-body-xl font-inter font-light; }
-  .text-body-lg { @apply text-body-lg font-inter font-light; }
-  .text-body-md { @apply text-body-md font-inter font-light; }
-  .text-body-sm { @apply text-body-sm font-inter font-light; }
+  .body-xl { @apply font-inter font-light; font-size: 1.25rem; line-height: 1.7; }
+  .body-lg { @apply font-inter font-light; font-size: 1.125rem; line-height: 1.7; }
+  .body-md { @apply font-inter font-light; font-size: 1rem; line-height: 1.7; }
+  .body-sm { @apply font-inter font-light; font-size: 0.875rem; line-height: 1.7; }
   
   /* Texto Secundario y Metadatos */
-  .text-caption-lg { @apply text-caption-lg font-inter font-normal text-support-gray; }
-  .text-caption-md { @apply text-caption-md font-inter font-normal text-support-gray; }
-  .text-caption-sm { @apply text-caption-sm font-inter font-normal text-support-gray; }
+  .caption-lg { @apply font-inter font-normal text-support-gray; font-size: 0.875rem; line-height: 1.5; }
+  .caption-md { @apply font-inter font-normal text-support-gray; font-size: 0.75rem; line-height: 1.5; }
+  .caption-sm { @apply font-inter font-normal text-support-gray; font-size: 0.625rem; line-height: 1.5; }
   
   /* Espaciado Premium */
   .section-premium { @apply py-premium-lg md:py-premium-xl; }
