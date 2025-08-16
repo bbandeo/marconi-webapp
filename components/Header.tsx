@@ -1,10 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useIsClient } from "@/hooks/use-is-client";
 
 interface HeaderProps {
   showMobileSearch?: boolean;
@@ -12,6 +14,8 @@ interface HeaderProps {
 
 export default function Header({ showMobileSearch = true }: HeaderProps) {
   const pathname = usePathname();
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const isClient = useIsClient();
 
   const isActivePage = (path: string) => {
     return pathname === path;
@@ -40,8 +44,34 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
     return "text-gray-300 hover:text-white transition-colors";
   };
 
+  // Scroll progress tracking
+  useEffect(() => {
+    if (!isClient) {
+      return;
+    }
+    const handleScroll = () => {
+      const winScroll = window.scrollY || document.documentElement.scrollTop;
+      const height =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const progress = height > 0 ? (winScroll / height) * 100 : 0;
+      setScrollProgress(progress);
+    };
+    window.addEventListener("scroll", handleScroll);
+    // Ejecutar una vez para inicializar en el primer render del cliente
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isClient]);
+
   return (
     <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
+      {/* Scroll Progress Bar */}
+      <div
+        aria-hidden
+        className="absolute top-0 left-0 h-1 z-[60] pointer-events-none"
+        style={{ width: `${scrollProgress}%` }}
+      >
+        <div className="w-full h-full bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg" />
+      </div>
       <div className="w-full px-6">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}

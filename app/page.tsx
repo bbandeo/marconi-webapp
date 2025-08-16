@@ -31,8 +31,6 @@ import type { Property } from "@/lib/supabase";
 
 export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
-  const [scrolled, setScrolled] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const isClient = useIsClient();
 
   // Estados para datos del backend
@@ -79,23 +77,6 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (!isClient) {
-      return;
-    }
-    const handleScroll = () => {
-      const winScroll = window.scrollY || document.documentElement.scrollTop;
-      const height =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = height > 0 ? (winScroll / height) * 100 : 0;
-      setScrollProgress(progress);
-      setScrolled(winScroll > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    // Ejecutar una vez para inicializar en el primer render del cliente
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isClient]);
 
   /* 
 
@@ -151,14 +132,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Scroll Progress Bar (arriba del header) */}
-      <div
-        aria-hidden
-        className="fixed top-0 left-0 h-1 z-[60] pointer-events-none"
-        style={{ width: `${scrollProgress}%` }}
-      >
-        <div className="w-full h-full bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg" />
-      </div>
       {/* Header */}
       <Header />
 
