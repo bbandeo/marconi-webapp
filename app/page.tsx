@@ -146,62 +146,63 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-        <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
+      <header className="bg-gray-900 border-b border-gray-700/20 sticky top-0 z-50 backdrop-blur-sm">
+        <div className="w-full px-8">
+          <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center">
               <Image
                 src="/assets/logos/marconi_header_orangewhite.png"
                 alt="Marconi Inmobiliaria"
-                width={140}
-                height={45}
-                className="h-8 md:h-10 w-auto"
+                width={120}
+                height={40}
+                className="h-8 w-auto transition-opacity duration-300 ease-out hover:opacity-80"
                 priority
               />
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-12">
               <Link
                 href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-gray-300 hover:text-white transition-all duration-300 ease-out relative group font-medium tracking-wide"
               >
                 PROPIEDADES
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 ease-out group-hover:w-full"></span>
               </Link>
               <Link
                 href="/agentes"
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-gray-300 hover:text-white transition-all duration-300 ease-out relative group font-medium tracking-wide"
               >
                 AGENTES
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 ease-out group-hover:w-full"></span>
               </Link>
               <Link
                 href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-gray-300 hover:text-white transition-all duration-300 ease-out relative group font-medium tracking-wide"
               >
                 CONTACTO
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 ease-out group-hover:w-full"></span>
               </Link>
             </nav>
 
             {/* Mobile Search Bar */}
-            <div className="md:hidden flex-1 max-w-xs ml-4">
+            <div className="md:hidden flex-1 max-w-xs ml-6">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Buscar propiedades..."
-                  className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
+                  className="pl-10 h-10 bg-gray-800/60 border-gray-700/30 text-white placeholder:text-gray-400 text-sm focus:border-orange-500 transition-all duration-300 ease-out backdrop-blur-sm"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[92vh] flex flex-col">
+      <section className="relative h-[70vh] md:h-[90vh] flex flex-col">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -220,48 +221,42 @@ export default function HomePage() {
             className="object-cover"
             priority
           />
-          {/* Subtle dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-black/30" />
         </div>
 
         {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center">
-          {/* Centered Impact Text */}
+        <div className="relative z-10 h-full flex flex-col justify-center items-center px-8">
+          {/* Simplified Impact Text */}
           <div className="flex-1 flex items-center justify-center w-full">
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full"
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="text-center max-w-4xl"
             >
-              <div
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                className="w-full p-20 flex justify-center"
-              >
-                <Image
-                  src="/assets/impact_text/vivilaexperiencia.PNG"
-                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                  width={800}
-                  height={200}
-                  priority
-                />
-              </div>
+              <h1 className="text-4xl md:text-6xl font-light text-white mb-6 tracking-wide leading-tight">
+                Viví la experiencia de encontrar
+                <span className="block text-orange-500 font-medium">tu lugar en el mundo</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-gray-200 font-light tracking-wide opacity-90">
+                Inmobiliaria de confianza en Reconquista
+              </p>
             </motion.div>
           </div>
 
           {/* Company Branding at Bottom */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0, duration: 0.4 }}
-            className="mb-8 text-center px-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="mb-12 text-center"
           >
             <Image
               src="/assets/logos/marconi_header_orangewhite.png"
               alt="Marconi Inmobiliaria"
-              width={400}
-              height={120}
-              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
+              width={300}
+              height={90}
+              className="h-16 w-auto mx-auto opacity-80"
             />
           </motion.div>
         </div>
@@ -269,40 +264,40 @@ export default function HomePage() {
       {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
       <section
         id="propiedades"
-        className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden"
+        className="py-24 bg-gray-900 relative"
       >
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
+        <div className="container mx-auto px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-light text-white mb-8 tracking-wide">
+              PROPIEDADES <span className="text-orange-500 font-medium">DESTACADAS</span>
             </h2>
-            <p className="text-lg text-gray-300 mb-8">
+            <p className="text-xl text-gray-300 font-light leading-relaxed max-w-2xl mx-auto">
               Las mejores oportunidades de inversión en Reconquista
             </p>
           </div>
 
           {loadingProperties ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto"></div>
-              <p className="text-white mt-4">Cargando propiedades...</p>
+            <div className="text-center py-20">
+              <div className="w-8 h-8 border-2 border-gray-600 border-t-orange-500 rounded-full animate-spin mx-auto"></div>
+              <p className="text-gray-300 mt-6 font-light">Cargando propiedades...</p>
             </div>
           ) : (
             <>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
                 {featuredProperties.map((property) => (
                   <Card
                     key={property.id}
-                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
+                    className="bg-gray-800/40 border border-gray-700/20 overflow-hidden group hover:border-gray-600/30 transition-all duration-300 ease-out backdrop-blur-sm h-full flex flex-col hover:shadow-xl"
                   >
                     <div className="relative overflow-hidden">
                       <Link href={`/propiedades/${property.id}`}>
-                        <div className="relative cursor-pointer h-48">
+                        <div className="relative cursor-pointer h-56">
                           {property.images && property.images.length > 0 ? (
                             <Image
                               src={property.images[0]}
                               alt={property.title}
                               fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500"
+                              className="object-cover transition-opacity duration-300 ease-out group-hover:opacity-95"
                               onError={(e) => {
                                 const target = e.target as HTMLImageElement;
                                 target.src = "/placeholder.svg";
@@ -317,62 +312,34 @@ export default function HomePage() {
                             </div>
                           )}
 
-                          {/* Status badges */}
+                          {/* Simple operation type indicator */}
                           <div className="absolute top-4 left-4">
-                            <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
+                            <span className="bg-black/60 text-white px-3 py-1 rounded font-medium text-sm backdrop-blur-sm">
                               {property.operation_type === "venta"
                                 ? "VENTA"
                                 : "ALQUILER"}
-                            </div>
+                            </span>
                           </div>
-
-                          {/* Featured badge */}
-                          {property.featured && (
-                            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
-                              <Eye className="w-4 h-4" />
-                              DESTACADA
-                            </div>
-                          )}
-
-                          {/* Favorite button */}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                          >
-                            <Heart className="w-4 h-4" />
-                          </Button>
                         </div>
                       </Link>
                     </div>
 
-                    <CardContent className="p-4 flex flex-col h-full">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <Link href={`/propiedades/${property.id}`}>
-                            <h3 className="font-bold text-white text-lg mb-2 hover:text-orange-300 transition-colors cursor-pointer">
-                              {property.title}
-                            </h3>
-                          </Link>
-                          <div className="flex items-center text-orange-300 font-medium mb-1">
-                            <MapPin className="w-4 h-4 mr-2" />
-                            {property.neighborhood}, Reconquista
-                          </div>
+                    <CardContent className="p-6 flex flex-col h-full">
+                      <div className="mb-6">
+                        <Link href={`/propiedades/${property.id}`}>
+                          <h3 className="text-white text-xl mb-3 hover:text-orange-300 transition-colors duration-300 ease-out cursor-pointer font-medium leading-tight">
+                            {property.title}
+                          </h3>
+                        </Link>
+                        <div className="flex items-center text-gray-400 mb-4">
+                          <MapPin className="w-4 h-4 mr-2 text-orange-500" />
+                          <span className="font-light">{property.neighborhood}, Reconquista</span>
                         </div>
-                        <div className="text-right ml-2">
-                          <div className="text-xl font-bold text-white mb-1">
-                            {property.currency}${" "}
-                            {property.price.toLocaleString()}
-                          </div>
-                          <div className="text-gray-400 text-xs">
-                            {property.operation_type === "alquiler"
-                              ? "por mes"
-                              : ""}
-                          </div>
+                        <div className="text-2xl font-light text-white">
+                          {property.currency}$ {property.price.toLocaleString()}
+                          {property.operation_type === "alquiler" && (
+                            <span className="text-gray-400 text-base ml-2">/ mes</span>
+                          )}
                         </div>
                       </div>
 
@@ -381,26 +348,26 @@ export default function HomePage() {
                         {(property.bedrooms ||
                           property.bathrooms ||
                           property.area_m2) && (
-                          <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
+                          <div className="flex items-center gap-6 text-gray-300 mb-6">
                             {property.bedrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bed className="w-4 h-4 mr-1 text-orange-300" />
-                                <span className="font-medium">
-                                  {property.bedrooms}
+                              <div className="flex items-center">
+                                <Bed className="w-4 h-4 mr-2 text-orange-500" />
+                                <span className="font-light">
+                                  {property.bedrooms} hab
                                 </span>
                               </div>
                             )}
                             {property.bathrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bath className="w-4 h-4 mr-1 text-orange-300" />
-                                <span className="font-medium">
-                                  {property.bathrooms}
+                              <div className="flex items-center">
+                                <Bath className="w-4 h-4 mr-2 text-orange-500" />
+                                <span className="font-light">
+                                  {property.bathrooms} baños
                                 </span>
                               </div>
                             )}
-                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                              <Square className="w-4 h-4 mr-1 text-orange-300" />
-                              <span className="font-medium">
+                            <div className="flex items-center">
+                              <Square className="w-4 h-4 mr-2 text-orange-500" />
+                              <span className="font-light">
                                 {property.area_m2}m²
                               </span>
                             </div>
@@ -409,19 +376,19 @@ export default function HomePage() {
 
                         {/* Features */}
                         {property.features && property.features.length > 0 && (
-                          <div className="mb-4">
+                          <div className="mb-6">
                             <div className="flex flex-wrap gap-2">
-                              {property.features.slice(0, 3).map((feature, i) => (
+                              {property.features.slice(0, 2).map((feature, i) => (
                                 <span
                                   key={i}
-                                  className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium"
+                                  className="text-gray-400 text-sm font-light"
                                 >
                                   {feature}
                                 </span>
                               ))}
-                              {property.features.length > 3 && (
-                                <span className="text-gray-400 text-xs px-2 py-1">
-                                  +{property.features.length - 3} más
+                              {property.features.length > 2 && (
+                                <span className="text-gray-500 text-sm font-light">
+                                  +{property.features.length - 2} características
                                 </span>
                               )}
                             </div>
@@ -429,21 +396,13 @@ export default function HomePage() {
                         )}
                       </div>
 
-                      {/* Action Buttons - Always at bottom */}
-                      <div className="flex gap-2 pt-2 border-t border-gray-700/50 mt-auto">
+                      {/* Single Action Button */}
+                      <div className="pt-4 border-t border-gray-700/20 mt-auto">
                         <Button
-                          className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
+                          className="w-full bg-orange-600 hover:bg-orange-700 text-white transition-all duration-300 ease-out font-medium hover:shadow-lg transform hover:-translate-y-0.5"
                           onClick={() => handlePropertyInterest(property)}
                         >
-                          Me interesa <ArrowRight className="w-3 h-3 ml-1" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm rounded-xl"
-                          onClick={() => handlePropertyInterest(property)}
-                        >
-                          <MessageCircle className="w-4 h-4" />
+                          Ver detalles <ArrowRight className="w-4 h-4 ml-2" />
                         </Button>
                       </div>
                     </CardContent>
@@ -468,7 +427,7 @@ export default function HomePage() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
+                    className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent btn-minimal hover-glow-subtle"
                   >
                     Ver todas las propiedades{" "}
                     <ArrowRight className="w-4 h-4 ml-1" />
@@ -481,35 +440,35 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
+      <section className="py-24 bg-black">
+        <div className="container mx-auto px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-12 max-w-4xl mx-auto"
           >
             {[
-              { icon: Home, number: "500+", label: "Propiedades Vendidas" },
-              { icon: Users, number: "1000+", label: "Clientes Satisfechos" },
-              { icon: Award, number: "15+", label: "Años de Experiencia" },
-              { icon: Star, number: "4.9", label: "Calificación Promedio" },
+              { number: "500+", label: "Propiedades Vendidas" },
+              { number: "1000+", label: "Clientes Satisfechos" },
+              { number: "15+", label: "Años de Experiencia" },
+              { number: "4.9", label: "Calificación Promedio" },
             ].map((stat, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
+                transition={{ delay: index * 0.1, duration: 0.3 }}
+                className="text-center group"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-4">
-                  <stat.icon className="h-8 w-8 text-brand-orange" />
-                </div>
-                <div className="text-3xl font-museo font-medium text-white mb-2">
+                <div className="text-4xl font-light text-white mb-3 transition-colors duration-300 ease-out group-hover:text-orange-500">
                   {stat.number}
                 </div>
-                <div className="text-gray-400">{stat.label}</div>
+                <div className="text-gray-400 font-light text-sm tracking-wide border-t border-gray-800 pt-3">
+                  {stat.label}
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -528,7 +487,7 @@ export default function HomePage() {
                 Jorge Newbery 1562, Reconquista, Santa Fe, Argentina
               </p>
               <Link href="/contacto">
-                <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white">
+                <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white btn-minimal">
                   Contactanos
                 </Button>
               </Link>
@@ -543,7 +502,7 @@ export default function HomePage() {
               <div className="p-3 text-right">
                 <Button
                   variant="outline"
-                  className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                  className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white btn-minimal"
                   onClick={() => window.open("https://www.google.com/maps/search/?api=1&query=Jorge%20Newbery%201562%2C%20Reconquista%2C%20Santa%20Fe%2C%20Argentina")}
                 >
                   Ver en Google Maps
@@ -555,37 +514,36 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-brand-orange">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-24 bg-orange-600">
+        <div className="container mx-auto px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="max-w-3xl mx-auto"
+            transition={{ duration: 0.6 }}
+            className="max-w-2xl mx-auto"
           >
-            <h2 className="text-4xl font-museo font-medium text-white mb-6">
+            <h2 className="text-3xl md:text-4xl font-light text-white mb-8 tracking-wide leading-tight">
               ¿Listo para encontrar tu próximo hogar?
             </h2>
-            <p className="text-xl text-orange-100 mb-8">
-              Nuestro equipo de expertos está aquí para ayudarte en cada paso
-              del camino
+            <p className="text-lg text-orange-100 mb-10 font-light leading-relaxed">
+              Nuestro equipo de expertos está aquí para ayudarte en cada paso del camino
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Link href="/propiedades">
                 <Button
                   size="lg"
-                  variant="secondary"
-                  className="bg-white text-brand-orange hover:bg-gray-100"
+                  className="bg-white text-orange-600 hover:bg-gray-100 font-medium px-8 py-3 transition-all duration-300 ease-out hover:shadow-lg transform hover:-translate-y-0.5"
                 >
                   Explorar Propiedades
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/contacto">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange bg-transparent"
+                  className="border-white border-2 text-white hover:bg-white hover:text-orange-600 bg-transparent font-medium px-8 py-3 transition-all duration-300 ease-out"
                 >
                   Contactar Agente
                 </Button>
@@ -596,8 +554,8 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-12">
-        <div className="container mx-auto px-4">
+      <footer className="bg-gray-900 border-t border-gray-800/30 py-16">
+        <div className="container mx-auto px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">

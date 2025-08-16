@@ -20,7 +20,8 @@
       "Bash(awk:*)",
       "Bash(git checkout:*)",
       "Bash(git push:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(pnpm local:*)"
     ],
     "deny": []
   }
