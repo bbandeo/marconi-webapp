@@ -27,6 +27,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
 import Link from "next/link";
+import Header from "@/components/Header";
 
 export default function ContactoPage() {
   const [contactForm, setContactForm] = useState({
@@ -86,21 +87,22 @@ export default function ContactoPage() {
       icon: Phone,
       title: "Teléfono",
       content: "+54 3482 308100",
-      color: "text-green-500",
+      action: "tel:+543482308100",
+      color: "text-vibrant-orange",
     },
     {
       icon: MessageCircle,
       title: "WhatsApp",
       content: "+54 9 3482 308100",
       action: "https://api.whatsapp.com/send?phone=543482308100&text=Hola!%20%F0%9F%91%8B%20Me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20servicios%2C%20gracias.",
-      color: "text-green-500",
+      color: "text-vibrant-orange",
     },
     {
       icon: Mail,
       title: "Email",
       content: "marconinegociosinmobiliarios@hotmail.com",
       action: "mailto:marconinegociosinmobiliarios@hotmail.com",
-      color: "text-blue-500",
+      color: "text-vibrant-orange",
     },
   ];
 
@@ -147,67 +149,26 @@ export default function ContactoPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-        <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/assets/logos/marconi_header_orangewhite.png"
-                alt="Marconi Inmobiliaria"
-                width={140}
-                height={45}
-                className="h-8 md:h-10 w-auto"
-                priority
-              />
-            </Link>
+    <div className="min-h-screen bg-premium-main">
+      {/* Header Premium */}
+      <Header />
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                PROPIEDADES
-              </Link>
-              <Link
-                href="/agentes"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                AGENTES
-              </Link>
-              <Link
-                href="/contacto"
-                className="text-brand-orange font-semibold"
-              >
-                CONTACTO
-              </Link>
-            </nav>
-          </div>
-        </div>
-        
-        {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-gray-900 to-black">
-        <div className="container mx-auto px-4 text-center">
+      {/* Hero Section - PREMIUM DESIGN */}
+      <section className="section-premium bg-premium-main">
+        <div className="container-premium text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              <span className="text-brand-orange">CONTACTANOS</span>
+            <h1 className="display-lg text-premium-primary mb-premium-lg">
+              <span className="accent-premium">CONTACTANOS</span>
             </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+            <p className="body-xl text-premium-secondary max-w-4xl mx-auto mb-premium-xl">
               Estamos aquí para ayudarte a encontrar la propiedad perfecta 
               o responder cualquier consulta sobre nuestros servicios
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-premium-lg max-w-3xl mx-auto">
               {contactMethods.map((method, index) => (
                 <motion.div
                   key={index}
@@ -218,14 +179,15 @@ export default function ContactoPage() {
                 >
                   <Button
                     asChild
-                    className="bg-brand-orange hover:bg-brand-orange/90 text-white w-full"
+                    size="lg"
+                    className="w-full"
                   >
                     <a href={method.action} target="_blank" rel="noopener noreferrer">
-                      <method.icon className="w-4 h-4 mr-2" />
+                      <method.icon className="w-5 h-5 mr-2" />
                       {method.title}
                     </a>
                   </Button>
-                  <p className="text-gray-400 text-sm mt-2">{method.content}</p>
+                  <p className="caption-lg text-premium-secondary mt-premium-sm">{method.content}</p>
                 </motion.div>
               ))}
             </div>
@@ -233,10 +195,10 @@ export default function ContactoPage() {
         </div>
       </section>
 
-      {/* Contact Form Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      {/* Contact Form Section - PREMIUM DESIGN */}
+      <section className="section-premium bg-premium-main">
+        <div className="container-premium">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-premium-xl">
             {/* Contact Form */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -244,86 +206,86 @@ export default function ContactoPage() {
               viewport={{ once: true }}
               className="order-2 lg:order-1"
             >
-              <Card className="bg-gray-800 border-gray-700">
-                <CardContent className="p-8">
-                  <h2 className="text-3xl font-bold text-white mb-6">
-                    Envianos tu <span className="text-brand-orange">Consulta</span>
+              <Card>
+                <CardContent className="card-premium">
+                  <h2 className="heading-xl text-premium-primary mb-premium-md">
+                    Envianos tu <span className="accent-premium">Consulta</span>
                   </h2>
-                  <p className="text-gray-300 mb-8">
+                  <p className="body-lg text-premium-secondary mb-premium-lg">
                     Completá el formulario y nos pondremos en contacto contigo a la brevedad
                   </p>
 
                   {submitSuccess ? (
                     <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Check className="w-8 h-8 text-white" />
+                      <div className="w-20 h-20 bg-vibrant-orange rounded-full flex items-center justify-center mx-auto mb-premium-md">
+                        <Check className="w-10 h-10 text-bone-white" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white mb-2">¡Mensaje Enviado!</h3>
-                      <p className="text-gray-300 mb-6">
+                      <h3 className="heading-lg text-premium-primary mb-premium-sm">¡Mensaje Enviado!</h3>
+                      <p className="body-lg text-premium-secondary mb-premium-lg">
                         Gracias por contactarnos. Nuestro equipo recibirá tu consulta 
                         y se pondrá en contacto contigo a la brevedad.
                       </p>
                       <Button
                         onClick={() => setSubmitSuccess(false)}
                         variant="outline"
-                        className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white bg-transparent"
+                        size="lg"
                       >
                         Enviar otra consulta
                       </Button>
                     </div>
                   ) : (
-                    <form onSubmit={handleSubmitContact} className="space-y-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <form onSubmit={handleSubmitContact} className="space-y-premium-lg">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-premium-md">
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                             Nombre completo *
                           </label>
                           <Input
                             type="text"
                             value={contactForm.name}
                             onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
-                            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange"
+                            className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                             placeholder="Tu nombre completo"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                             Email *
                           </label>
                           <Input
                             type="email"
                             value={contactForm.email}
                             onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
-                            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange"
+                            className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                             placeholder="tu@email.com"
                             required
                           />
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-premium-md">
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                             Teléfono
                           </label>
                           <Input
                             type="tel"
                             value={contactForm.phone}
                             onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
-                            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange"
+                            className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                             placeholder="+54 3482 308100"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                             Asunto *
                           </label>
                           <Select value={contactForm.subject} onValueChange={(value) => setContactForm(prev => ({ ...prev, subject: value }))}>
-                            <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                            <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary">
                               <SelectValue placeholder="Selecciona un asunto" />
                             </SelectTrigger>
-                            <SelectContent className="bg-gray-700 border-gray-600">
+                            <SelectContent className="bg-premium-card border-support-gray/30">
                               <SelectItem value="consulta-general">Consulta General</SelectItem>
                               <SelectItem value="quiero-vender">Quiero Vender</SelectItem>
                               <SelectItem value="quiero-comprar">Quiero Comprar</SelectItem>
@@ -336,13 +298,13 @@ export default function ContactoPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                           Mensaje *
                         </label>
                         <Textarea
                           value={contactForm.message}
                           onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
-                          className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange min-h-32"
+                          className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange min-h-32"
                           placeholder="Contanos en detalle tu consulta o necesidad. Mientras más información nos proporciones, mejor podremos ayudarte..."
                           required
                         />
@@ -356,11 +318,12 @@ export default function ContactoPage() {
 
                       <Button
                         type="submit"
-                        className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white"
+                        size="lg"
+                        className="w-full"
                         disabled={submitLoading || !contactForm.name || !contactForm.email || !contactForm.subject || !contactForm.message}
                       >
                         {submitLoading ? "Enviando..." : "Enviar Consulta"}
-                        <Send className="w-4 h-4 ml-2" />
+                        <Send className="w-5 h-5 ml-2" />
                       </Button>
                     </form>
                   )}
@@ -375,60 +338,60 @@ export default function ContactoPage() {
               viewport={{ once: true }}
               className="order-1 lg:order-2"
             >
-              <div className="space-y-8">
+              <div className="space-y-premium-lg">
                 <div>
-                  <h2 className="text-3xl font-bold text-white mb-6">
-                    Información de <span className="text-brand-orange">Contacto</span>
+                  <h2 className="heading-xl text-premium-primary mb-premium-md">
+                    Información de <span className="accent-premium">Contacto</span>
                   </h2>
-                  <p className="text-gray-300 mb-8">
+                  <p className="body-lg text-premium-secondary mb-premium-lg">
                     Visitanos en nuestra oficina o contactanos por cualquiera de nuestros canales disponibles
                   </p>
                 </div>
 
                 {/* Contact Details */}
-                <div className="space-y-6">
-                  <Card className="bg-gray-800 border-gray-700">
-                    <CardContent className="p-6">
-                      <div className="flex items-start space-x-4">
-                        <div className="bg-brand-orange/20 p-3 rounded-full">
-                          <MapPin className="w-6 h-6 text-brand-orange" />
+                <div className="space-y-premium-md">
+                  <Card>
+                    <CardContent className="card-premium">
+                      <div className="flex items-start space-x-premium-md">
+                        <div className="bg-vibrant-orange/20 p-3 rounded-2xl">
+                          <MapPin className="w-6 h-6 text-vibrant-orange" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-white mb-1">Dirección</h3>
-                          <p className="text-gray-300">Jorge Newbery 1562</p>
-                          <p className="text-gray-300">Reconquista, Santa Fe, Argentina</p>
+                          <h3 className="heading-sm text-premium-primary mb-premium-sm">Dirección</h3>
+                          <p className="body-md text-premium-secondary">Jorge Newbery 1562</p>
+                          <p className="body-md text-premium-secondary">Reconquista, Santa Fe, Argentina</p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-gray-800 border-gray-700">
-                    <CardContent className="p-6">
-                      <div className="flex items-start space-x-4">
-                        <div className="bg-brand-orange/20 p-3 rounded-full">
-                          <Clock className="w-6 h-6 text-brand-orange" />
+                  <Card>
+                    <CardContent className="card-premium">
+                      <div className="flex items-start space-x-premium-md">
+                        <div className="bg-vibrant-orange/20 p-3 rounded-2xl">
+                          <Clock className="w-6 h-6 text-vibrant-orange" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-white mb-1">Horarios de Atención</h3>
-                          <p className="text-gray-300">Lunes a Viernes: 9:00 - 18:00</p>
-                          <p className="text-gray-300">Sábados: 9:00 - 13:00</p>
-                          <p className="text-gray-300">Domingos: Cerrado</p>
+                          <h3 className="heading-sm text-premium-primary mb-premium-sm">Horarios de Atención</h3>
+                          <p className="body-md text-premium-secondary">Lunes a Viernes: 9:00 - 18:00</p>
+                          <p className="body-md text-premium-secondary">Sábados: 9:00 - 13:00</p>
+                          <p className="body-md text-premium-secondary">Domingos: Cerrado</p>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-gray-800 border-gray-700">
-                    <CardContent className="p-6">
-                      <div className="flex items-start space-x-4">
-                        <div className="bg-brand-orange/20 p-3 rounded-full">
-                          <HeadphonesIcon className="w-6 h-6 text-brand-orange" />
+                  <Card>
+                    <CardContent className="card-premium">
+                      <div className="flex items-start space-x-premium-md">
+                        <div className="bg-vibrant-orange/20 p-3 rounded-2xl">
+                          <HeadphonesIcon className="w-6 h-6 text-vibrant-orange" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-white mb-1">Contacto Directo</h3>
-                          <p className="text-gray-300 mb-1">Teléfono: +54 3482 308100</p>
-                          <p className="text-gray-300 mb-1">WhatsApp: +54 9 3482 308100</p>
-                          <p className="text-gray-300">Email: marconinegociosinmobiliarios@hotmail.com</p>
+                          <h3 className="heading-sm text-premium-primary mb-premium-sm">Contacto Directo</h3>
+                          <p className="body-md text-premium-secondary mb-premium-sm">Teléfono: +54 3482 308100</p>
+                          <p className="body-md text-premium-secondary mb-premium-sm">WhatsApp: +54 9 3482 308100</p>
+                          <p className="body-md text-premium-secondary">Email: marconinegociosinmobiliarios@hotmail.com</p>
                         </div>
                       </div>
                     </CardContent>
@@ -436,14 +399,14 @@ export default function ContactoPage() {
                 </div>
 
                 {/* Social Media */}
-                <Card className="bg-gray-800 border-gray-700">
-                  <CardContent className="p-6">
-                    <h3 className="font-semibold text-white mb-4">Seguinos en Redes Sociales</h3>
-                    <div className="flex space-x-4">
+                <Card>
+                  <CardContent className="card-premium">
+                    <h3 className="heading-sm text-premium-primary mb-premium-md">Seguinos en Redes Sociales</h3>
+                    <div className="flex space-x-premium-sm">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="border-gray-600 text-gray-300 hover:bg-blue-600 hover:text-white hover:border-blue-600 bg-transparent"
+                        className="hover:bg-blue-600 hover:text-bone-white hover:border-blue-600"
                         asChild
                       >
                         <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
@@ -454,7 +417,7 @@ export default function ContactoPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="border-gray-600 text-gray-300 hover:bg-pink-600 hover:text-white hover:border-pink-600 bg-transparent"
+                        className="hover:bg-pink-600 hover:text-bone-white hover:border-pink-600"
                         asChild
                       >
                         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
@@ -471,19 +434,19 @@ export default function ContactoPage() {
         </div>
       </section>
 
-      {/* Map Section */}
-      <section className="py-20 bg-black">
-        <div className="container mx-auto px-4">
+      {/* Map Section - PREMIUM DESIGN */}
+      <section className="section-premium bg-premium-main">
+        <div className="container-premium">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center mb-premium-xl"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Encontranos en <span className="text-brand-orange">Reconquista</span>
+            <h2 className="display-md text-premium-primary mb-premium-lg">
+              Encontranos en <span className="accent-premium">Reconquista</span>
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            <p className="body-xl text-premium-secondary max-w-3xl mx-auto">
               Ubicados en el corazón de la ciudad, con fácil acceso y estacionamiento disponible
             </p>
           </motion.div>
@@ -493,51 +456,54 @@ export default function ContactoPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="bg-gray-800 rounded-lg p-6 border border-gray-700"
           >
-            <div className="aspect-video bg-gray-700 rounded-lg flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-12 h-12 text-brand-orange mx-auto mb-4" />
-                <p className="text-white font-semibold mb-2">Mapa de Google Maps</p>
-                <p className="text-gray-400 text-sm">Jorge Newbery 1562, Reconquista, Santa Fe</p>
-                <Button
-                  className="mt-4 bg-brand-orange hover:bg-brand-orange/90 text-white"
-                  asChild
-                >
-                  <a
-                    href="https://maps.google.com/?q=Reconquista,+Santa+Fe,+Argentina"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Globe className="w-4 h-4 mr-2" />
-                    Ver en Google Maps
-                  </a>
-                </Button>
-              </div>
-            </div>
+            <Card>
+              <CardContent className="card-premium">
+                <div className="aspect-video bg-support-gray/10 rounded-2xl flex items-center justify-center">
+                  <div className="text-center">
+                    <MapPin className="w-16 h-16 text-vibrant-orange mx-auto mb-premium-md" />
+                    <p className="heading-md text-premium-primary mb-premium-sm">Mapa de Google Maps</p>
+                    <p className="body-md text-premium-secondary mb-premium-md">Jorge Newbery 1562, Reconquista, Santa Fe</p>
+                    <Button
+                      size="lg"
+                      asChild
+                    >
+                      <a
+                        href="https://maps.google.com/?q=Reconquista,+Santa+Fe,+Argentina"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Globe className="w-5 h-5 mr-2" />
+                        Ver en Google Maps
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
+      {/* Why Choose Us Section - PREMIUM DESIGN */}
+      <section className="section-premium bg-premium-main">
+        <div className="container-premium">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-premium-xl"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              ¿Por qué elegir <span className="text-brand-orange">Marconi Inmobiliaria</span>?
+            <h2 className="display-md text-premium-primary mb-premium-lg">
+              ¿Por qué elegir <span className="accent-premium">Marconi Inmobiliaria</span>?
             </h2>
-            <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+            <p className="body-xl text-premium-secondary max-w-4xl mx-auto">
               Nuestro compromiso va más allá de simplemente vender propiedades. 
               Te acompañamos en todo el proceso con profesionalismo y dedicación.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-premium-lg">
             {whyChooseUsReasons.map((reason, index) => (
               <motion.div
                 key={index}
@@ -547,35 +513,35 @@ export default function ContactoPage() {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-6">
-                  <reason.icon className="h-8 w-8 text-brand-orange" />
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-vibrant-orange/10 rounded-2xl mb-premium-lg">
+                  <reason.icon className="h-10 w-10 text-vibrant-orange" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4">{reason.title}</h3>
-                <p className="text-gray-300">{reason.description}</p>
+                <h3 className="heading-md text-premium-primary mb-premium-md">{reason.title}</h3>
+                <p className="body-md text-premium-secondary">{reason.description}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-20 bg-black">
-        <div className="container mx-auto px-4">
+      {/* FAQ Section - PREMIUM DESIGN */}
+      <section className="section-premium bg-premium-main">
+        <div className="container-premium">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-premium-xl"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Preguntas <span className="text-brand-orange">Frecuentes</span>
+            <h2 className="display-md text-premium-primary mb-premium-lg">
+              Preguntas <span className="accent-premium">Frecuentes</span>
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            <p className="body-xl text-premium-secondary max-w-3xl mx-auto">
               Resolvemos las dudas más comunes de nuestros clientes
             </p>
           </motion.div>
 
-          <div className="max-w-3xl mx-auto space-y-6">
+          <div className="max-w-4xl mx-auto space-y-premium-md">
             {faqs.map((faq, index) => (
               <motion.div
                 key={index}
@@ -584,10 +550,10 @@ export default function ContactoPage() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="bg-gray-800 border-gray-700">
-                  <CardContent className="p-6">
-                    <h3 className="text-lg font-semibold text-white mb-3">{faq.question}</h3>
-                    <p className="text-gray-300">{faq.answer}</p>
+                <Card>
+                  <CardContent className="card-premium">
+                    <h3 className="heading-md text-premium-primary mb-premium-sm">{faq.question}</h3>
+                    <p className="body-md text-premium-secondary">{faq.answer}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -598,49 +564,49 @@ export default function ContactoPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mt-12"
+            className="text-center mt-premium-xl"
           >
-            <p className="text-gray-300 mb-6">
+            <p className="body-lg text-premium-secondary mb-premium-lg">
               ¿No encontrás la respuesta que buscás?
             </p>
             <Button
-              className="bg-brand-orange hover:bg-brand-orange/90 text-white"
+              size="lg"
               onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Contactanos Directamente
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {/* Footer - PREMIUM DESIGN */}
+      <footer className="bg-premium-main border-t border-support-gray/20 section-premium">
+        <div className="container-premium">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-premium-lg">
             <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
+              <div className="flex items-center space-x-2 mb-premium-md">
                 <Image
                   src="/assets/logos/marconi_title.svg"
                   alt="Marconi Inmobiliaria"
                   width={140}
                   height={45}
-                  className="h-8 w-auto"
+                  className="h-10 w-auto"
                 />
               </div>
-              <p className="text-gray-400 mb-4">
-                La inmobiliaria líder en Reconquista, comprometida con encontrar
-                el hogar perfecto para cada familia.
+              <p className="body-lg text-premium-secondary mb-premium-md max-w-md">
+                Experiencia premium en bienes raíces. Comprometidos con encontrar 
+                la propiedad perfecta para cada familia.
               </p>
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4">Enlaces</h3>
-              <ul className="space-y-2 text-gray-400">
+              <h3 className="heading-sm text-premium-primary mb-premium-md">Enlaces</h3>
+              <ul className="space-y-3 text-premium-secondary">
                 <li>
                   <Link
                     href="/propiedades"
-                    className="hover:text-white transition-colors"
+                    className="body-md hover:text-vibrant-orange transition-colors"
                   >
                     Propiedades
                   </Link>
@@ -648,7 +614,7 @@ export default function ContactoPage() {
                 <li>
                   <Link
                     href="/agentes"
-                    className="hover:text-white transition-colors"
+                    className="body-md hover:text-vibrant-orange transition-colors"
                   >
                     Agentes
                   </Link>
@@ -656,7 +622,7 @@ export default function ContactoPage() {
                 <li>
                   <Link
                     href="/contacto"
-                    className="hover:text-white transition-colors"
+                    className="body-md hover:text-vibrant-orange transition-colors accent-premium"
                   >
                     Contacto
                   </Link>
@@ -665,18 +631,18 @@ export default function ContactoPage() {
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Jorge Newbery 1562</li>
-                <li>Reconquista, Santa Fe</li>
-                <li>+54 3482 308100</li>
-                <li>marconinegociosinmobiliarios@hotmail.com</li>
+              <h3 className="heading-sm text-premium-primary mb-premium-md">Contacto</h3>
+              <ul className="space-y-3 text-premium-secondary">
+                <li className="body-md">Jorge Newbery 1562</li>
+                <li className="body-md">Reconquista, Santa Fe</li>
+                <li className="body-md">+54 3482 308100</li>
+                <li className="body-md">marconinegociosinmobiliarios@hotmail.com</li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>
+          <div className="border-t border-support-gray/20 mt-premium-xl pt-premium-lg text-center">
+            <p className="caption-lg text-premium-secondary">
               &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
             </p>
           </div>

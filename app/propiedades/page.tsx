@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Search, Filter, MapPin, Bed, Bath, Square, Heart, Eye, ChevronLeft, ChevronRight, Home, ArrowLeft } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import Header from "@/components/Header"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
 import { PropertyService } from "@/services/properties"
 import type { Property as PropertyType } from "@/lib/supabase"
@@ -186,77 +187,27 @@ export default function PropiedadesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className="bg-gray-800 rounded-lg h-80 animate-pulse" />
-            ))}
+      <div className="min-h-screen bg-premium-main">
+        <Header />
+        <section className="section-premium">
+          <div className="container-premium">
+            <div className="text-center py-premium-xl">
+              <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-vibrant-orange mx-auto mb-premium-md"></div>
+              <p className="body-lg text-premium-primary">Cargando propiedades...</p>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Header - matching homepage */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-        <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/assets/logos/marconi_header_orangewhite.png"
-                alt="Marconi Inmobiliaria"
-                width={140}
-                height={45}
-                className="h-8 md:h-10 w-auto"
-                priority
-              />
-            </Link>
+    <div className="min-h-screen bg-premium-main">
+      {/* Header Premium */}
+      <Header />
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/propiedades"
-                className="text-orange-500 border-b-2 border-orange-500 pb-1 font-medium transition-colors"
-              >
-                PROPIEDADES
-              </Link>
-              <Link
-                href="/agentes"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                AGENTES
-              </Link>
-              <Link
-                href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                CONTACTO
-              </Link>
-            </nav>
-
-            {/* Mobile Search Bar */}
-            <div className="md:hidden flex-1 max-w-xs ml-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Buscar propiedades..."
-                  className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative py-12 md:py-20 overflow-hidden">
+      {/* Hero Section - PREMIUM DESIGN */}
+      <section className="relative section-premium overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
@@ -266,31 +217,33 @@ export default function PropiedadesPage() {
             className="object-cover"
             priority
           />
-          {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/70" />
+          {/* Premium overlay */}
+          <div className="absolute inset-0 bg-night-blue/50" />
+          {/* Orange fade overlay - imported effect */}
+          <div className="absolute inset-x-0 bottom-0 h-32 md:h-48 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
-          {/* Page Title */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              NUESTRAS <span className="text-orange-500">PROPIEDADES</span>
+        <div className="container-premium relative z-10">
+          {/* Page Title - PREMIUM TYPOGRAPHY */}
+          <div className="text-center mb-premium-xl">
+            <h1 className="display-lg text-premium-primary mb-premium-md">
+              NUESTRAS <span className="accent-premium">PROPIEDADES</span>
             </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-5xl mx-auto">
-              Descubrí las mejores propiedades cuidadosamente seleccionadas por nuestro equipo  <br/>
+            <p className="body-xl text-premium-secondary mb-premium-lg max-w-4xl mx-auto">
+              Descubrí las mejores propiedades cuidadosamente seleccionadas por nuestro equipo  
               y encontrá tu propiedad ideal con nuestro acompañamiento profesional.
             </p>
-            <div className="text-gray-400">
+            <div className="caption-lg text-premium-secondary">
               <p>{filteredProperties.length} propiedades disponibles</p>
             </div>
           </div>
 
-          {/* Filters - Inside Hero Section */}
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-black/60 backdrop-blur-sm rounded-xl p-6 border border-orange-500/30 shadow-2xl">
-              <div className="flex items-center mb-4">
-                <Filter className="w-5 h-5 text-orange-500 mr-2" />
-                <h2 className="text-lg font-semibold text-white">Filtros de búsqueda</h2>
+          {/* Filters - Premium Design */}
+          <div className="max-w-7xl mx-auto">
+            <div className="bg-premium-card backdrop-blur-md rounded-2xl p-premium-lg border border-vibrant-orange/20 shadow-2xl">
+              <div className="flex items-center mb-premium-md">
+                <Filter className="w-6 h-6 text-vibrant-orange mr-3" />
+                <h2 className="heading-md text-premium-primary">Filtros de búsqueda</h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
@@ -302,17 +255,17 @@ export default function PropiedadesPage() {
                       placeholder="Buscar por título, dirección o barrio..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-gray-800/80 border-gray-600 text-white placeholder-gray-400 focus:border-orange-500 backdrop-blur-sm"
+                      className="pl-10 bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange backdrop-blur-sm"
                     />
                   </div>
                 </div>
 
                 {/* Operation */}
                 <Select value={operationFilter} onValueChange={setOperationFilter}>
-                  <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white backdrop-blur-sm">
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
                     <SelectValue placeholder="Operación" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
+                  <SelectContent className="bg-premium-card border-support-gray/30">
                     <SelectItem value="all">Alquiler/Venta</SelectItem>
                     <SelectItem value="sale">Venta</SelectItem>
                     <SelectItem value="rent">Alquiler</SelectItem>
@@ -321,10 +274,10 @@ export default function PropiedadesPage() {
 
                 {/* Type */}
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white backdrop-blur-sm">
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
                     <SelectValue placeholder="Tipo" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
+                  <SelectContent className="bg-premium-card border-support-gray/30">
                     <SelectItem value="all">Tipo de propiedad</SelectItem>
                     <SelectItem value="house">Casa</SelectItem>
                     <SelectItem value="apartment">Departamento</SelectItem>
@@ -340,21 +293,21 @@ export default function PropiedadesPage() {
                   placeholder="Precio mín."
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  className="bg-gray-800/80 border-gray-600 text-white placeholder-gray-400 backdrop-blur-sm"
+                  className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm"
                 />
                 <Input
                   placeholder="Precio máx."
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  className="bg-gray-800/80 border-gray-600 text-white placeholder-gray-400 backdrop-blur-sm"
+                  className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm"
                 />
 
                 {/* Bedrooms */}
                 <Select value={bedroomsFilter} onValueChange={setBedroomsFilter}>
-                  <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white backdrop-blur-sm">
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
                     <SelectValue placeholder="Dormitorios" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
+                  <SelectContent className="bg-premium-card border-support-gray/30">
                     <SelectItem value="all">Habitaciones</SelectItem>
                     <SelectItem value="1">1+</SelectItem>
                     <SelectItem value="2">2+</SelectItem>
@@ -365,10 +318,10 @@ export default function PropiedadesPage() {
 
                 {/* Bathrooms */}
                 <Select value={bathroomsFilter} onValueChange={setBathroomsFilter}>
-                  <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white backdrop-blur-sm">
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
                     <SelectValue placeholder="Baños" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
+                  <SelectContent className="bg-premium-card border-support-gray/30">
                     <SelectItem value="all">Baños</SelectItem>
                     <SelectItem value="1">1+</SelectItem>
                     <SelectItem value="2">2+</SelectItem>
@@ -378,10 +331,10 @@ export default function PropiedadesPage() {
 
                 {/* Sort */}
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white backdrop-blur-sm">
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
                     <SelectValue placeholder="Ordenar por" />
                   </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
+                  <SelectContent className="bg-premium-card border-support-gray/30">
                     <SelectItem value="newest">Más recientes</SelectItem>
                     <SelectItem value="price-low">Precio menor</SelectItem>
                     <SelectItem value="price-high">Precio mayor</SelectItem>
@@ -393,7 +346,7 @@ export default function PropiedadesPage() {
                 <Button
                   onClick={clearFilters}
                   variant="outline"
-                  className="bg-gray-700/60 border-gray-500/40 text-gray-300 hover:bg-orange-500/80 hover:text-white hover:border-orange-500/60 backdrop-blur-sm transition-all duration-300"
+                  className="hover:bg-vibrant-orange/80 hover:text-bone-white hover:border-vibrant-orange/60 transition-all duration-300"
                 >
                   Limpiar
                 </Button>
@@ -403,20 +356,21 @@ export default function PropiedadesPage() {
         </div>
       </section>
 
-      {/* Results */}
-      <div className="container mx-auto px-4 py-12 bg-gradient-to-b from-black to-gray-900">
-        {/* Results count */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-300">{filteredProperties.length} propiedades encontradas</p>
-        </div>
+      {/* Results - PREMIUM DESIGN */}
+      <section className="section-premium bg-premium-main">
+        <div className="container-premium">
+          {/* Results count */}
+          <div className="flex items-center justify-between mb-premium-lg">
+            <p className="body-lg text-premium-secondary">{filteredProperties.length} propiedades encontradas</p>
+          </div>
 
-        {/* Properties List */}
-        {currentProperties.length > 0 ? (
-          <div className="space-y-6 mb-8">
+          {/* Properties List */}
+          {currentProperties.length > 0 ? (
+            <div className="space-y-premium-lg mb-premium-xl">
             {currentProperties.map((property) => (
               <Card
                 key={property.id}
-                className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm"
+                className="group overflow-hidden hover:shadow-3xl transition-all duration-500"
               >
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
                   {/* Image Section */}
@@ -444,15 +398,15 @@ export default function PropiedadesPage() {
                         )}
 
                         {/* Status badges */}
-                        <div className="absolute top-4 left-4">
-                          <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-4 py-2 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
+                        <div className="absolute top-premium-sm left-premium-sm">
+                          <div className="bg-night-blue/90 text-bone-white px-premium-sm py-2 rounded-xl caption-lg font-semibold backdrop-blur-md border border-vibrant-orange/30">
                             {property.operation === "sale" ? "VENTA" : "ALQUILER"}
                           </div>
                         </div>
 
                         {/* Featured badge */}
                         {property.featured && (
-                          <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
+                          <div className="absolute top-premium-sm right-premium-sm bg-gradient-to-r from-vibrant-orange/90 to-vibrant-orange/70 text-bone-white px-premium-sm py-2 rounded-xl caption-lg flex items-center gap-2 backdrop-blur-md shadow-lg">
                             <Eye className="w-4 h-4" />
                             DESTACADA
                           </div>
@@ -462,7 +416,7 @@ export default function PropiedadesPage() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
+                          className="absolute bottom-premium-sm right-premium-sm bg-night-blue/80 hover:bg-night-blue text-bone-white hover:text-vibrant-orange backdrop-blur-md rounded-xl p-3 shadow-lg"
                         >
                           <Heart className="w-5 h-5" />
                         </Button>
@@ -471,26 +425,26 @@ export default function PropiedadesPage() {
                   </div>
 
                   {/* Content Section */}
-                  <div className="lg:col-span-3 p-6 lg:p-8 flex flex-col justify-between">
+                  <div className="lg:col-span-3 p-premium-md lg:p-premium-lg flex flex-col justify-between">
                     <div>
                       {/* Header */}
-                      <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-start justify-between mb-premium-md">
                         <div className="flex-1">
                           <Link href={`/propiedades/${property.id}`}>
-                            <h3 className="font-bold text-white text-2xl mb-2 hover:text-orange-300 transition-colors cursor-pointer">
+                            <h3 className="heading-lg text-premium-primary mb-premium-sm hover:text-vibrant-orange transition-colors cursor-pointer">
                               {property.title}
                             </h3>
                           </Link>
-                          <div className="flex items-center text-orange-300 font-medium mb-1">
-                            <MapPin className="w-4 h-4 mr-2" />
+                          <div className="flex items-center text-vibrant-orange body-md mb-premium-sm">
+                            <MapPin className="w-5 h-5 mr-2" />
                             {property.neighborhood}, Reconquista
                           </div>
                         </div>
-                        <div className="text-right ml-4">
-                          <div className="text-3xl font-bold text-white mb-1">
+                        <div className="text-right ml-premium-md">
+                          <div className="display-sm text-premium-primary mb-premium-sm">
                             {property.currency}$ {property.price.toLocaleString()}
                           </div>
-                          <div className="text-gray-400 text-sm">
+                          <div className="caption-lg text-premium-secondary">
                             {property.operation === "rent" ? "por mes" : ""}
                           </div>
                         </div>
@@ -498,38 +452,38 @@ export default function PropiedadesPage() {
 
                       {/* Property Details */}
                       {(property.bedrooms || property.bathrooms || property.area_m2) && (
-                        <div className="flex items-center gap-6 text-gray-300 mb-6">
+                        <div className="flex items-center gap-premium-md text-premium-primary mb-premium-lg">
                           {property.bedrooms && (
-                            <div className="flex items-center bg-gray-700/40 px-4 py-2 rounded-lg">
-                              <Bed className="w-5 h-5 mr-2 text-orange-300" />
-                              <span className="font-medium">{property.bedrooms} dormitorios</span>
+                            <div className="flex items-center bg-support-gray/10 px-premium-sm py-2 rounded-xl">
+                              <Bed className="w-5 h-5 mr-2 text-vibrant-orange" />
+                              <span className="body-md font-medium">{property.bedrooms} dormitorios</span>
                             </div>
                           )}
                           {property.bathrooms && (
-                            <div className="flex items-center bg-gray-700/40 px-4 py-2 rounded-lg">
-                              <Bath className="w-5 h-5 mr-2 text-orange-300" />
-                              <span className="font-medium">{property.bathrooms} baños</span>
+                            <div className="flex items-center bg-support-gray/10 px-premium-sm py-2 rounded-xl">
+                              <Bath className="w-5 h-5 mr-2 text-vibrant-orange" />
+                              <span className="body-md font-medium">{property.bathrooms} baños</span>
                             </div>
                           )}
-                          <div className="flex items-center bg-gray-700/40 px-4 py-2 rounded-lg">
-                            <Square className="w-5 h-5 mr-2 text-orange-300" />
-                            <span className="font-medium">{property.area_m2}m²</span>
+                          <div className="flex items-center bg-support-gray/10 px-premium-sm py-2 rounded-xl">
+                            <Square className="w-5 h-5 mr-2 text-vibrant-orange" />
+                            <span className="body-md font-medium">{property.area_m2}m²</span>
                           </div>
                         </div>
                       )}
 
                       {/* Features */}
                       {property.features && property.features.length > 0 && (
-                        <div className="mb-6">
-                          <h4 className="text-white font-medium mb-3">Características:</h4>
+                        <div className="mb-premium-lg">
+                          <h4 className="heading-sm text-premium-primary mb-premium-sm">Características:</h4>
                           <div className="flex flex-wrap gap-2">
                             {property.features.slice(0, 5).map((feature, i) => (
-                              <span key={i} className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-3 py-1 rounded-lg text-sm font-medium">
+                              <span key={i} className="bg-vibrant-orange/15 text-vibrant-orange border border-vibrant-orange/25 px-3 py-1 rounded-xl caption-lg font-medium">
                                 {feature}
                               </span>
                             ))}
                             {property.features.length > 5 && (
-                              <span className="text-gray-400 text-sm px-3 py-1">+{property.features.length - 5} más</span>
+                              <span className="text-premium-secondary caption-lg px-3 py-1">+{property.features.length - 5} más</span>
                             )}
                           </div>
                         </div>
@@ -537,22 +491,24 @@ export default function PropiedadesPage() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-4 pt-4 border-t border-gray-700/50">
+                    <div className="flex gap-premium-sm pt-premium-md border-t border-support-gray/20">
                       <Link href={`/propiedades/${property.id}`} className="flex-1">
-                        <Button className="w-full bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 py-3 text-base font-medium rounded-xl shadow-lg">
+                        <Button className="w-full" size="lg">
                           Ver detalles completos <ArrowLeft className="w-5 h-5 ml-2 rotate-180" />
                         </Button>
                       </Link>
                       <Button
                         variant="outline"
-                        className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm px-6 rounded-xl"
+                        size="lg"
+                        className="px-premium-md"
                       >
                         <Heart className="w-5 h-5 mr-2" />
                         Guardar
                       </Button>
                       <Button
                         variant="outline"
-                        className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm px-6 rounded-xl"
+                        size="lg"
+                        className="px-premium-md"
                       >
                         Contactar
                       </Button>
@@ -561,87 +517,89 @@ export default function PropiedadesPage() {
                 </div>
               </Card>
             ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-400 text-lg mb-4">No se encontraron propiedades con los filtros seleccionados</p>
-            <Button onClick={clearFilters} className="bg-brand-orange hover:bg-brand-orange/90">
-              Limpiar filtros
-            </Button>
-          </div>
-        )}
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white disabled:opacity-50"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Anterior
-            </Button>
-
-            {[...Array(totalPages)].map((_, i) => (
-              <Button
-                key={i}
-                variant={currentPage === i + 1 ? "default" : "outline"}
-                size="sm"
-                onClick={() => setCurrentPage(i + 1)}
-                className={
-                  currentPage === i + 1
-                    ? "bg-brand-orange hover:bg-brand-orange/90"
-                    : "bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
-                }
-              >
-                {i + 1}
+            </div>
+          ) : (
+            <div className="text-center py-premium-xl">
+              <Home className="w-16 h-16 text-premium-secondary mx-auto mb-premium-md opacity-40" />
+              <h3 className="heading-lg text-premium-primary mb-premium-sm">
+                No se encontraron propiedades
+              </h3>
+              <p className="body-md text-premium-secondary mb-premium-lg">
+                No se encontraron propiedades con los filtros seleccionados
+              </p>
+              <Button onClick={clearFilters}>
+                Limpiar filtros
               </Button>
-            ))}
+            </div>
+          )}
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white disabled:opacity-50"
-            >
-              Siguiente
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
-      </div>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="disabled:opacity-50"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Anterior
+              </Button>
 
-      {/* Footer - matching homepage */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              {[...Array(totalPages)].map((_, i) => (
+                <Button
+                  key={i}
+                  variant={currentPage === i + 1 ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setCurrentPage(i + 1)}
+                >
+                  {i + 1}
+                </Button>
+              ))}
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                className="disabled:opacity-50"
+              >
+                Siguiente
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Footer - PREMIUM DESIGN */}
+      <footer className="bg-premium-main border-t border-support-gray/20 section-premium">
+        <div className="container-premium">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-premium-lg">
             <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
+              <div className="flex items-center space-x-2 mb-premium-md">
                 <Image
                   src="/assets/logos/marconi_title.svg"
                   alt="Marconi Inmobiliaria"
                   width={140}
                   height={45}
-                  className="h-8 w-auto"
+                  className="h-10 w-auto"
                 />
               </div>
-              <p className="text-gray-400 mb-4">
-                La inmobiliaria líder en Reconquista, comprometida con encontrar
-                el hogar perfecto para cada familia.
+              <p className="body-lg text-premium-secondary mb-premium-md max-w-md">
+                Experiencia premium en bienes raíces. Comprometidos con encontrar 
+                la propiedad perfecta para cada familia.
               </p>
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4">Enlaces</h3>
-              <ul className="space-y-2 text-gray-400">
+              <h3 className="heading-sm text-premium-primary mb-premium-md">Enlaces</h3>
+              <ul className="space-y-3 text-premium-secondary">
                 <li>
                   <Link
                     href="/propiedades"
-                    className="hover:text-white transition-colors text-orange-500"
+                    className="body-md hover:text-vibrant-orange transition-colors accent-premium"
                   >
                     Propiedades
                   </Link>
@@ -649,7 +607,7 @@ export default function PropiedadesPage() {
                 <li>
                   <Link
                     href="/agentes"
-                    className="hover:text-white transition-colors"
+                    className="body-md hover:text-vibrant-orange transition-colors"
                   >
                     Agentes
                   </Link>
@@ -657,7 +615,7 @@ export default function PropiedadesPage() {
                 <li>
                   <Link
                     href="/contacto"
-                    className="hover:text-white transition-colors"
+                    className="body-md hover:text-vibrant-orange transition-colors"
                   >
                     Contacto
                   </Link>
@@ -665,7 +623,7 @@ export default function PropiedadesPage() {
                 <li>
                   <Link
                     href="/"
-                    className="hover:text-white transition-colors"
+                    className="body-md hover:text-vibrant-orange transition-colors"
                   >
                     Inicio
                   </Link>
@@ -674,17 +632,17 @@ export default function PropiedadesPage() {
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Reconquista, Santa Fe</li>
-                <li>+54 9 3482 308100</li>
-                <li>marconinegociosinmobiliarios@hotmail.com</li>
+              <h3 className="heading-sm text-premium-primary mb-premium-md">Contacto</h3>
+              <ul className="space-y-3 text-premium-secondary">
+                <li className="body-md">Reconquista, Santa Fe</li>
+                <li className="body-md">+54 9 3482 308100</li>
+                <li className="body-md">marconinegociosinmobiliarios@hotmail.com</li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>
+          <div className="border-t border-support-gray/20 mt-premium-xl pt-premium-lg text-center">
+            <p className="caption-lg text-premium-secondary">
               &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
             </p>
           </div>
