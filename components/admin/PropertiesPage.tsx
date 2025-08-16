@@ -49,7 +49,24 @@ interface PropertyImageProps {
 
 function PropertyImage({ images, title }: PropertyImageProps) {
   const [imageError, setImageError] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const firstImage = images && images.length > 0 ? images[0] : null;
+
+  const handleMouseEnter = () => {
+    const timeout = setTimeout(() => {
+      setShowPopup(true);
+    }, 500); // 500ms delay before showing popup
+    setHoverTimeout(timeout);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
+    setShowPopup(false);
+  };
 
   if (!firstImage || imageError) {
     return (
@@ -60,14 +77,35 @@ function PropertyImage({ images, title }: PropertyImageProps) {
   }
 
   return (
-    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-700 border border-gray-600 shadow-sm">
-      <img
-        src={firstImage}
-        alt={`Imagen de ${title}`}
-        className="w-full h-full object-cover transition-opacity duration-200"
-        onError={() => setImageError(true)}
-        loading="lazy"
-      />
+    <div className="relative">
+      <div 
+        className="w-12 h-12 rounded-lg overflow-hidden bg-gray-700 border border-gray-600 shadow-sm cursor-pointer group"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <img
+          src={firstImage}
+          alt={`Imagen de ${title}`}
+          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
+          onError={() => setImageError(true)}
+          loading="lazy"
+        />
+      </div>
+      
+      {/* Popup Image */}
+      {showPopup && (
+        <div className="absolute z-50 left-16 top-0 bg-gray-800 border border-gray-600 rounded-lg shadow-2xl p-2 animate-in fade-in-0 zoom-in-95 duration-200">
+          <img
+            src={firstImage}
+            alt={`Vista previa de ${title}`}
+            className="w-48 h-36 object-cover rounded"
+            onError={() => setImageError(true)}
+          />
+          <p className="text-xs text-gray-300 mt-1 px-1 truncate max-w-48">
+            {title}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
