@@ -50,30 +50,31 @@ interface PropertyImageProps {
 function PropertyImage({ images, title }: PropertyImageProps) {
   const [imageError, setImageError] = useState(false);
   const firstImage = images && images.length > 0 ? images[0] : null;
-  console.log("Images:", images);
-  console.log("First Image:", firstImage);
 
   if (!firstImage || imageError) {
     return (
-      <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center">
+      <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center border border-gray-600">
         <Home className="w-6 h-6 text-gray-400" />
       </div>
     );
   }
 
+  const optimizedImageUrl = getOptimizedImageUrl(firstImage, {
+    width: 48,
+    height: 48,
+    crop: "fill",
+    quality: "auto",
+    format: "auto"
+  });
+
   return (
-    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-700">
+    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-700 border border-gray-600 shadow-sm">
       <img
-        src={
-          getOptimizedImageUrl(firstImage, {
-            width: 48,
-            height: 48,
-            crop: "fill"
-          }) || "/placeholder.svg"
-        }
-        alt={title}
-        className="w-full h-full object-cover"
+        src={optimizedImageUrl || "/placeholder.svg"}
+        alt={`Imagen de ${title}`}
+        className="w-full h-full object-cover transition-opacity duration-200"
         onError={() => setImageError(true)}
+        loading="lazy"
       />
     </div>
   );
