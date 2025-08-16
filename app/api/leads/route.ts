@@ -9,14 +9,34 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 400 })
     }
 
+    // Fetch first image for related properties (in bulk)
+    const propertyIds = Array.from(new Set((data || []).map((lead: any) => lead.property_id).filter(Boolean)))
+    let propertyImagesMap: Record<number, { firstImage?: string; title?: string }> = {}
+
+    if (propertyIds.length > 0) {
+      const { data: propertiesData, error: propertiesError } = await supabase
+        .from("properties")
+        .select("id, images, title")
+        .in("id", propertyIds)
+
+      if (!propertiesError && Array.isArray(propertiesData)) {
+        propertyImagesMap = propertiesData.reduce((acc: Record<number, { firstImage?: string; title?: string }>, p: any) => {
+          acc[p.id] = { firstImage: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : undefined, title: p.title }
+          return acc
+        }, {})
+      }
+    }
+
     // Transform data to match frontend interface
-    const transformedData = data.map((lead) => ({
+    const transformedData = (data || []).map((lead: any) => ({
       id: lead.id,
       name: lead.name,
       email: lead.email || "",
       phone: lead.phone || "",
       message: lead.message || "",
       property: `Propiedad #${lead.property_id || "N/A"}`,
+      propertyId: lead.property_id || null,
+      propertyImage: lead.property_id ? propertyImagesMap[lead.property_id]?.firstImage || "" : "",
       status: lead.status || "new",
       source: lead.lead_source || "Website",
       createdAt: lead.created_at,
