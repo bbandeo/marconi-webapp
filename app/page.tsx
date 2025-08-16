@@ -33,7 +33,6 @@ import type { Property } from "@/lib/supabase";
 export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
   const [scrolled, setScrolled] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const isClient = useIsClient();
 
   // Estados para datos del backend
@@ -88,8 +87,6 @@ export default function HomePage() {
       const winScroll = window.scrollY || document.documentElement.scrollTop;
       const height =
         document.documentElement.scrollHeight - window.innerHeight;
-      const progress = height > 0 ? (winScroll / height) * 100 : 0;
-      setScrollProgress(progress);
       setScrolled(winScroll > 50);
     };
     window.addEventListener("scroll", handleScroll);
@@ -151,17 +148,9 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Scroll Progress Bar (arriba del header) */}
-      <div
-        aria-hidden
-        className="fixed top-0 left-0 h-1 z-[60] pointer-events-none"
-        style={{ width: `${scrollProgress}%` }}
-      >
-        <div className="w-full h-full bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg" />
-      </div>
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="w-full px-6">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
@@ -177,22 +166,22 @@ export default function HomePage() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
+            <nav className="hidden md:flex items-center space-x-12">
               <Link
                 href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-gray-600 hover:text-premium-gold transition-colors text-sm font-medium tracking-wide"
               >
                 PROPIEDADES
               </Link>
               <Link
                 href="/agentes"
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-gray-600 hover:text-premium-gold transition-colors text-sm font-medium tracking-wide"
               >
                 AGENTES
               </Link>
               <Link
                 href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-gray-600 hover:text-premium-gold transition-colors text-sm font-medium tracking-wide"
               >
                 CONTACTO
               </Link>
@@ -204,15 +193,13 @@ export default function HomePage() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Buscar propiedades..."
-                  className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
+                  className="pl-10 h-10 bg-white border-gray-300 text-gray-900 placeholder:text-gray-500 text-sm focus:border-premium-gold"
                 />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
       </header>
 
       {/* Hero Section */}
@@ -237,8 +224,6 @@ export default function HomePage() {
           />
           {/* Subtle dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/40" />
-          {/* Orange fade overlay above wallpaper and below content */}
-          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
         </div>
 
         {/* Content */}
@@ -286,14 +271,14 @@ export default function HomePage() {
       {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
       <section
         id="propiedades"
-        className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden"
+        className="py-20 bg-premium-light relative overflow-hidden"
       >
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
+            <h2 className="text-3xl md:text-5xl font-serif font-light text-premium-dark mb-6">
+              PROPIEDADES <span className="text-premium-gold">DESTACADAS</span>
             </h2>
-            <p className="text-lg text-gray-300 mb-8">
+            <p className="text-lg text-gray-600 mb-8">
               Las mejores oportunidades de inversión en Reconquista
             </p>
           </div>
@@ -301,15 +286,15 @@ export default function HomePage() {
           {loadingProperties ? (
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto"></div>
-              <p className="text-white mt-4">Cargando propiedades...</p>
+              <p className="text-premium-dark mt-4">Cargando propiedades...</p>
             </div>
           ) : (
             <>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {featuredProperties.map((property) => (
                   <Card
                     key={property.id}
-                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
+                    className="bg-white border-gray-200 border overflow-hidden group hover:shadow-lg transition-all duration-300 h-full flex flex-col"
                   >
                     <div className="relative overflow-hidden">
                       <Link href={`/propiedades/${property.id}`}>
@@ -336,7 +321,7 @@ export default function HomePage() {
 
                           {/* Status badges */}
                           <div className="absolute top-4 left-4">
-                            <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
+                            <div className="bg-white/95 text-premium-dark border border-gray-200 px-3 py-1 rounded-lg font-medium text-sm shadow-sm">
                               {property.operation_type === "venta"
                                 ? "VENTA"
                                 : "ALQUILER"}
@@ -345,7 +330,7 @@ export default function HomePage() {
 
                           {/* Featured badge */}
                           {property.featured && (
-                            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
+                            <div className="absolute top-4 right-4 bg-premium-gold text-white px-3 py-2 rounded-lg text-xs flex items-center gap-2 shadow-sm">
                               <Eye className="w-4 h-4" />
                               DESTACADA
                             </div>
@@ -355,7 +340,7 @@ export default function HomePage() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
+                            className="absolute bottom-4 right-4 bg-white/90 hover:bg-white text-gray-600 hover:text-premium-dark border border-gray-200 rounded-lg p-3 shadow-sm"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
@@ -371,17 +356,17 @@ export default function HomePage() {
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <Link href={`/propiedades/${property.id}`}>
-                            <h3 className="font-bold text-white text-lg mb-2 hover:text-orange-300 transition-colors cursor-pointer">
+                            <h3 className="font-semibold text-premium-dark text-lg mb-2 hover:text-premium-gold transition-colors cursor-pointer">
                               {property.title}
                             </h3>
                           </Link>
-                          <div className="flex items-center text-orange-300 font-medium mb-1">
+                          <div className="flex items-center text-premium-warm font-medium mb-1">
                             <MapPin className="w-4 h-4 mr-2" />
                             {property.neighborhood}, Reconquista
                           </div>
                         </div>
                         <div className="text-right ml-2">
-                          <div className="text-xl font-bold text-white mb-1">
+                          <div className="text-xl font-bold text-premium-dark mb-1">
                             {property.currency}${" "}
                             {property.price.toLocaleString()}
                           </div>
@@ -398,25 +383,25 @@ export default function HomePage() {
                         {(property.bedrooms ||
                           property.bathrooms ||
                           property.area_m2) && (
-                          <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
+                          <div className="flex items-center gap-4 text-gray-600 mb-4 text-sm">
                             {property.bedrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bed className="w-4 h-4 mr-1 text-orange-300" />
+                              <div className="flex items-center bg-gray-50 px-2 py-1 rounded-lg">
+                                <Bed className="w-4 h-4 mr-1 text-premium-gold" />
                                 <span className="font-medium">
                                   {property.bedrooms}
                                 </span>
                               </div>
                             )}
                             {property.bathrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bath className="w-4 h-4 mr-1 text-orange-300" />
+                              <div className="flex items-center bg-gray-50 px-2 py-1 rounded-lg">
+                                <Bath className="w-4 h-4 mr-1 text-premium-gold" />
                                 <span className="font-medium">
                                   {property.bathrooms}
                                 </span>
                               </div>
                             )}
-                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                              <Square className="w-4 h-4 mr-1 text-orange-300" />
+                            <div className="flex items-center bg-gray-50 px-2 py-1 rounded-lg">
+                              <Square className="w-4 h-4 mr-1 text-premium-gold" />
                               <span className="font-medium">
                                 {property.area_m2}m²
                               </span>
@@ -431,7 +416,7 @@ export default function HomePage() {
                               {property.features.slice(0, 3).map((feature, i) => (
                                 <span
                                   key={i}
-                                  className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium"
+                                  className="bg-premium-muted text-premium-warm border border-gray-200 px-2 py-1 rounded-lg text-xs font-medium"
                                 >
                                   {feature}
                                 </span>
@@ -447,9 +432,9 @@ export default function HomePage() {
                       </div>
 
                       {/* Action Buttons - Always at bottom */}
-                      <div className="flex gap-2 pt-2 border-t border-gray-700/50 mt-auto">
+                      <div className="flex gap-2 pt-2 border-t border-gray-100 mt-auto">
                         <Button
-                          className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
+                          className="flex-1 bg-premium-gold hover:bg-premium-warm text-white transition-all duration-300 text-sm font-medium rounded-lg shadow-sm"
                           onClick={() => handlePropertyInterest(property)}
                         >
                           Me interesa <ArrowRight className="w-3 h-3 ml-1" />
@@ -457,7 +442,7 @@ export default function HomePage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm rounded-xl"
+                          className="border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-premium-dark bg-white rounded-lg"
                           onClick={() => handlePropertyInterest(property)}
                         >
                           <MessageCircle className="w-4 h-4" />
@@ -471,10 +456,10 @@ export default function HomePage() {
               {featuredProperties.length === 0 && (
                 <div className="text-center py-12">
                   <Home className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">
+                  <p className="text-premium-dark text-lg">
                     No hay propiedades destacadas disponibles
                   </p>
-                  <p className="text-gray-400">
+                  <p className="text-gray-600">
                     Próximamente agregaremos nuevas propiedades
                   </p>
                 </div>
@@ -485,7 +470,7 @@ export default function HomePage() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
+                    className="border-premium-gold text-premium-gold hover:bg-premium-gold hover:text-white bg-transparent"
                   >
                     Ver todas las propiedades{" "}
                     <ArrowRight className="w-4 h-4 ml-1" />
@@ -498,7 +483,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gray-900">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -520,13 +505,13 @@ export default function HomePage() {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-4">
-                  <stat.icon className="h-8 w-8 text-brand-orange" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-premium-muted rounded-full mb-4">
+                  <stat.icon className="h-8 w-8 text-premium-gold" />
                 </div>
-                <div className="text-3xl font-museo font-medium text-white mb-2">
+                <div className="text-3xl font-serif font-light text-premium-dark mb-2">
                   {stat.number}
                 </div>
-                <div className="text-gray-400">{stat.label}</div>
+                <div className="text-gray-600">{stat.label}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -534,7 +519,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-brand-orange">
+      <section className="py-20 bg-premium-light">
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -542,10 +527,10 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="max-w-3xl mx-auto"
           >
-            <h2 className="text-4xl font-museo font-medium text-white mb-6">
+            <h2 className="text-4xl font-serif font-light text-premium-dark mb-6">
               ¿Listo para encontrar tu próximo hogar?
             </h2>
-            <p className="text-xl text-orange-100 mb-8">
+            <p className="text-xl text-gray-600 mb-8">
               Nuestro equipo de expertos está aquí para ayudarte en cada paso
               del camino
             </p>
@@ -554,7 +539,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="bg-white text-brand-orange hover:bg-gray-100"
+                  className="bg-premium-gold text-white hover:bg-premium-warm"
                 >
                   Explorar Propiedades
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -564,7 +549,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange bg-transparent"
+                  className="border-premium-dark text-premium-dark hover:bg-premium-dark hover:text-white bg-transparent"
                 >
                   Contactar Agente
                 </Button>
@@ -575,7 +560,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-12">
+      <footer className="bg-white border-t border-gray-200 py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
@@ -588,19 +573,19 @@ export default function HomePage() {
                   className="h-8 w-auto"
                 />
               </div>
-              <p className="text-gray-400 mb-4">
+              <p className="text-gray-600 mb-4">
                 La inmobiliaria líder en Reconquista, comprometida con encontrar
                 el hogar perfecto para cada familia.
               </p>
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4">Enlaces</h3>
-              <ul className="space-y-2 text-gray-400">
+              <h3 className="text-premium-dark font-semibold mb-4">Enlaces</h3>
+              <ul className="space-y-2 text-gray-600">
                 <li>
                   <Link
                     href="/propiedades"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-premium-gold transition-colors"
                   >
                     Propiedades
                   </Link>
@@ -608,7 +593,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="/agentes"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-premium-gold transition-colors"
                   >
                     Agentes
                   </Link>
@@ -616,7 +601,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="/contacto"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-premium-gold transition-colors"
                   >
                     Contacto
                   </Link>
@@ -625,8 +610,8 @@ export default function HomePage() {
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-gray-400">
+              <h3 className="text-premium-dark font-semibold mb-4">Contacto</h3>
+              <ul className="space-y-2 text-gray-600">
                 <li>Reconquista, Santa Fe</li>
                 <li>+54 9 3482 308100</li>
                 <li>marconinegociosinmobiliarios@hotmail.com</li>
@@ -634,7 +619,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-200 mt-8 pt-8 text-center text-gray-600">
             <p>
               &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
             </p>
