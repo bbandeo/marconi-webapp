@@ -16,7 +16,7 @@ export interface PropertySearchParams extends PropertyFilters {
   page?: number
   limit?: number
   search?: string
-  sort_by?: "price" | "created_at" | "views"
+  sort_by?: "price" | "created_at" | "views" | "priority"
   sort_order?: "asc" | "desc"
 }
 
@@ -154,6 +154,7 @@ export class PropertyService {
       .select("*")
       .eq("featured", true)
       .eq("status", "available")
+      .order("priority", { ascending: true, nullsLast: true })
       .order("created_at", { ascending: false })
       .limit(limit)
 
@@ -161,7 +162,13 @@ export class PropertyService {
       throw new Error(`Error fetching featured properties: ${error.message}`)
     }
 
-    return data || []
+    // Convertir status de la base de datos al frontend
+    const propertiesWithMappedStatus = data?.map((property) => ({
+      ...property,
+      status_display: STATUS_MAP[property.status as keyof typeof STATUS_MAP] || property.status,
+    }))
+
+    return propertiesWithMappedStatus || []
   }
 
   static async getNeighborhoods(): Promise<string[]> {

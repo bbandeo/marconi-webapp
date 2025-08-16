@@ -51,6 +51,7 @@ export interface Database {
           featured: boolean
           status: string
           views: number
+          priority: number | null
           created_at: string
           updated_at: string
         }
@@ -74,6 +75,7 @@ export interface Database {
           featured?: boolean
           status?: string
           views?: number
+          priority?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -97,6 +99,7 @@ export interface Database {
           featured?: boolean
           status?: string
           views?: number
+          priority?: number | null
           created_at?: string
           updated_at?: string
         }
