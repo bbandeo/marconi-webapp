@@ -21,13 +21,14 @@ const config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-inter)"],
+        display: ["var(--font-manrope)", "var(--font-playfair-display)"],
         serif: ["var(--font-playfair-display)"],
         museo: ["Museo Sans", "sans-serif"],
         playfair: ["Playfair Display", "serif"],
         inter: ["Inter", "sans-serif"],
       },
       colors: {
-        "brand-orange": "#ff6600",
+        "brand-orange": "#FF6B35",
         // Nueva paleta premium
         "premium": {
           gold: "#c9a961",
