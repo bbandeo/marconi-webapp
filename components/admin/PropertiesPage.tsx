@@ -94,16 +94,23 @@ function PropertyImage({ images, title }: PropertyImageProps) {
       
       {/* Popup Image */}
       {showPopup && (
-        <div className="absolute z-50 left-16 top-0 bg-gray-800 border border-gray-600 rounded-lg shadow-2xl p-2 animate-in fade-in-0 zoom-in-95 duration-200">
-          <img
-            src={firstImage}
-            alt={`Vista previa de ${title}`}
-            className="w-80 h-44 object-cover rounded"
-            onError={() => setImageError(true)}
-          />
-          <p className="text-sm text-gray-300 mt-2 px-1 truncate max-w-80">
-            {title}
-          </p>
+        <div className="absolute z-50 left-16 top-0 bg-gray-800 border border-gray-600 rounded-lg shadow-2xl animate-in fade-in-0 zoom-in-95 duration-200 pointer-events-none">
+          <div className="w-80 sm:w-96 lg:w-[28rem] p-2">
+            <div className="relative w-full">
+              <img
+                src={firstImage}
+                alt={`Vista previa de ${title}`}
+                className="w-full h-auto max-h-64 sm:max-h-72 lg:max-h-80 object-contain rounded bg-gray-900"
+                onError={() => setImageError(true)}
+                style={{ aspectRatio: 'auto' }}
+              />
+            </div>
+            <div className="px-1 py-2">
+              <p className="text-sm text-gray-300 break-words leading-tight">
+                {title}
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>
