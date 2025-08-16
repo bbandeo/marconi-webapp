@@ -147,9 +147,9 @@ export default function ContactoPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
+      <header className="bg-secondary border-b border-border sticky top-0 z-50 shadow-md backdrop-blur supports-[backdrop-filter]:bg-secondary/80">
         <div className="w-full px-6">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
@@ -168,19 +168,19 @@ export default function ContactoPage() {
             <nav className="hidden md:flex items-center space-x-8">
               <Link
                 href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 PROPIEDADES
               </Link>
               <Link
                 href="/agentes"
-                className="text-gray-300 hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 AGENTES
               </Link>
               <Link
                 href="/contacto"
-                className="text-brand-orange font-semibold"
+                className="text-[hsl(var(--primary))] font-semibold"
               >
                 CONTACTO
               </Link>
@@ -189,21 +189,21 @@ export default function ContactoPage() {
         </div>
         
         {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
+        <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-[hsl(var(--primary))] to-transparent"></div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-gray-900 to-black">
+      <section className="relative py-20 bg-background">
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              <span className="text-brand-orange">CONTACTANOS</span>
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6 font-display">
+                              <span className="text-[hsl(var(--primary))]">CONTACTANOS</span>
             </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
               Estamos aquí para ayudarte a encontrar la propiedad perfecta 
               o responder cualquier consulta sobre nuestros servicios
             </p>
@@ -218,14 +218,14 @@ export default function ContactoPage() {
                 >
                   <Button
                     asChild
-                    className="bg-brand-orange hover:bg-brand-orange/90 text-white w-full"
+                    className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-[hsl(var(--primary-foreground))] w-full"
                   >
                     <a href={method.action} target="_blank" rel="noopener noreferrer">
                       <method.icon className="w-4 h-4 mr-2" />
                       {method.title}
                     </a>
                   </Button>
-                  <p className="text-gray-400 text-sm mt-2">{method.content}</p>
+                  <p className="text-muted-foreground text-sm mt-2">{method.content}</p>
                 </motion.div>
               ))}
             </div>
@@ -234,7 +234,7 @@ export default function ContactoPage() {
       </section>
 
       {/* Contact Form Section */}
-      <section className="py-20 bg-gray-900">
+      <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}

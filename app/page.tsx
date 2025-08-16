@@ -143,9 +143,9 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
+      <header className="bg-secondary border-b border-border sticky top-0 z-50 shadow-md backdrop-blur supports-[backdrop-filter]:bg-secondary/80">
         <div className="w-full px-6">
           <div className="flex items-center justify-between h-16 md:h-20">
             {/* Logo */}
@@ -161,34 +161,34 @@ export default function HomePage() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                PROPIEDADES
-              </Link>
-              <Link
-                href="/agentes"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                AGENTES
-              </Link>
-              <Link
-                href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                CONTACTO
-              </Link>
-            </nav>
+                          <nav className="hidden md:flex items-center space-x-8">
+                <Link
+                  href="/propiedades"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  PROPIEDADES
+                </Link>
+                <Link
+                  href="/agentes"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  AGENTES
+                </Link>
+                <Link
+                  href="/contacto"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  CONTACTO
+                </Link>
+              </nav>
 
             {/* Mobile Search Bar */}
             <div className="md:hidden flex-1 max-w-xs ml-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Buscar propiedades..."
-                  className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
+                  className="pl-10 h-10 bg-secondary border-border text-foreground placeholder:text-muted-foreground text-sm focus-visible:ring-[var(--ring)]"
                 />
               </div>
             </div>
@@ -196,7 +196,7 @@ export default function HomePage() {
         </div>
 
         {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
+                  <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-[hsl(var(--primary))] to-transparent"></div>
       </header>
 
       {/* Hero Section */}
@@ -220,7 +220,7 @@ export default function HomePage() {
             priority
           />
           {/* Subtle dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/50" />
         </div>
 
         {/* Content */}
@@ -234,8 +234,7 @@ export default function HomePage() {
               className="w-full"
             >
               <div
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                className="w-full p-20 flex justify-center"
+                className="w-full p-10 md:p-20 flex justify-center bg-black/40 backdrop-blur-sm rounded-xl"
               >
                 <Image
                   src="/assets/impact_text/vivilaexperiencia.PNG"
@@ -255,43 +254,43 @@ export default function HomePage() {
             transition={{ delay: 0, duration: 0.4 }}
             className="mb-8 text-center px-4"
           >
-            <Image
-              src="/assets/logos/marconi_header_orangewhite.png"
-              alt="Marconi Inmobiliaria"
-              width={400}
-              height={120}
-              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
-            />
+                            <Image
+                  src="/assets/logos/marconi_header_orangewhite.png"
+                  alt="Marconi Inmobiliaria"
+                  width={400}
+                  height={120}
+                  className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+                />
           </motion.div>
         </div>
       </section>
       {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
       <section
         id="propiedades"
-        className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden"
+        className="py-16 bg-background relative overflow-hidden"
       >
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
-            </h2>
-            <p className="text-lg text-gray-300 mb-8">
-              Las mejores oportunidades de inversión en Reconquista
-            </p>
-          </div>
-
-          {loadingProperties ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto"></div>
-              <p className="text-white mt-4">Cargando propiedades...</p>
+                      <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-5xl font-bold text-foreground mb-6 font-display tracking-tight">
+                PROPIEDADES <span className="text-[hsl(var(--primary))]">DESTACADAS</span>
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                Las mejores oportunidades de inversión en Reconquista
+              </p>
             </div>
-          ) : (
+
+                      {loadingProperties ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-2 border-[hsl(var(--primary))]/30 border-t-[hsl(var(--primary))] mx-auto rounded-full"></div>
+                <p className="text-muted-foreground mt-4">Cargando propiedades...</p>
+              </div>
+            ) : (
             <>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredProperties.map((property) => (
                   <Card
                     key={property.id}
-                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
+                                         className="bg-card border border-border/60 overflow-hidden group hover:border-border hover:shadow-xl transition-all duration-300 h-full flex flex-col rounded-xl"
                   >
                     <div className="relative overflow-hidden">
                       <Link href={`/propiedades/${property.id}`}>
@@ -308,43 +307,43 @@ export default function HomePage() {
                               }}
                             />
                           ) : (
-                            <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                              <div className="text-gray-400 text-center">
-                                <div className="w-16 h-16 bg-gray-600 rounded mx-auto mb-3"></div>
-                                <p>Sin imagen</p>
-                              </div>
+                            <div className="w-full h-full bg-secondary flex items-center justify-center">
+                                                             <div className="text-muted-foreground text-center">
+                                 <div className="w-16 h-16 bg-muted rounded mx-auto mb-3"></div>
+                                 <p>Sin imagen</p>
+                               </div>
                             </div>
                           )}
 
                           {/* Status badges */}
-                          <div className="absolute top-4 left-4">
-                            <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
-                              {property.operation_type === "venta"
-                                ? "VENTA"
-                                : "ALQUILER"}
-                            </div>
-                          </div>
+                                                     <div className="absolute top-4 left-4">
+                             <div className="bg-background/90 text-[hsl(var(--primary))] border border-[hsl(var(--primary))]/30 px-3 py-1 rounded-full font-semibold text-xs backdrop-blur-md shadow-md tracking-wide">
+                               {property.operation_type === "venta"
+                                 ? "VENTA"
+                                 : "ALQUILER"}
+                             </div>
+                           </div>
 
                           {/* Featured badge */}
-                          {property.featured && (
-                            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
-                              <Eye className="w-4 h-4" />
-                              DESTACADA
-                            </div>
-                          )}
+                                                     {property.featured && (
+                             <div className="absolute top-4 right-4 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] px-3 py-1.5 rounded-full text-xs font-semibold flex items-center gap-2 shadow-md">
+                               <Eye className="w-4 h-4" />
+                               DESTACADA
+                             </div>
+                           )}
 
                           {/* Favorite button */}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                          >
-                            <Heart className="w-4 h-4" />
-                          </Button>
+                                                     <Button
+                             size="sm"
+                             variant="ghost"
+                             className="absolute bottom-4 right-4 bg-background/80 hover:bg-background text-muted-foreground hover:text-foreground rounded-xl p-3 shadow-lg"
+                             onClick={(e) => {
+                               e.preventDefault();
+                               e.stopPropagation();
+                             }}
+                           >
+                             <Heart className="w-4 h-4" />
+                           </Button>
                         </div>
                       </Link>
                     </div>
@@ -353,26 +352,26 @@ export default function HomePage() {
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
                           <Link href={`/propiedades/${property.id}`}>
-                            <h3 className="font-bold text-white text-lg mb-2 hover:text-orange-300 transition-colors cursor-pointer">
+                            <h3 className="font-bold text-foreground text-lg mb-2 hover:text-[hsl(var(--primary))] transition-colors cursor-pointer">
                               {property.title}
                             </h3>
                           </Link>
-                          <div className="flex items-center text-orange-300 font-medium mb-1">
-                            <MapPin className="w-4 h-4 mr-2" />
-                            {property.neighborhood}, Reconquista
-                          </div>
+                                                     <div className="flex items-center text-muted-foreground font-medium mb-1">
+                             <MapPin className="w-4 h-4 mr-2 text-[hsl(var(--primary))]" />
+                             {property.neighborhood}, Reconquista
+                           </div>
                         </div>
-                        <div className="text-right ml-2">
-                          <div className="text-xl font-bold text-white mb-1">
-                            {property.currency}${" "}
-                            {property.price.toLocaleString()}
+                                                  <div className="text-right ml-2">
+                            <div className="text-xl font-extrabold text-foreground mb-1">
+                              {property.currency}${" "}
+                              {property.price.toLocaleString()}
+                            </div>
+                            <div className="text-muted-foreground text-xs">
+                              {property.operation_type === "alquiler"
+                                ? "por mes"
+                                : ""}
+                            </div>
                           </div>
-                          <div className="text-gray-400 text-xs">
-                            {property.operation_type === "alquiler"
-                              ? "por mes"
-                              : ""}
-                          </div>
-                        </div>
                       </div>
 
                       <div className="flex-1">
@@ -380,25 +379,25 @@ export default function HomePage() {
                         {(property.bedrooms ||
                           property.bathrooms ||
                           property.area_m2) && (
-                          <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
+                          <div className="flex items-center gap-4 text-muted-foreground mb-4 text-sm">
                             {property.bedrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bed className="w-4 h-4 mr-1 text-orange-300" />
+                              <div className="flex items-center bg-secondary/60 px-2 py-1 rounded-lg">
+                                <Bed className="w-4 h-4 mr-1 text-[hsl(var(--primary))]" />
                                 <span className="font-medium">
                                   {property.bedrooms}
                                 </span>
                               </div>
                             )}
                             {property.bathrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bath className="w-4 h-4 mr-1 text-orange-300" />
+                              <div className="flex items-center bg-secondary/60 px-2 py-1 rounded-lg">
+                                <Bath className="w-4 h-4 mr-1 text-[hsl(var(--primary))]" />
                                 <span className="font-medium">
                                   {property.bathrooms}
                                 </span>
                               </div>
                             )}
-                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                              <Square className="w-4 h-4 mr-1 text-orange-300" />
+                            <div className="flex items-center bg-secondary/60 px-2 py-1 rounded-lg">
+                              <Square className="w-4 h-4 mr-1 text-[hsl(var(--primary))]" />
                               <span className="font-medium">
                                 {property.area_m2}m²
                               </span>
@@ -407,31 +406,31 @@ export default function HomePage() {
                         )}
 
                         {/* Features */}
-                        {property.features && property.features.length > 0 && (
-                          <div className="mb-4">
-                            <div className="flex flex-wrap gap-2">
-                              {property.features.slice(0, 3).map((feature, i) => (
-                                <span
-                                  key={i}
-                                  className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium"
-                                >
-                                  {feature}
-                                </span>
-                              ))}
-                              {property.features.length > 3 && (
-                                <span className="text-gray-400 text-xs px-2 py-1">
-                                  +{property.features.length - 3} más
-                                </span>
-                              )}
+                                                  {property.features && property.features.length > 0 && (
+                            <div className="mb-4">
+                              <div className="flex flex-wrap gap-2">
+                                {property.features.slice(0, 3).map((feature, i) => (
+                                  <span
+                                    key={i}
+                                    className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] border border-[hsl(var(--primary))]/20 px-2 py-1 rounded-lg text-xs font-medium"
+                                  >
+                                    {feature}
+                                  </span>
+                                ))}
+                                {property.features.length > 3 && (
+                                  <span className="text-muted-foreground text-xs px-2 py-1">
+                                    +{property.features.length - 3} más
+                                  </span>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
                       </div>
 
                       {/* Action Buttons - Always at bottom */}
-                      <div className="flex gap-2 pt-2 border-t border-gray-700/50 mt-auto">
+                      <div className="flex gap-2 pt-2 border-t border-border/60 mt-auto">
                         <Button
-                          className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
+                          className="flex-1 bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary))]/90 transition-all duration-200 text-sm font-semibold rounded-xl shadow-md"
                           onClick={() => handlePropertyInterest(property)}
                         >
                           Me interesa <ArrowRight className="w-3 h-3 ml-1" />
@@ -439,7 +438,7 @@ export default function HomePage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm rounded-xl"
+                          className="border-border text-foreground/80 hover:bg-accent hover:text-foreground rounded-xl"
                           onClick={() => handlePropertyInterest(property)}
                         >
                           <MessageCircle className="w-4 h-4" />
@@ -452,35 +451,35 @@ export default function HomePage() {
 
               {featuredProperties.length === 0 && (
                 <div className="text-center py-12">
-                  <Home className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">
+                  <Home className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-foreground text-lg">
                     No hay propiedades destacadas disponibles
                   </p>
-                  <p className="text-gray-400">
+                  <p className="text-muted-foreground">
                     Próximamente agregaremos nuevas propiedades
                   </p>
                 </div>
               )}
 
-              <div className="text-center mt-8">
-                <Link href="/propiedades">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
-                  >
-                    Ver todas las propiedades{" "}
-                    <ArrowRight className="w-4 h-4 ml-1" />
-                  </Button>
-                </Link>
-              </div>
+                          <div className="text-center mt-8">
+              <Link href="/propiedades">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-[hsl(var(--primary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))] hover:text-[hsl(var(--primary-foreground))]"
+                >
+                  Ver todas las propiedades{" "}
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              </Link>
+            </div>
             </>
           )}
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 bg-gray-900">
+      <section className="py-20 bg-secondary">
         <div className="container mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -502,13 +501,13 @@ export default function HomePage() {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-4">
-                  <stat.icon className="h-8 w-8 text-brand-orange" />
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-[hsl(var(--primary))]/15 rounded-full mb-4">
+                  <stat.icon className="h-8 w-8 text-[hsl(var(--primary))]" />
                 </div>
-                <div className="text-3xl font-museo font-medium text-white mb-2">
+                <div className="text-3xl font-display font-semibold text-foreground mb-2">
                   {stat.number}
                 </div>
-                <div className="text-gray-400">{stat.label}</div>
+                <div className="text-muted-foreground">{stat.label}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -516,7 +515,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-brand-orange">
+      <section className="py-20 bg-[hsl(var(--primary))]">
         <div className="container mx-auto px-4 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -524,10 +523,10 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="max-w-3xl mx-auto"
           >
-            <h2 className="text-4xl font-museo font-medium text-white mb-6">
+            <h2 className="text-4xl font-display font-semibold text-[hsl(var(--primary-foreground))] mb-6">
               ¿Listo para encontrar tu próximo hogar?
             </h2>
-            <p className="text-xl text-orange-100 mb-8">
+            <p className="text-xl text-[hsl(var(--primary-foreground))]/85 mb-8">
               Nuestro equipo de expertos está aquí para ayudarte en cada paso
               del camino
             </p>
@@ -536,7 +535,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="bg-white text-brand-orange hover:bg-gray-100"
+                  className="bg-[hsl(var(--primary-foreground))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary-foreground))]/90"
                 >
                   Explorar Propiedades
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -546,7 +545,7 @@ export default function HomePage() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange bg-transparent"
+                  className="border-[hsl(var(--primary-foreground))] text-[hsl(var(--primary-foreground))] hover:bg-[hsl(var(--primary-foreground))] hover:text-[hsl(var(--primary))]"
                 >
                   Contactar Agente
                 </Button>
@@ -557,7 +556,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-12">
+      <footer className="bg-secondary border-t border-border py-12">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
@@ -570,19 +569,19 @@ export default function HomePage() {
                   className="h-8 w-auto"
                 />
               </div>
-              <p className="text-gray-400 mb-4">
+              <p className="text-muted-foreground mb-4">
                 La inmobiliaria líder en Reconquista, comprometida con encontrar
                 el hogar perfecto para cada familia.
               </p>
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4">Enlaces</h3>
-              <ul className="space-y-2 text-gray-400">
+              <h3 className="text-foreground font-semibold mb-4">Enlaces</h3>
+              <ul className="space-y-2 text-muted-foreground">
                 <li>
                   <Link
                     href="/propiedades"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-foreground transition-colors"
                   >
                     Propiedades
                   </Link>
@@ -590,7 +589,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="/agentes"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-foreground transition-colors"
                   >
                     Agentes
                   </Link>
@@ -598,7 +597,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="/contacto"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-foreground transition-colors"
                   >
                     Contacto
                   </Link>
@@ -607,8 +606,8 @@ export default function HomePage() {
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-gray-400">
+              <h3 className="text-foreground font-semibold mb-4">Contacto</h3>
+              <ul className="space-y-2 text-muted-foreground">
                 <li>Reconquista, Santa Fe</li>
                 <li>+54 9 3482 308100</li>
                 <li>marconinegociosinmobiliarios@hotmail.com</li>
@@ -616,7 +615,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-border mt-8 pt-8 text-center text-muted-foreground">
             <p>
               &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
             </p>
