@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Link from "next/link";
 import Image from "next/image";
+import Header from "@/components/Header";
 
 // Importar servicios
 import { useIsClient } from "@/hooks/use-is-client";
@@ -32,8 +33,6 @@ import type { Property } from "@/lib/supabase";
 
 export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
-  const [scrolled, setScrolled] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const isClient = useIsClient();
 
   // Estados para datos del backend
@@ -80,23 +79,6 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (!isClient) {
-      return;
-    }
-    const handleScroll = () => {
-      const winScroll = window.scrollY || document.documentElement.scrollTop;
-      const height =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = height > 0 ? (winScroll / height) * 100 : 0;
-      setScrollProgress(progress);
-      setScrolled(winScroll > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    // Ejecutar una vez para inicializar en el primer render del cliente
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isClient]);
 
   /* 
 
@@ -151,80 +133,19 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Scroll Progress Bar (arriba del header) */}
-      <div
-        aria-hidden
-        className="fixed top-0 left-0 h-1 z-[60] pointer-events-none"
-        style={{ width: `${scrollProgress}%` }}
-      >
-        <div className="w-full h-full bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg" />
-      </div>
-      {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-        <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/assets/logos/marconi_header_orangewhite.png"
-                alt="Marconi Inmobiliaria"
-                width={140}
-                height={45}
-                className="h-8 md:h-10 w-auto"
-                priority
-              />
-            </Link>
+    <div className="min-h-screen bg-premium-main">
+      {/* Header Premium */}
+      <Header />
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                PROPIEDADES
-              </Link>
-              <Link
-                href="/agentes"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                AGENTES
-              </Link>
-              <Link
-                href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                CONTACTO
-              </Link>
-            </nav>
-
-            {/* Mobile Search Bar */}
-            <div className="md:hidden flex-1 max-w-xs ml-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Buscar propiedades..."
-                  className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[92vh] flex flex-col overflow-hidden">
-        {/* Background Image */}
+      {/* Hero Section - PREMIUM MINIMALISTA */}
+      <section className="relative section-premium overflow-hidden">
+        {/* Background Image Premium */}
         <div className="absolute inset-0">
           <Image
             src={
               getOptimizedImageUrl("IMG_2850_c7gzcr", {
                 width: 1920,
                 height: 1080,
-                // crop: "none",
                 gravity: "south",
                 quality: "auto",
                 format: "auto",
@@ -235,276 +156,181 @@ export default function HomePage() {
             className="object-cover"
             priority
           />
-          {/* Subtle dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
-          {/* Orange fade overlay above wallpaper and below content */}
-          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
+          {/* Overlay Premium - Más sutil y sofisticado */}
+          <div className="absolute inset-0 bg-night-blue/30" />
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center">
-          {/* Centered Impact Text */}
-          <div className="flex-1 flex items-center justify-center w-full">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full"
-            >
-              <div
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                className="w-full p-20 flex justify-center"
-              >
-                <Image
-                  src="/assets/impact_text/vivilaexperiencia.PNG"
-                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                  width={800}
-                  height={200}
-                  priority
-                />
-              </div>
-            </motion.div>
-          </div>
+        {/* Content - ESPACIADO DRAMÁTICO */}
+        <div className="relative z-10 min-h-[90vh] flex flex-col justify-center items-center container-premium">
+          {/* Título de Impacto - MINIMALISTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="text-center mb-premium-xl"
+          >
+            <h1 className="display-xl text-premium-primary mb-premium-md">
+              ENCONTRÁ TU <span className="accent-premium">LUGAR</span>
+            </h1>
+            <p className="body-xl text-premium-secondary max-w-3xl mx-auto">
+              Experiencia premium en bienes raíces. Acompañamiento profesional para la decisión más importante de tu vida.
+            </p>
+          </motion.div>
 
-          {/* Company Branding at Bottom */}
+          {/* CTA Premium - ÚNICO Y PROMINENTE */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0, duration: 0.4 }}
-            className="mb-8 text-center px-4"
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="text-center"
           >
-            <Image
-              src="/assets/logos/marconi_header_orangewhite.png"
-              alt="Marconi Inmobiliaria"
-              width={400}
-              height={120}
-              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
-            />
+            <Link href="/propiedades">
+              <Button size="xl" className="mb-4">
+                EXPLORAR PROPIEDADES
+                <ArrowRight className="w-6 h-6 ml-3" />
+              </Button>
+            </Link>
+            <p className="caption-lg text-premium-secondary">
+              +200 propiedades cuidadosamente seleccionadas
+            </p>
           </motion.div>
         </div>
       </section>
-      {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
+      {/* Propiedades Destacadas - PREMIUM DESIGN */}
       <section
         id="propiedades"
-        className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden"
+        className="section-premium bg-premium-main relative overflow-hidden"
       >
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
+        <div className="container-premium relative z-10">
+          {/* Header Premium - ESPACIADO GENEROSO */}
+          <div className="text-center mb-premium-xl">
+            <h2 className="display-lg text-premium-primary mb-premium-md">
+              PROPIEDADES <span className="accent-premium">DESTACADAS</span>
             </h2>
-            <p className="text-lg text-gray-300 mb-8">
-              Las mejores oportunidades de inversión en Reconquista
+            <p className="body-lg text-premium-secondary max-w-2xl mx-auto">
+              Selección exclusiva de propiedades premium en ubicaciones estratégicas
             </p>
           </div>
 
           {loadingProperties ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto"></div>
-              <p className="text-white mt-4">Cargando propiedades...</p>
+            <div className="text-center py-premium-lg">
+              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-vibrant-orange mx-auto"></div>
+              <p className="text-premium-primary mt-premium-sm body-lg">Cargando propiedades...</p>
             </div>
           ) : (
             <>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredProperties.map((property) => (
+              {/* GRID 2 COLUMNAS - MÁXIMO 6 PROPIEDADES */}
+              <div className="grid md:grid-cols-2 gap-premium-lg max-w-7xl mx-auto">
+                {featuredProperties.slice(0, 6).map((property) => (
                   <Card
                     key={property.id}
-                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
+                    className="group cursor-pointer"
                   >
-                    <div className="relative overflow-hidden">
-                      <Link href={`/propiedades/${property.id}`}>
-                        <div className="relative cursor-pointer h-48">
-                          {property.images && property.images.length > 0 ? (
-                            <Image
-                              src={property.images[0]}
-                              alt={property.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = "/placeholder.svg";
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                              <div className="text-gray-400 text-center">
-                                <div className="w-16 h-16 bg-gray-600 rounded mx-auto mb-3"></div>
-                                <p>Sin imagen</p>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Status badges */}
-                          <div className="absolute top-4 left-4">
-                            <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
-                              {property.operation_type === "venta"
-                                ? "VENTA"
-                                : "ALQUILER"}
+                    {/* IMAGEN PROTAGONISTA - PREMIUM */}
+                    <Link href={`/propiedades/${property.id}`}>
+                      <div className="relative overflow-hidden h-80 md:h-96">
+                        {property.images && property.images.length > 0 ? (
+                          <Image
+                            src={property.images[0]}
+                            alt={property.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.src = "/placeholder.svg";
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-premium-card flex items-center justify-center">
+                            <div className="text-premium-secondary text-center">
+                              <Home className="w-16 h-16 mx-auto mb-4 opacity-40" />
+                              <p className="body-md">Sin imagen disponible</p>
                             </div>
                           </div>
+                        )}
 
-                          {/* Featured badge */}
-                          {property.featured && (
-                            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
-                              <Eye className="w-4 h-4" />
-                              DESTACADA
+                        {/* Overlay Premium Sutil */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-night-blue/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        
+                        {/* Status Badge Minimalista */}
+                        <div className="absolute top-premium-sm left-premium-sm">
+                          <div className="bg-vibrant-orange text-bone-white px-premium-sm py-2 rounded-xl caption-lg font-medium backdrop-blur-sm">
+                            {property.operation_type === "venta" ? "VENTA" : "ALQUILER"}
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+
+                    {/* INFORMACIÓN ESENCIAL - SOLO 4 ELEMENTOS */}
+                    <CardContent className="card-premium">
+                      <Link href={`/propiedades/${property.id}`}>
+                        {/* TÍTULO */}
+                        <h3 className="heading-md text-premium-primary mb-premium-sm hover:text-vibrant-orange transition-colors cursor-pointer line-clamp-2">
+                          {property.title}
+                        </h3>
+                        
+                        {/* UBICACIÓN */}
+                        <div className="flex items-center text-premium-secondary mb-premium-sm">
+                          <MapPin className="w-5 h-5 mr-2 text-vibrant-orange" />
+                          <span className="body-md">{property.neighborhood}, Reconquista</span>
+                        </div>
+                        
+                        {/* PRECIO - PROMINENTE */}
+                        <div className="text-right">
+                          <div className="display-sm text-premium-primary">
+                            {property.currency}$ {property.price.toLocaleString()}
+                          </div>
+                          {property.operation_type === "alquiler" && (
+                            <div className="caption-lg text-premium-secondary">
+                              por mes
                             </div>
                           )}
-
-                          {/* Favorite button */}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                          >
-                            <Heart className="w-4 h-4" />
-                          </Button>
                         </div>
                       </Link>
-                    </div>
-
-                    <CardContent className="p-4 flex flex-col h-full">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <Link href={`/propiedades/${property.id}`}>
-                            <h3 className="font-bold text-white text-lg mb-2 hover:text-orange-300 transition-colors cursor-pointer">
-                              {property.title}
-                            </h3>
-                          </Link>
-                          <div className="flex items-center text-orange-300 font-medium mb-1">
-                            <MapPin className="w-4 h-4 mr-2" />
-                            {property.neighborhood}, Reconquista
-                          </div>
-                        </div>
-                        <div className="text-right ml-2">
-                          <div className="text-xl font-bold text-white mb-1">
-                            {property.currency}${" "}
-                            {property.price.toLocaleString()}
-                          </div>
-                          <div className="text-gray-400 text-xs">
-                            {property.operation_type === "alquiler"
-                              ? "por mes"
-                              : ""}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex-1">
-                        {/* Property Details */}
-                        {(property.bedrooms ||
-                          property.bathrooms ||
-                          property.area_m2) && (
-                          <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
-                            {property.bedrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bed className="w-4 h-4 mr-1 text-orange-300" />
-                                <span className="font-medium">
-                                  {property.bedrooms}
-                                </span>
-                              </div>
-                            )}
-                            {property.bathrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bath className="w-4 h-4 mr-1 text-orange-300" />
-                                <span className="font-medium">
-                                  {property.bathrooms}
-                                </span>
-                              </div>
-                            )}
-                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                              <Square className="w-4 h-4 mr-1 text-orange-300" />
-                              <span className="font-medium">
-                                {property.area_m2}m²
-                              </span>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Features */}
-                        {property.features && property.features.length > 0 && (
-                          <div className="mb-4">
-                            <div className="flex flex-wrap gap-2">
-                              {property.features.slice(0, 3).map((feature, i) => (
-                                <span
-                                  key={i}
-                                  className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium"
-                                >
-                                  {feature}
-                                </span>
-                              ))}
-                              {property.features.length > 3 && (
-                                <span className="text-gray-400 text-xs px-2 py-1">
-                                  +{property.features.length - 3} más
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Action Buttons - Always at bottom */}
-                      <div className="flex gap-2 pt-2 border-t border-gray-700/50 mt-auto">
-                        <Button
-                          className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
-                          onClick={() => handlePropertyInterest(property)}
-                        >
-                          Me interesa <ArrowRight className="w-3 h-3 ml-1" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm rounded-xl"
-                          onClick={() => handlePropertyInterest(property)}
-                        >
-                          <MessageCircle className="w-4 h-4" />
-                        </Button>
-                      </div>
                     </CardContent>
                   </Card>
                 ))}
               </div>
 
               {featuredProperties.length === 0 && (
-                <div className="text-center py-12">
-                  <Home className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">
-                    No hay propiedades destacadas disponibles
-                  </p>
-                  <p className="text-gray-400">
-                    Próximamente agregaremos nuevas propiedades
+                <div className="text-center py-premium-xl">
+                  <Home className="w-16 h-16 text-premium-secondary mx-auto mb-premium-md opacity-40" />
+                  <h3 className="heading-lg text-premium-primary mb-premium-sm">
+                    Propiedades en preparación
+                  </h3>
+                  <p className="body-md text-premium-secondary">
+                    Estamos seleccionando las mejores propiedades para ti
                   </p>
                 </div>
               )}
 
-              <div className="text-center mt-8">
-                <Link href="/propiedades">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
-                  >
-                    Ver todas las propiedades{" "}
-                    <ArrowRight className="w-4 h-4 ml-1" />
-                  </Button>
-                </Link>
-              </div>
+              {/* CTA Premium - Solo si hay propiedades */}
+              {featuredProperties.length > 0 && (
+                <div className="text-center mt-premium-xl">
+                  <Link href="/propiedades">
+                    <Button size="lg" variant="outline">
+                      VER TODO EL CATÁLOGO
+                      <ArrowRight className="w-5 h-5 ml-3" />
+                    </Button>
+                  </Link>
+                  <p className="caption-lg text-premium-secondary mt-premium-sm">
+                    Más de 200 propiedades disponibles
+                  </p>
+                </div>
+              )}
             </>
           )}
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
+      {/* Stats Section - PREMIUM REFINADO */}
+      <section className="section-premium bg-premium-main">
+        <div className="container-premium">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="grid grid-cols-2 md:grid-cols-4 gap-premium-lg"
           >
             {[
               { icon: Home, number: "500+", label: "Propiedades Vendidas" },
@@ -520,53 +346,52 @@ export default function HomePage() {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-4">
-                  <stat.icon className="h-8 w-8 text-brand-orange" />
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-vibrant-orange/10 rounded-2xl mb-premium-sm">
+                  <stat.icon className="h-10 w-10 text-vibrant-orange" />
                 </div>
-                <div className="text-3xl font-museo font-medium text-white mb-2">
+                <div className="display-md text-premium-primary mb-premium-sm">
                   {stat.number}
                 </div>
-                <div className="text-gray-400">{stat.label}</div>
+                <div className="body-md text-premium-secondary">{stat.label}</div>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-brand-orange">
-        <div className="container mx-auto px-4 text-center">
+      {/* CTA Section - PREMIUM NARANJA VIBRANTE */}
+      <section className="section-premium bg-vibrant-orange">
+        <div className="container-premium text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="max-w-3xl mx-auto"
+            className="max-w-4xl mx-auto"
           >
-            <h2 className="text-4xl font-museo font-medium text-white mb-6">
-              ¿Listo para encontrar tu próximo hogar?
+            <h2 className="display-lg text-bone-white mb-premium-lg">
+              COMENZÁ TU BÚSQUEDA HOY
             </h2>
-            <p className="text-xl text-orange-100 mb-8">
-              Nuestro equipo de expertos está aquí para ayudarte en cada paso
-              del camino
+            <p className="body-xl text-bone-white/90 mb-premium-xl max-w-2xl mx-auto">
+              Acompañamiento profesional para encontrar la propiedad perfecta para vos y tu familia
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-premium-md justify-center items-center">
               <Link href="/propiedades">
                 <Button
-                  size="lg"
+                  size="xl"
                   variant="secondary"
-                  className="bg-white text-brand-orange hover:bg-gray-100"
+                  className="bg-bone-white text-vibrant-orange hover:bg-bone-white/90 border-0"
                 >
-                  Explorar Propiedades
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  EXPLORAR PROPIEDADES
+                  <ArrowRight className="ml-3 h-6 w-6" />
                 </Button>
               </Link>
               <Link href="/contacto">
                 <Button
-                  size="lg"
+                  size="xl"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange bg-transparent"
+                  className="border-bone-white/40 text-bone-white hover:bg-bone-white/10 hover:border-bone-white bg-transparent"
                 >
-                  Contactar Agente
+                  CONTACTAR EXPERTO
                 </Button>
               </Link>
             </div>
@@ -574,33 +399,33 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {/* Footer - PREMIUM DESIGN */}
+      <footer className="bg-premium-main border-t border-support-gray/20 section-premium">
+        <div className="container-premium">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-premium-lg">
             <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
+              <div className="flex items-center space-x-2 mb-premium-md">
                 <Image
                   src="/assets/logos/marconi_title.svg"
                   alt="Marconi Inmobiliaria"
                   width={140}
                   height={45}
-                  className="h-8 w-auto"
+                  className="h-10 w-auto"
                 />
               </div>
-              <p className="text-gray-400 mb-4">
-                La inmobiliaria líder en Reconquista, comprometida con encontrar
-                el hogar perfecto para cada familia.
+              <p className="body-lg text-premium-secondary mb-premium-md max-w-md">
+                Experiencia premium en bienes raíces. Comprometidos con encontrar 
+                la propiedad perfecta para cada familia.
               </p>
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4">Enlaces</h3>
-              <ul className="space-y-2 text-gray-400">
+              <h3 className="heading-sm text-premium-primary mb-premium-md">Enlaces</h3>
+              <ul className="space-y-3 text-premium-secondary">
                 <li>
                   <Link
                     href="/propiedades"
-                    className="hover:text-white transition-colors"
+                    className="body-md hover:text-vibrant-orange transition-colors"
                   >
                     Propiedades
                   </Link>
@@ -608,7 +433,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="/agentes"
-                    className="hover:text-white transition-colors"
+                    className="body-md hover:text-vibrant-orange transition-colors"
                   >
                     Agentes
                   </Link>
@@ -616,7 +441,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="/contacto"
-                    className="hover:text-white transition-colors"
+                    className="body-md hover:text-vibrant-orange transition-colors"
                   >
                     Contacto
                   </Link>
@@ -625,17 +450,17 @@ export default function HomePage() {
             </div>
 
             <div>
-              <h3 className="text-white font-semibold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Reconquista, Santa Fe</li>
-                <li>+54 9 3482 308100</li>
-                <li>marconinegociosinmobiliarios@hotmail.com</li>
+              <h3 className="heading-sm text-premium-primary mb-premium-md">Contacto</h3>
+              <ul className="space-y-3 text-premium-secondary">
+                <li className="body-md">Reconquista, Santa Fe</li>
+                <li className="body-md">+54 9 3482 308100</li>
+                <li className="body-md">marconinegociosinmobiliarios@hotmail.com</li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>
+          <div className="border-t border-support-gray/20 mt-premium-xl pt-premium-lg text-center">
+            <p className="caption-lg text-premium-secondary">
               &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
             </p>
           </div>
