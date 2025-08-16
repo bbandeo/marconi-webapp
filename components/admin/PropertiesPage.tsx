@@ -59,18 +59,10 @@ function PropertyImage({ images, title }: PropertyImageProps) {
     );
   }
 
-  const optimizedImageUrl = getOptimizedImageUrl(firstImage, {
-    width: 48,
-    height: 48,
-    crop: "fill",
-    quality: "auto",
-    format: "auto"
-  });
-
   return (
     <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-700 border border-gray-600 shadow-sm">
       <img
-        src={optimizedImageUrl || "/placeholder.svg"}
+        src={firstImage}
         alt={`Imagen de ${title}`}
         className="w-full h-full object-cover transition-opacity duration-200"
         onError={() => setImageError(true)}
