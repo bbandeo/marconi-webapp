@@ -25,6 +25,9 @@ import { Badge } from "@/components/ui/badge";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Image from "next/image";
 import Link from "next/link";
+import { PageLayout } from "@/components/layout/PageLayout";
+import { SectionSeparator } from "@/components/SectionSeparator";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 
 interface Agent {
   id: number;
@@ -156,6 +159,11 @@ export default function AgentesPage() {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  // Animation hooks
+  const teamAnimation = useScrollAnimation({ threshold: 0.1 });
+  const contactAnimation = useScrollAnimation({ threshold: 0.2 });
+  const featuresAnimation = useScrollAnimation({ threshold: 0.1 });
+
   const handleContactAgent = (agent: Agent) => {
     setSelectedAgent(agent);
     setContactForm(prev => ({
@@ -208,184 +216,193 @@ export default function AgentesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-        <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/assets/logos/marconi_header_orangewhite.png"
-                alt="Marconi Inmobiliaria"
-                width={140}
-                height={45}
-                className="h-8 md:h-10 w-auto"
-                priority
-              />
-            </Link>
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                PROPIEDADES
-              </Link>
-              <Link
-                href="/agentes"
-                className="text-brand-orange font-semibold"
-              >
-                AGENTES
-              </Link>
-              <Link
-                href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                CONTACTO
-              </Link>
-            </nav>
-          </div>
-        </div>
-        
-        {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-gray-900 to-black">
-        <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              NUESTROS <span className="text-brand-orange">AGENTES</span>
-            </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-              Conocé al equipo de profesionales inmobiliarios que te acompañará 
-              en cada paso para encontrar tu próxima propiedad en Reconquista
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <PageLayout
+      title="NUESTROS AGENTES"
+      subtitle="Conocé al equipo de profesionales inmobiliarios que te acompañará en cada paso para encontrar tu próxima propiedad en Reconquista"
+      showHero={true}
+      className="bg-premium-gray-950"
+    >
 
       {/* Team Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
+      <section className="py-24 bg-premium-gray-925 relative overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 25% 25%, #f97316 0%, transparent 50%),
+                             radial-gradient(circle at 75% 75%, #ea580c 0%, transparent 50%)`
+          }}></div>
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            {...teamAnimation.getMotionProps("fadeUp")}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Nuestro Equipo de Expertos
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Nuestro Equipo de <span className="gradient-text font-museo">Expertos</span>
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl text-premium-gray-300 max-w-3xl mx-auto">
               Cada uno de nuestros agentes cuenta con años de experiencia y conocimiento 
-              profundo del mercado inmobiliario local
+              profundo del mercado inmobiliario local de Reconquista
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <motion.div 
+            {...teamAnimation.getStaggerContainer(0.15)}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
             {agents.map((agent, index) => (
               <motion.div
                 key={agent.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                {...teamAnimation.getStaggerChild()}
+                className="group"
               >
-                <Card className="bg-gray-800 border-gray-700 overflow-hidden hover:border-brand-orange transition-all duration-300 group">
-                  <div className="relative">
-                    <div className="aspect-[3/4] overflow-hidden">
+                <Card className="property-card bg-premium-gray-900/60 backdrop-blur-xl border-premium-gray-700/30 border-2 overflow-hidden h-full flex flex-col rounded-3xl shadow-2xl">
+                  <div className="relative overflow-hidden rounded-t-3xl">
+                    <div className="aspect-[3/4] overflow-hidden group">
                       <Image
                         src={getOptimizedImageUrl(agent.image, { 
-                          width: 300, 
-                          height: 400, 
+                          width: 400, 
+                          height: 500, 
                           crop: "fill", 
                           gravity: "face",
-                          quality: "auto",
+                          quality: "auto:best",
                           format: "auto"
                         })}
                         alt={agent.name}
-                        width={300}
-                        height={400}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        width={400}
+                        height={500}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-all duration-700 ease-out"
                       />
+                      
+                      {/* Gradient overlay on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                     
                     {/* Status badge */}
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-green-500 text-white">
-                        <div className="w-2 h-2 bg-white rounded-full mr-1"></div>
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: index * 0.1 + 0.3 }}
+                      className="absolute top-6 right-6"
+                    >
+                      <div className="glass text-green-400 border border-green-500/30 px-3 py-2 rounded-2xl text-sm font-bold shadow-2xl backdrop-blur-lg flex items-center">
+                        <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
                         Disponible
-                      </Badge>
+                      </div>
+                    </motion.div>
+
+                    {/* Specialization icon */}
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: index * 0.1 + 0.5 }}
+                      className="absolute top-6 left-6"
+                    >
+                      <div className="w-12 h-12 bg-premium-orange-500/20 border border-premium-orange-500/30 rounded-2xl flex items-center justify-center backdrop-blur-lg">
+                        <agent.icon className="w-6 h-6 text-premium-orange-400" />
+                      </div>
+                    </motion.div>
+
+                    {/* Contact overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        className="glass text-white px-6 py-3 rounded-2xl font-bold backdrop-blur-lg border border-white/20"
+                      >
+                        <MessageCircle className="w-5 h-5 inline mr-2" />
+                        Contactar
+                      </motion.div>
                     </div>
                   </div>
 
-                  <CardContent className="p-6">
-                    <div className="mb-4">
-                      <h3 className="text-xl font-bold text-white mb-1">{agent.name}</h3>
-                      <p className="text-brand-orange font-semibold mb-1">{agent.role}</p>
+                  <CardContent className="p-6 flex flex-col flex-1 space-y-4">
+                    <div className="space-y-3">
+                      <h3 className="text-2xl font-bold text-white mb-2">{agent.name}</h3>
+                      <p className="gradient-text font-bold text-lg">{agent.role}</p>
+                      <div className="glass px-4 py-2 rounded-xl">
+                        <p className="text-premium-gray-300 text-sm font-medium">{agent.specialization}</p>
+                      </div>
                     </div>
 
-                    <div className="mb-4">
-                      <Badge variant="secondary" className="bg-gray-700 text-gray-300 mb-2">
-                        {agent.specialization}
-                      </Badge>
+                    <div className="flex-1">
+                      <p className="text-premium-gray-400 text-sm leading-relaxed line-clamp-3">
+                        {agent.description}
+                      </p>
                     </div>
 
+                    {/* Achievements */}
+                    <div className="space-y-2">
+                      <h4 className="text-premium-gray-300 font-semibold text-sm">Logros destacados:</h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        {agent.achievements.slice(0, 2).map((achievement, i) => (
+                          <div key={i} className="glass px-2 py-1 rounded-lg">
+                            <p className="text-premium-orange-300 text-xs font-medium">{achievement}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
 
-                    <div className="flex gap-2">
-                      <Button 
-                        className="flex-1 bg-brand-orange hover:bg-brand-orange/90 text-white"
-                        onClick={() => handleContactAgent(agent)}
-                      >
-                        Contactar
-                        <MessageCircle className="w-4 h-4 ml-1" />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white bg-transparent"
-                        asChild
-                      >
-                        <a href={`tel:${agent.phone}`}>
-                          <Phone className="w-4 h-4" />
-                        </a>
-                      </Button>
+                    {/* Action Buttons */}
+                    <div className="flex gap-3 pt-4 border-t border-premium-gray-700/50">
+                      <motion.div className="flex-1" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button 
+                          className="w-full bg-premium-orange-600 hover:bg-premium-orange-700 text-white font-bold py-3 rounded-2xl shadow-2xl hover:shadow-premium transition-all duration-300 group"
+                          onClick={() => handleContactAgent(agent)}
+                        >
+                          <span className="mr-2">Contactar</span>
+                          <MessageCircle className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                        </Button>
+                      </motion.div>
+                      
+                      <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                        <Button
+                          size="lg"
+                          variant="outline"
+                          className="border-2 border-premium-gray-600/50 text-premium-gray-300 hover:bg-premium-orange-500/20 hover:text-premium-orange-400 hover:border-premium-orange-500/50 glass rounded-2xl p-3 transition-all duration-300"
+                          asChild
+                        >
+                          <a href={`tel:${agent.phone}`}>
+                            <Phone className="w-5 h-5" />
+                          </a>
+                        </Button>
+                      </motion.div>
                     </div>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
+      <SectionSeparator variant="minimal" />
+
 
       {/* Contact Form Section */}
-      <section id="contact-form" className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
+      <section id="contact-form" className="py-24 bg-premium-gray-950 relative overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 20% 80%, #f97316 0%, transparent 50%),
+                             radial-gradient(circle at 80% 20%, #ea580c 0%, transparent 50%)`
+          }}></div>
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-3xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              {...contactAnimation.getMotionProps("fadeUp")}
               className="text-center mb-12"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
                 {selectedAgent ? (
-                  <>Contactá a <span className="text-brand-orange">{selectedAgent.name}</span></>
+                  <>Contactá a <span className="gradient-text font-museo">{selectedAgent.name}</span></>
                 ) : (
-                  <>Contactá a Nuestro <span className="text-brand-orange">Equipo</span></>
+                  <>Contactá a Nuestro <span className="gradient-text font-museo">Equipo</span></>
                 )}
               </h2>
-              <p className="text-lg text-gray-300">
+              <p className="text-xl text-premium-gray-300">
                 {selectedAgent ? 
                   `${selectedAgent.name} te responderá a la brevedad para ayudarte con ${selectedAgent.specialization.toLowerCase()}` :
                   "Completá el formulario y nuestros agentes se pondrán en contacto contigo"
@@ -394,20 +411,29 @@ export default function AgentesPage() {
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={contactAnimation.isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <Card className="bg-gray-800 border-gray-700">
+              <Card className="bg-premium-gray-900/60 backdrop-blur-xl border-premium-gray-700/30 border-2 rounded-3xl shadow-2xl">
                 <CardContent className="p-8">
                   {submitSuccess ? (
-                    <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Check className="w-8 h-8 text-white" />
-                      </div>
-                      <h3 className="text-2xl font-bold text-white mb-2">¡Mensaje Enviado!</h3>
-                      <p className="text-gray-300 mb-6">
+                    <motion.div 
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="text-center py-12"
+                    >
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                        className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl"
+                      >
+                        <Check className="w-10 h-10 text-white" />
+                      </motion.div>
+                      <h3 className="text-3xl font-bold text-white mb-4">¡Mensaje Enviado!</h3>
+                      <p className="text-premium-gray-300 mb-8 text-lg">
                         {selectedAgent ? `${selectedAgent.name} recibirá` : "Nuestro equipo recibirá"} tu consulta 
                         y se pondrá en contacto contigo a la brevedad.
                       </p>
@@ -417,48 +443,55 @@ export default function AgentesPage() {
                           setSelectedAgent(null);
                         }}
                         variant="outline"
-                        className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white bg-transparent"
+                        className="border-2 border-premium-gray-600/50 text-premium-gray-300 hover:bg-premium-orange-500/20 hover:text-premium-orange-400 hover:border-premium-orange-500/50 glass rounded-2xl px-8 py-3"
                       >
                         Enviar otra consulta
                       </Button>
-                    </div>
+                    </motion.div>
                   ) : (
                     <form onSubmit={handleSubmitContact} className="space-y-6">
                       {selectedAgent && (
-                        <div className="bg-brand-orange/10 border border-brand-orange/20 rounded-lg p-4">
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.5 }}
+                          className="glass border border-premium-orange-500/30 rounded-2xl p-6"
+                        >
                           <div className="flex items-center">
-                            <selectedAgent.icon className="w-8 h-8 text-brand-orange mr-3" />
+                            <div className="w-12 h-12 bg-premium-orange-500/20 border border-premium-orange-500/30 rounded-2xl flex items-center justify-center mr-4">
+                              <selectedAgent.icon className="w-6 h-6 text-premium-orange-400" />
+                            </div>
                             <div>
-                              <div className="font-semibold text-white">{selectedAgent.name}</div>
-                              <div className="text-sm text-brand-orange">{selectedAgent.specialization}</div>
+                              <div className="font-bold text-white text-lg">{selectedAgent.name}</div>
+                              <div className="text-premium-orange-400 font-medium">{selectedAgent.specialization}</div>
                             </div>
                           </div>
-                        </div>
+                        </motion.div>
                       )}
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <label className="block text-sm font-bold text-premium-gray-300 mb-3">
                             Nombre completo
                           </label>
                           <Input
                             type="text"
                             value={contactForm.name}
                             onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
-                            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange"
+                            className="bg-premium-gray-800/60 border-premium-gray-600/50 text-white placeholder-premium-gray-400 focus:border-premium-orange-500 rounded-2xl backdrop-blur-md h-12"
                             placeholder="Tu nombre completo"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <label className="block text-sm font-bold text-premium-gray-300 mb-3">
                             Email
                           </label>
                           <Input
                             type="email"
                             value={contactForm.email}
                             onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
-                            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange"
+                            className="bg-premium-gray-800/60 border-premium-gray-600/50 text-white placeholder-premium-gray-400 focus:border-premium-orange-500 rounded-2xl backdrop-blur-md h-12"
                             placeholder="tu@email.com"
                             required
                           />
@@ -466,52 +499,69 @@ export default function AgentesPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-bold text-premium-gray-300 mb-3">
                           Teléfono
                         </label>
                         <Input
                           type="tel"
                           value={contactForm.phone}
                           onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
-                          className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange"
+                          className="bg-premium-gray-800/60 border-premium-gray-600/50 text-white placeholder-premium-gray-400 focus:border-premium-orange-500 rounded-2xl backdrop-blur-md h-12"
                           placeholder="+54 9 3482 308100"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block text-sm font-bold text-premium-gray-300 mb-3">
                           Mensaje
                         </label>
                         <Textarea
                           value={contactForm.message}
                           onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
-                          className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange min-h-32"
+                          className="bg-premium-gray-800/60 border-premium-gray-600/50 text-white placeholder-premium-gray-400 focus:border-premium-orange-500 min-h-32 rounded-2xl backdrop-blur-md"
                           placeholder="Contanos qué tipo de propiedad estás buscando, tu presupuesto y cualquier detalle importante..."
                           required
                         />
                       </div>
 
-                      <div className="flex gap-4">
-                        <Button
-                          type="submit"
-                          className="flex-1 bg-brand-orange hover:bg-brand-orange/90 text-white"
-                          disabled={submitLoading}
-                        >
-                          {submitLoading ? "Enviando..." : "Enviar Consulta"}
-                          <MessageCircle className="w-4 h-4 ml-2" />
-                        </Button>
-                        {selectedAgent && (
+                      <div className="flex gap-4 pt-4">
+                        <motion.div className="flex-1" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                           <Button
-                            type="button"
-                            variant="outline"
-                            className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white bg-transparent"
-                            onClick={() => {
-                              setSelectedAgent(null);
-                              setContactForm(prev => ({ ...prev, message: "", agentId: null }));
-                            }}
+                            type="submit"
+                            className="w-full bg-premium-orange-600 hover:bg-premium-orange-700 text-white font-bold py-4 rounded-2xl shadow-2xl hover:shadow-premium transition-all duration-300 group"
+                            disabled={submitLoading}
                           >
-                            Cancelar
+                            {submitLoading ? (
+                              <>
+                                <motion.div
+                                  animate={{ rotate: 360 }}
+                                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                  className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
+                                />
+                                Enviando...
+                              </>
+                            ) : (
+                              <>
+                                <span className="mr-3">Enviar Consulta</span>
+                                <MessageCircle className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                              </>
+                            )}
                           </Button>
+                        </motion.div>
+                        {selectedAgent && (
+                          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="border-2 border-premium-gray-600/50 text-premium-gray-300 hover:bg-premium-gray-700/60 hover:text-white glass rounded-2xl px-6 py-4"
+                              onClick={() => {
+                                setSelectedAgent(null);
+                                setContactForm(prev => ({ ...prev, message: "", agentId: null }));
+                              }}
+                            >
+                              Cancelar
+                            </Button>
+                          </motion.div>
                         )}
                       </div>
                     </form>
@@ -523,133 +573,76 @@ export default function AgentesPage() {
         </div>
       </section>
 
+      <SectionSeparator variant="dots" />
+
       {/* Why Choose Us Section */}
-      <section className="py-20 bg-black">
-        <div className="container mx-auto px-4">
+      <section className="py-24 bg-premium-gray-925 relative overflow-hidden">
+        {/* Background effects */}
+        <div className="absolute inset-0 bg-gradient-to-r from-premium-orange-950/10 via-transparent to-premium-orange-950/10" />
+        
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            {...featuresAnimation.getMotionProps("fadeUp")}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              ¿Por qué elegir <span className="text-brand-orange">Marconi Inmobiliaria</span>?
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              ¿Por qué elegir <span className="gradient-text font-museo">Marconi Inmobiliaria</span>?
             </h2>
-            <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+            <p className="text-xl text-premium-gray-300 max-w-3xl mx-auto">
               Nuestro compromiso va más allá de simplemente vender propiedades. 
               Te acompañamos en todo el proceso con profesionalismo y dedicación.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <motion.div
+            {...featuresAnimation.getStaggerContainer(0.2)}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8"
+          >
             {[
               {
                 icon: Users,
                 title: "Atención Personalizada",
-                description: "Cada cliente recibe un servicio único y adaptado a sus necesidades específicas"
+                description: "Cada cliente recibe un servicio único y adaptado a sus necesidades específicas",
+                color: "text-premium-orange-400"
               },
               {
                 icon: MapPin,
                 title: "Conocimiento Local",
-                description: "Años de experiencia en el mercado inmobiliario de Reconquista y zona"
+                description: "Años de experiencia en el mercado inmobiliario de Reconquista y zona",
+                color: "text-premium-orange-500"
               },
               {
                 icon: Award,
                 title: "Profesionalismo",
-                description: "Agentes certificados y en constante capacitación para brindarte el mejor servicio"
+                description: "Agentes certificados y en constante capacitación para brindarte el mejor servicio",
+                color: "text-premium-orange-600"
               },
               {
                 icon: Star,
                 title: "Resultados Comprobados",
-                description: "Miles de transacciones exitosas y clientes satisfechos nos respaldan"
+                description: "Miles de transacciones exitosas y clientes satisfechos nos respaldan",
+                color: "text-premium-orange-400"
               }
             ].map((feature, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
+                {...featuresAnimation.getStaggerChild()}
+                className="text-center group hover:scale-105 transition-transform duration-300"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-6">
-                  <feature.icon className="h-8 w-8 text-brand-orange" />
-                </div>
+                <motion.div 
+                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  transition={{ duration: 0.6 }}
+                  className="inline-flex items-center justify-center w-20 h-20 bg-premium-orange-500/10 border border-premium-orange-500/30 rounded-2xl mb-6 group-hover:bg-premium-orange-500/20 transition-colors duration-300"
+                >
+                  <feature.icon className={`h-10 w-10 ${feature.color}`} />
+                </motion.div>
                 <h3 className="text-xl font-bold text-white mb-4">{feature.title}</h3>
-                <p className="text-gray-300">{feature.description}</p>
+                <p className="text-premium-gray-300 leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <Image
-                  src="/assets/logos/marconi_title.svg"
-                  alt="Marconi Inmobiliaria"
-                  width={140}
-                  height={45}
-                  className="h-8 w-auto"
-                />
-              </div>
-              <p className="text-gray-400 mb-4">
-                La inmobiliaria líder en Reconquista, comprometida con encontrar
-                el hogar perfecto para cada familia.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-white font-semibold mb-4">Enlaces</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    href="/propiedades"
-                    className="hover:text-white transition-colors"
-                  >
-                    Propiedades
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/agentes"
-                    className="hover:text-white transition-colors"
-                  >
-                    Agentes
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contacto"
-                    className="hover:text-white transition-colors"
-                  >
-                    Contacto
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-white font-semibold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Reconquista, Santa Fe</li>
-                <li>+54 9 3482 308100</li>
-                <li>marconinegociosinmobiliarios@hotmail.com</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>
-              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </PageLayout>
   );
 }
