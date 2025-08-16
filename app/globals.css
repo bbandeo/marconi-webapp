@@ -84,3 +84,41 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* === Premium effects & patterns === */
+
+/* Panel diagonal para el hero estilo "reel" */
+.clip-diagonal-left {
+  clip-path: polygon(0 0, 65% 0, 55% 100%, 0 100%);
+}
+@media (min-width: 768px) {
+  .clip-diagonal-left {
+    clip-path: polygon(0 0, 55% 0, 45% 100%, 0 100%);
+  }
+}
+
+/* Patrón sutil (aprox. al repetido de la imagen) */
+.pattern-diagonal {
+  background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.12) 0, rgba(255,255,255,0.12) 10px, transparent 10px, transparent 20px);
+}
+.pattern-dots {
+  background-image: radial-gradient(circle at 10px 10px, rgba(255,255,255,0.15) 2px, transparent 3px);
+  background-size: 24px 24px;
+}
+
+/* Animación flotante sutil */
+@keyframes floatSlow {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+.float-slow {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+/* Línea luminosa decorativa */
+.decorative-scanline {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 153, 0, 0.7), transparent);
+  filter: drop-shadow(0 0 8px rgba(255, 153, 0, 0.6));
+}

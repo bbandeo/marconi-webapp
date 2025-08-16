@@ -27,6 +27,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
 import Link from "next/link";
+import { SectionDivider } from "@/components/ui/section-divider";
 
 export default function ContactoPage() {
   const [contactForm, setContactForm] = useState({
@@ -51,57 +52,31 @@ export default function ContactoPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: contactForm.name,
-          email: contactForm.email,
-          phone: contactForm.phone,
-          message: `Asunto: ${contactForm.subject}\n\n${contactForm.message}`,
-          source: 'contact_page',
-          property_id: null,
-        }),
+        body: JSON.stringify(contactForm),
       });
 
-      if (response.ok) {
-        setSubmitSuccess(true);
-        setContactForm({
-          name: "",
-          email: "",
-          phone: "",
-          subject: "",
-          message: "",
-        });
-      } else {
-        throw new Error('Error al enviar la consulta');
+      if (!response.ok) {
+        throw new Error('Error al enviar el formulario');
       }
+
+      setSubmitSuccess(true);
+      setContactForm({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (error) {
-      console.error('Error submitting contact form:', error);
-      setSubmitError('Hubo un error al enviar tu consulta. Por favor, intenta nuevamente.');
+      setSubmitError('No se pudo enviar el formulario. Intenta nuevamente.');
     } finally {
       setSubmitLoading(false);
     }
-  };
+  }
 
   const contactMethods = [
-    {
-      icon: Phone,
-      title: "Teléfono",
-      content: "+54 3482 308100",
-      color: "text-green-500",
-    },
-    {
-      icon: MessageCircle,
-      title: "WhatsApp",
-      content: "+54 9 3482 308100",
-      action: "https://api.whatsapp.com/send?phone=543482308100&text=Hola!%20%F0%9F%91%8B%20Me%20gustar%C3%ADa%20obtener%20m%C3%A1s%20informaci%C3%B3n%20sobre%20sus%20servicios%2C%20gracias.",
-      color: "text-green-500",
-    },
-    {
-      icon: Mail,
-      title: "Email",
-      content: "marconinegociosinmobiliarios@hotmail.com",
-      action: "mailto:marconinegociosinmobiliarios@hotmail.com",
-      color: "text-blue-500",
-    },
+    { icon: Phone, title: "Llamar", content: "+54 9 3482 308100", action: "tel:+543482308100" },
+    { icon: MessageCircle, title: "WhatsApp", content: "Envíanos un mensaje", action: "https://wa.me/543482308100" },
+    { icon: Mail, title: "Email", content: "marconinegociosinmobiliarios@hotmail.com", action: "mailto:marconinegociosinmobiliarios@hotmail.com" },
+  ];
+
+  const officeInfo = [
+    { icon: MapPin, label: "Dirección", value: "Reconquista, Santa Fe" },
+    { icon: Clock, label: "Horario", value: "Lun a Vie 8:00 - 18:00" },
   ];
 
   const whyChooseUsReasons = [
@@ -232,6 +207,7 @@ export default function ContactoPage() {
           </motion.div>
         </div>
       </section>
+      <SectionDivider variant="curve" />
 
       {/* Contact Form Section */}
       <section className="py-20 bg-gray-900">

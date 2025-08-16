@@ -24,6 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Link from "next/link";
 import Image from "next/image";
+import { SectionDivider } from "@/components/ui/section-divider";
 
 // Importar servicios
 import { useIsClient } from "@/hooks/use-is-client";
@@ -223,48 +224,60 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-black/40" />
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center">
-          {/* Centered Impact Text */}
-          <div className="flex-1 flex items-center justify-center w-full">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full"
-            >
-              <div
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                className="w-full p-20 flex justify-center"
-              >
-                <Image
-                  src="/assets/impact_text/vivilaexperiencia.PNG"
-                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                  width={800}
-                  height={200}
-                  priority
-                />
+        {/* Content - Reel style hero */}
+        <div className="relative z-10 h-full">
+          <div className="absolute inset-0 flex">
+            {/* Panel naranja con diagonal y texto grande */}
+            <div className="relative h-full w-[70%] md:w-[55%] bg-brand-orange/95 clip-diagonal-left">
+              <div className="absolute inset-0 pattern-diagonal opacity-30" />
+              <div className="relative h-full flex flex-col justify-center px-8 md:px-16">
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="text-white text-5xl md:text-7xl font-bold leading-[0.95] tracking-tight"
+                >
+                  Marconi
+                  <br />
+                  Negocios Inmobiliarios
+                </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15, duration: 0.6 }}
+                  className="text-white/90 text-xl md:text-2xl mt-4"
+                >
+                  Viví la experiencia de encontrar tu lugar en el mundo
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25, duration: 0.6 }}
+                  className="mt-8 flex gap-3"
+                >
+                  <Link href="/propiedades">
+                    <Button className="bg-white text-brand-orange hover:bg-gray-100">
+                      Ver propiedades
+                    </Button>
+                  </Link>
+                  <Link href="/contacto">
+                    <Button variant="outline" className="border-white/80 text-white hover:bg-white/10">
+                      Contacto
+                    </Button>
+                  </Link>
+                </motion.div>
               </div>
-            </motion.div>
+            </div>
+            {/* Lado derecho con patrón y elementos flotantes */}
+            <div className="flex-1 relative">
+              <div className="absolute inset-0 pattern-dots opacity-30" />
+              <div className="absolute bottom-10 right-10 w-24 h-24 rounded-full bg-white/20 backdrop-blur-md float-slow" />
+            </div>
           </div>
-
-          {/* Company Branding at Bottom */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0, duration: 0.4 }}
-            className="mb-8 text-center px-4"
-          >
-            <Image
-              src="/assets/logos/marconi_header_orangewhite.png"
-              alt="Marconi Inmobiliaria"
-              width={400}
-              height={120}
-              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
-            />
-          </motion.div>
         </div>
       </section>
+      {/* Divider between Hero and Featured Properties */}
+      <SectionDivider variant="wave" />
       {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
       <section
         id="propiedades"
@@ -478,6 +491,7 @@ export default function HomePage() {
           )}
         </div>
       </section>
+      <SectionDivider variant="curve" />
 
       {/* Stats Section */}
       <section className="py-20 bg-gray-900">
@@ -514,6 +528,7 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+      <SectionDivider variant="wave" />
 
       {/* CTA Section */}
       <section className="py-20 bg-brand-orange">
