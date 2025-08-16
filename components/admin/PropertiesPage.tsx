@@ -98,10 +98,10 @@ function PropertyImage({ images, title }: PropertyImageProps) {
           <img
             src={firstImage}
             alt={`Vista previa de ${title}`}
-            className="w-48 h-36 object-cover rounded"
+            className="w-80 h-44 object-cover rounded"
             onError={() => setImageError(true)}
           />
-          <p className="text-xs text-gray-300 mt-1 px-1 truncate max-w-48">
+          <p className="text-sm text-gray-300 mt-2 px-1 truncate max-w-80">
             {title}
           </p>
         </div>
