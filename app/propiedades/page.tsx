@@ -13,6 +13,7 @@ import Link from "next/link"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
 import { PropertyService } from "@/services/properties"
 import type { Property as PropertyType } from "@/lib/supabase"
+import { SectionDivider } from "@/components/ui/section-divider"
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -402,6 +403,7 @@ export default function PropiedadesPage() {
           </div>
         </div>
       </section>
+      <SectionDivider variant="curve" />
 
       {/* Results */}
       <div className="container mx-auto px-4 py-12 bg-gradient-to-b from-black to-gray-900">
@@ -614,6 +616,7 @@ export default function PropiedadesPage() {
           </div>
         )}
       </div>
+      <SectionDivider variant="angled" />
 
       {/* Footer - matching homepage */}
       <footer className="bg-gray-800 border-t border-gray-700 py-12">

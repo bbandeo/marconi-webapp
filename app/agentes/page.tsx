@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Image from "next/image";
 import Link from "next/link";
+import { SectionDivider } from "@/components/ui/section-divider";
 
 interface Agent {
   id: number;
@@ -271,6 +272,7 @@ export default function AgentesPage() {
           </motion.div>
         </div>
       </section>
+      <SectionDivider variant="wave" />
 
       {/* Team Section */}
       <section className="py-20 bg-gray-900">
@@ -366,7 +368,7 @@ export default function AgentesPage() {
           </div>
         </div>
       </section>
-
+      <SectionDivider variant="curve" />
 
       {/* Contact Form Section */}
       <section id="contact-form" className="py-20 bg-gray-900">
@@ -522,6 +524,7 @@ export default function AgentesPage() {
           </div>
         </div>
       </section>
+      <SectionDivider variant="wave" />
 
       {/* Why Choose Us Section */}
       <section className="py-20 bg-black">
