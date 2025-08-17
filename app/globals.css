@@ -295,12 +295,26 @@
       rgba(243, 115, 33, 0.30) 70%,
       transparent 100%
     );
-    height: 38vh; /* más alto y más saturado */
+    height: 100%; /* cubrir toda la altura del contenedor */
   }
   @media (min-width: 768px) {
     .section-gradient-diagonal-soft {
-      height: 30vh;
+      height: 100%;
     }
+  }
+
+  /* Elegant top divider between sections */
+  .section-top-divider-elegant {
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.25) 20%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.25) 80%,
+      transparent 100%
+    );
+    opacity: 0.9;
   }
 
   /* Layout grid para control preciso */
