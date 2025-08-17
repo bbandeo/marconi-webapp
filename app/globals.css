@@ -285,13 +285,21 @@
     }
   }
 
-  /* Large soft top shadow to ease section transition */
-  .section-shadow-top-soft {
-    box-shadow: inset 0 80px 120px -20px rgba(0, 0, 0, 0.7);
+  /* Subtle diagonal gradient separator for section transition */
+  .section-gradient-diagonal-soft {
+    /* 45deg diagonal from top to bottom-right, fading to transparent */
+    background: linear-gradient(
+      135deg,
+      rgba(243, 115, 33, 0.55) 0%,
+      rgba(243, 115, 33, 0.35) 30%,
+      rgba(243, 115, 33, 0.15) 65%,
+      transparent 100%
+    );
+    height: 26vh; /* tenue y más corto que el hero */
   }
   @media (min-width: 768px) {
-    .section-shadow-top-soft {
-      box-shadow: inset 0 100px 160px -30px rgba(0, 0, 0, 0.7);
+    .section-gradient-diagonal-soft {
+      height: 22vh;
     }
   }
 
