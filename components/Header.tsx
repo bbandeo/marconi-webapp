@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,6 +16,7 @@ interface HeaderProps {
 export default function Header({ showMobileSearch = true }: HeaderProps) {
   const pathname = usePathname();
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isClient = useIsClient();
 
   const isActivePage = (path: string) => {
@@ -115,9 +117,19 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
             </Link>
           </nav>
 
+          {/* Mobile Menu Button - PREMIUM STYLED */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="md:hidden text-bone-white hover:bg-premium-card"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </Button>
+
           {/* Mobile Search Bar - PREMIUM STYLED */}
           {showMobileSearch && (
-            <div className="md:hidden flex-1 max-w-xs ml-4">
+            <div className="md:hidden flex-1 max-w-xs ml-4 mr-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-bone-white/60" />
                 <Input
@@ -129,6 +141,43 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
           )}
         </div>
       </div>
+
+      {/* Mobile Navigation Menu - PREMIUM STYLED */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-premium-main border-b border-support-gray/20">
+          <div className="container-premium py-premium-md">
+            <nav className="flex flex-col space-y-premium-sm">
+              <Link
+                href="/propiedades"
+                className={`${getLinkClassName("/propiedades")} block py-premium-sm px-premium-md rounded-lg hover:bg-premium-card transition-colors`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="body-md font-medium tracking-wide">
+                  PROPIEDADES
+                </span>
+              </Link>
+              <Link
+                href="/agentes"
+                className={`${getAgentesLinkClassName()} block py-premium-sm px-premium-md rounded-lg hover:bg-premium-card transition-colors`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="body-md font-medium tracking-wide">
+                  AGENTES
+                </span>
+              </Link>
+              <Link
+                href="/contacto"
+                className={`${getContactLinkClassName()} block py-premium-sm px-premium-md rounded-lg hover:bg-premium-card transition-colors`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="body-md font-medium tracking-wide">
+                  CONTACTO
+                </span>
+              </Link>
+            </nav>
+          </div>
+        </div>
+      )}
 
       {/* Decorative divider line - PREMIUM GRADIENT */}
       <div className="w-full h-1 bg-gradient-to-r from-transparent via-vibrant-orange to-transparent shadow-lg opacity-80"></div>

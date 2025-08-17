@@ -192,8 +192,8 @@ export default function PropiedadesPage() {
         <section className="section-premium">
           <div className="container-premium">
             <div className="text-center py-premium-xl">
-              <div className="animate-spin rounded-full h-20 w-20 border-b-2 border-vibrant-orange mx-auto mb-premium-md"></div>
-              <p className="body-lg text-premium-primary">Cargando propiedades...</p>
+              <div className="animate-spin rounded-full h-20 w-20 border-4 border-support-gray/20 border-t-vibrant-orange mx-auto mb-premium-md shadow-xl"></div>
+              <p className="body-lg text-premium-primary pulse-premium">Cargando propiedades...</p>
             </div>
           </div>
         </section>
@@ -370,7 +370,7 @@ export default function PropiedadesPage() {
             {currentProperties.map((property) => (
               <Card
                 key={property.id}
-                className="group overflow-hidden hover:shadow-3xl transition-all duration-500"
+                className="group overflow-hidden hover-lift"
               >
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
                   {/* Image Section */}
@@ -382,7 +382,7 @@ export default function PropiedadesPage() {
                             src={property.images[0]}
                             alt={property.title}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="object-cover hover-scale"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement
                               target.src = "/placeholder.svg"

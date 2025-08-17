@@ -123,4 +123,66 @@
   .text-premium-primary { @apply text-bone-white; }
   .text-premium-secondary { @apply text-support-gray; }
   .accent-premium { @apply text-vibrant-orange; }
+  
+  /* MICRO-INTERACCIONES PREMIUM */
+  
+  /* Hover lift effect para elementos interactivos */
+  .hover-lift {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Smooth scale para imágenes y media */
+  .hover-scale {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Premium backdrop blur para elementos glassmorphism */
+  .premium-blur {
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+  }
+  
+  /* Enhanced focus states */
+  .focus-ring {
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #F37321, 0 0 0 4px rgba(243, 115, 33, 0.2);
+  }
+  
+  /* Smooth text color transitions */
+  .text-transition {
+    transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Premium gradient border animation */
+  .gradient-border {
+    position: relative;
+    background: linear-gradient(90deg, transparent, #F37321, transparent);
+    background-size: 200% 100%;
+    animation: border-flow 3s ease-in-out infinite;
+  }
+  
+  @keyframes border-flow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  /* Pulse animation refinada */
+  .pulse-premium {
+    animation: pulse-premium 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse-premium {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
 }

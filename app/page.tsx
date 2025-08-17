@@ -240,8 +240,8 @@ export default function HomePage() {
 
           {loadingProperties ? (
             <div className="text-center py-premium-lg">
-              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-vibrant-orange mx-auto"></div>
-              <p className="text-premium-primary mt-premium-sm body-lg">Cargando propiedades...</p>
+              <div className="animate-spin rounded-full h-20 w-20 border-4 border-support-gray/20 border-t-vibrant-orange mx-auto shadow-xl"></div>
+              <p className="text-premium-primary mt-premium-md body-lg pulse-premium">Cargando propiedades...</p>
             </div>
           ) : (
             <>
@@ -250,7 +250,7 @@ export default function HomePage() {
                 {featuredProperties.slice(0, 6).map((property) => (
                   <Card
                     key={property.id}
-                    className="group cursor-pointer"
+                    className="group cursor-pointer hover-lift"
                   >
                     {/* IMAGEN PROTAGONISTA - PREMIUM */}
                     <Link href={`/propiedades/${property.id}`}>
@@ -260,7 +260,7 @@ export default function HomePage() {
                             src={property.images[0]}
                             alt={property.title}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                            className="object-cover hover-scale"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
                               target.src = "/placeholder.svg";

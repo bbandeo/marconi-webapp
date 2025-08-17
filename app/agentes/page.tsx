@@ -259,7 +259,7 @@ export default function AgentesPage() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="overflow-hidden hover:shadow-3xl transition-all duration-500 group">
+                <Card className="overflow-hidden hover-lift group">
                   <div className="relative">
                     <div className="aspect-[3/4] overflow-hidden">
                       <Image
@@ -274,7 +274,7 @@ export default function AgentesPage() {
                         alt={agent.name}
                         width={300}
                         height={400}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover hover-scale"
                       />
                     </div>
                     
@@ -362,7 +362,7 @@ export default function AgentesPage() {
                 <CardContent className="card-premium">
                   {submitSuccess ? (
                     <div className="text-center py-premium-lg">
-                      <div className="w-20 h-20 bg-vibrant-orange rounded-full flex items-center justify-center mx-auto mb-premium-md">
+                      <div className="w-20 h-20 bg-vibrant-orange rounded-full flex items-center justify-center mx-auto mb-premium-md shadow-xl hover-lift">
                         <Check className="w-10 h-10 text-bone-white" />
                       </div>
                       <h3 className="heading-lg text-premium-primary mb-premium-sm">¡Mensaje Enviado!</h3>

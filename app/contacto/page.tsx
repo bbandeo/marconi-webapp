@@ -217,7 +217,7 @@ export default function ContactoPage() {
 
                   {submitSuccess ? (
                     <div className="text-center py-8">
-                      <div className="w-20 h-20 bg-vibrant-orange rounded-full flex items-center justify-center mx-auto mb-premium-md">
+                      <div className="w-20 h-20 bg-vibrant-orange rounded-full flex items-center justify-center mx-auto mb-premium-md shadow-xl hover-lift">
                         <Check className="w-10 h-10 text-bone-white" />
                       </div>
                       <h3 className="heading-lg text-premium-primary mb-premium-sm">¡Mensaje Enviado!</h3>

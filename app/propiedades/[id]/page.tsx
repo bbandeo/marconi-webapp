@@ -31,6 +31,7 @@ import {
   Home
 } from "lucide-react"
 import type { Property as PropertyType } from "@/lib/supabase"
+import Header from "@/components/Header"
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -163,47 +164,56 @@ export default function PropertyDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-800 rounded mb-6"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2">
-                <div className="h-96 bg-gray-800 rounded-lg mb-6"></div>
-                <div className="h-48 bg-gray-800 rounded-lg"></div>
-              </div>
-              <div>
-                <div className="h-64 bg-gray-800 rounded-lg"></div>
+      <div className="min-h-screen bg-premium-main">
+        <Header />
+        <section className="section-premium">
+          <div className="container-premium">
+            <div className="animate-pulse">
+              <div className="h-8 bg-premium-card rounded mb-premium-lg"></div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-premium-lg">
+                <div className="lg:col-span-2">
+                  <div className="h-96 bg-premium-card rounded-2xl mb-premium-lg"></div>
+                  <div className="h-48 bg-premium-card rounded-2xl"></div>
+                </div>
+                <div>
+                  <div className="h-64 bg-premium-card rounded-2xl"></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     )
   }
 
   if (error || !property) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">{error || "Propiedad no encontrada"}</h1>
-          <Button onClick={() => router.push("/propiedades")} className="bg-brand-orange hover:bg-brand-orange/90">
-            Volver a propiedades
-          </Button>
-        </div>
+      <div className="min-h-screen bg-premium-main">
+        <Header />
+        <section className="section-premium flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="heading-xl text-premium-primary mb-premium-md">{error || "Propiedad no encontrada"}</h1>
+            <Button onClick={() => router.push("/propiedades")} size="lg">
+              Volver a propiedades
+            </Button>
+          </div>
+        </section>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-premium-main">
+      {/* Header Premium */}
+      <Header />
+      
       {/* Back button */}
-      <div className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="bg-premium-main border-b border-support-gray/20">
+        <div className="container-premium py-premium-md">
           <Button
             onClick={() => router.push("/propiedades")}
             variant="ghost"
-            className="text-gray-300 hover:text-white hover:bg-gray-700"
+            className="text-premium-secondary hover:text-premium-primary"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Volver a propiedades
@@ -211,13 +221,14 @@ export default function PropertyDetailPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <section className="section-premium">
+        <div className="container-premium">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-premium-lg">
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Image Gallery */}
-            <div className="relative mb-6">
-              <div className="relative h-96 rounded-lg overflow-hidden bg-gray-800">
+            <div className="relative mb-premium-lg">
+              <div className="relative h-96 rounded-2xl overflow-hidden bg-premium-card hover-lift">
                 {property.images && property.images.length > 0 ? (
                   <>
                     <Image
@@ -307,8 +318,8 @@ export default function PropertyDetailPage() {
             </div>
 
             {/* Property Details */}
-            <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="p-6">
+            <Card className="hover-lift">
+              <CardContent className="card-premium">
                 {/* Title and Basic Info */}
                 <div className="mb-6">
                   <div className="flex items-center gap-3 mb-4">
@@ -336,20 +347,20 @@ export default function PropertyDetailPage() {
                     )}
                   </div>
 
-                  <h1 className="text-3xl font-bold text-white mb-4">{property.title}</h1>
+                  <h1 className="display-md text-premium-primary mb-premium-md">{property.title}</h1>
                   
-                  <div className="flex items-center text-gray-300 mb-4">
-                    <MapPin className="w-5 h-5 mr-2" />
+                  <div className="flex items-center text-premium-secondary mb-premium-md">
+                    <MapPin className="w-5 h-5 mr-2 text-vibrant-orange" />
                     {property.address}, {property.neighborhood}
                   </div>
 
-                  <div className="text-3xl font-bold text-brand-orange mb-4">
+                  <div className="display-lg text-vibrant-orange mb-premium-md">
                     {property.currency}$ {property.price.toLocaleString()}
-                    {property.operation === "rent" && <span className="text-lg text-gray-400">/mes</span>}
+                    {property.operation === "rent" && <span className="body-lg text-premium-secondary">/mes</span>}
                   </div>
 
                   {/* Property specs */}
-                  <div className="flex items-center gap-6 text-gray-300">
+                  <div className="flex items-center gap-6 text-premium-secondary">
                     {property.bedrooms && (
                       <div className="flex items-center">
                         <Bed className="w-5 h-5 mr-2" />
@@ -377,9 +388,9 @@ export default function PropertyDetailPage() {
 
                 {/* Description */}
                 {property.description && (
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold text-white mb-3">Descripción</h3>
-                    <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  <div className="mb-premium-lg">
+                    <h3 className="heading-lg text-premium-primary mb-premium-md">Descripción</h3>
+                    <p className="body-md text-premium-secondary leading-relaxed whitespace-pre-wrap">
                       {property.description}
                     </p>
                   </div>
@@ -388,12 +399,12 @@ export default function PropertyDetailPage() {
                 {/* Features */}
                 {property.features && property.features.length > 0 && (
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-3">Características</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <h3 className="heading-lg text-premium-primary mb-premium-md">Características</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-premium-sm">
                       {property.features.map((feature, index) => (
-                        <div key={index} className="flex items-center text-gray-300">
+                        <div key={index} className="flex items-center text-premium-secondary">
                           {getFeatureIcon(feature)}
-                          <span className="ml-2">{feature}</span>
+                          <span className="ml-2 body-md">{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -404,18 +415,18 @@ export default function PropertyDetailPage() {
 
             {/* Google Maps */}
             {property.address && (
-              <Card className="bg-gray-800 border-gray-700 mt-6">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold text-white mb-4">Ubicación</h3>
-                  <div className="relative h-80 rounded-lg overflow-hidden bg-gray-700 flex items-center justify-center">
+              <Card className="hover-lift mt-premium-lg">
+                <CardContent className="card-premium">
+                  <h3 className="heading-lg text-premium-primary mb-premium-md">Ubicación</h3>
+                  <div className="relative h-80 rounded-2xl overflow-hidden bg-premium-card flex items-center justify-center">
                     {/* Static map placeholder - easily replaceable with actual Google Maps */}
-                    <div className="text-center text-gray-400">
-                      <MapPin className="w-12 h-12 mx-auto mb-3 text-brand-orange" />
-                      <p className="font-medium text-white text-lg">{property.address}</p>
-                      <p className="text-gray-300">{property.neighborhood}, {property.city}</p>
-                      <p className="text-sm mt-3 text-gray-400">Mapa interactivo próximamente</p>
+                    <div className="text-center text-premium-secondary">
+                      <MapPin className="w-12 h-12 mx-auto mb-3 text-vibrant-orange" />
+                      <p className="heading-md text-premium-primary">{property.address}</p>
+                      <p className="body-md text-premium-secondary">{property.neighborhood}, {property.city}</p>
+                      <p className="caption-lg mt-3 text-premium-secondary">Mapa interactivo próximamente</p>
                       <Button 
-                        className="mt-4 bg-brand-orange hover:bg-brand-orange/90"
+                        className="mt-premium-md"
                         onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${property.address}, ${property.neighborhood}, ${property.city}`)}`)}
                       >
                         Ver en Google Maps
@@ -430,15 +441,16 @@ export default function PropertyDetailPage() {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             {/* Contact Card */}
-            <Card className="bg-gray-800 border-gray-700 sticky top-8">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold text-white mb-4">¿Interesado en esta propiedad?</h3>
+            <Card className="hover-lift sticky top-8">
+              <CardContent className="card-premium">
+                <h3 className="heading-lg text-premium-primary mb-premium-md">¿Interesado en esta propiedad?</h3>
                 
                 {!showContactForm ? (
-                  <div className="space-y-3">
+                  <div className="space-y-premium-sm">
                     <Button
                       onClick={() => setShowContactForm(true)}
-                      className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white"
+                      className="w-full"
+                      size="lg"
                     >
                       <MessageCircle className="w-4 h-4 mr-2" />
                       Enviar consulta
@@ -446,7 +458,8 @@ export default function PropertyDetailPage() {
                     
                     <Button
                       variant="outline"
-                      className="w-full bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                      className="w-full"
+                      size="lg"
                     >
                       <Phone className="w-4 h-4 mr-2" />
                       Llamar ahora
@@ -454,7 +467,8 @@ export default function PropertyDetailPage() {
                     
                     <Button
                       variant="outline"
-                      className="w-full bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                      className="w-full"
+                      size="lg"
                     >
                       <Mail className="w-4 h-4 mr-2" />
                       Enviar email
@@ -462,19 +476,20 @@ export default function PropertyDetailPage() {
                     
                     <Button
                       variant="outline"
-                      className="w-full bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
+                      className="w-full"
+                      size="lg"
                     >
                       <Calendar className="w-4 h-4 mr-2" />
                       Agendar visita
                     </Button>
                   </div>
                 ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-4">
+                  <form onSubmit={handleContactSubmit} className="space-y-premium-md">
                     <Input
                       placeholder="Tu nombre"
                       value={contactForm.name}
                       onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                       required
                     />
                     <Input
@@ -482,27 +497,28 @@ export default function PropertyDetailPage() {
                       placeholder="Tu email"
                       value={contactForm.email}
                       onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                       required
                     />
                     <Input
                       placeholder="Tu teléfono"
                       value={contactForm.phone}
                       onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                     />
                     <Textarea
                       placeholder="Tu mensaje"
                       value={contactForm.message}
                       onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                       rows={4}
                       required
                     />
-                    <div className="flex gap-2">
+                    <div className="flex gap-premium-sm">
                       <Button
                         type="submit"
-                        className="flex-1 bg-brand-orange hover:bg-brand-orange/90 text-white"
+                        className="flex-1"
+                        size="lg"
                       >
                         Enviar
                       </Button>
@@ -510,7 +526,7 @@ export default function PropertyDetailPage() {
                         type="button"
                         onClick={() => setShowContactForm(false)}
                         variant="outline"
-                        className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700"
+                        size="lg"
                       >
                         Cancelar
                       </Button>
@@ -519,21 +535,21 @@ export default function PropertyDetailPage() {
                 )}
 
                 {/* Property info summary */}
-                <div className="mt-6 pt-6 border-t border-gray-700">
-                  <div className="text-sm text-gray-400 space-y-2">
+                <div className="mt-premium-lg pt-premium-lg border-t border-support-gray/20">
+                  <div className="caption-lg text-premium-secondary space-y-premium-sm">
                     <div className="flex justify-between">
                       <span>Código:</span>
-                      <span className="text-white">#{property.id}</span>
+                      <span className="text-premium-primary">#{property.id}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Publicado:</span>
-                      <span className="text-white">
+                      <span className="text-premium-primary">
                         {new Date(property.created_at).toLocaleDateString('es-AR')}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Actualizado:</span>
-                      <span className="text-white">
+                      <span className="text-premium-primary">
                         {new Date(property.updated_at).toLocaleDateString('es-AR')}
                       </span>
                     </div>
@@ -543,7 +559,8 @@ export default function PropertyDetailPage() {
             </Card>
           </div>
         </div>
-      </div>
+        </div>
+      </section>
     </div>
   )
 }
