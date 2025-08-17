@@ -220,6 +220,7 @@ export default function HomePage() {
         id="propiedades"
         className="section-premium bg-premium-main relative overflow-hidden"
       >
+        <div className="absolute inset-x-0 top-0 section-gradient-accent-inverse pointer-events-none" />
         <div className="container-premium relative z-10">
           {/* Header Premium - ESPACIADO GENEROSO */}
           <div className="text-center mb-premium-xl">
