@@ -285,20 +285,13 @@
     }
   }
 
-  /* Inverse separator for section transition (≈65% of hero strength) */
-  .section-gradient-accent-inverse {
-    background: linear-gradient(
-      to bottom,
-      rgba(243, 115, 33, 0.8) 0%,
-      rgba(243, 115, 33, 0.5) 35%,
-      rgba(243, 115, 33, 0.25) 65%,
-      transparent 100%
-    );
-    height: 32vh; /* ~65% of 50vh */
+  /* Large soft top shadow to ease section transition */
+  .section-shadow-top-soft {
+    box-shadow: inset 0 80px 120px -20px rgba(0, 0, 0, 0.7);
   }
   @media (min-width: 768px) {
-    .section-gradient-accent-inverse {
-      height: 26vh; /* ~65% of 40vh on desktop */
+    .section-shadow-top-soft {
+      box-shadow: inset 0 100px 160px -30px rgba(0, 0, 0, 0.7);
     }
   }
 
