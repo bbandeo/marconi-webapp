@@ -284,7 +284,39 @@
       height: 40vh;
     }
   }
-  
+
+  /* Subtle diagonal gradient separator for section transition */
+  .section-gradient-diagonal-soft {
+    /* 45deg diagonal from top to bottom-right, fading to transparent */
+    background: linear-gradient(
+      135deg,
+      rgba(243, 115, 33, 0.75) 0%,
+      rgba(243, 115, 33, 0.55) 35%,
+      rgba(243, 115, 33, 0.30) 70%,
+      transparent 100%
+    );
+    height: 100%; /* cubrir toda la altura del contenedor */
+  }
+  @media (min-width: 768px) {
+    .section-gradient-diagonal-soft {
+      height: 100%;
+    }
+  }
+
+  /* Elegant top divider between sections */
+  .section-top-divider-elegant {
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.25) 20%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.25) 80%,
+      transparent 100%
+    );
+    opacity: 0.9;
+  }
+
   /* Layout grid para control preciso */
   .hero-grid-advanced {
     display: grid;
