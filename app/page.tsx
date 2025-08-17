@@ -137,8 +137,8 @@ export default function HomePage() {
       {/* Header Premium */}
       <Header />
 
-      {/* Hero Section - PREMIUM CON IMPACT TEXT */}
-      <section className="relative h-[60vh] md:h-[92vh] flex flex-col overflow-hidden">
+      {/* Hero Section - ALTA JERARQUÍA VISUAL */}
+      <section className="relative overflow-hidden">
         {/* Background Image Premium */}
         <div className="absolute inset-0">
           <Image
@@ -156,68 +156,61 @@ export default function HomePage() {
             className="object-cover"
             priority
           />
-          {/* Subtle dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
-          {/* Orange fade overlay - EFECTO DIFUMINADO IMPORTADO */}
-          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
+          {/* Enhanced overlay system */}
+          <div className="absolute inset-0 hero-overlay-strong" />
+          {/* Strategic orange gradient */}
+          <div className="absolute inset-x-0 bottom-0 hero-gradient-accent" />
         </div>
 
-        {/* Content - NUEVA ESTRUCTURA: LOGO ARRIBA + IMPACT TEXT ABAJO */}
-        <div className="relative z-10 h-full flex flex-col justify-between items-center py-premium-xl">
-          {/* Logo Principal Superior - TÍTULO */}
+        {/* Advanced Grid Layout */}
+        <div className="relative z-10 hero-grid-advanced">
+          {/* Logo Zone - Elemento Dominante */}
           <motion.div
-            initial={{ opacity: 0, y: -30 }}
+            initial={{ opacity: 0, y: -40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-center pt-premium-lg"
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="hero-header flex justify-center items-start"
           >
             <Image
               src="/assets/logos/marconi_header_orangewhite.png"
               alt="Marconi Inmobiliaria"
-              width={500}
-              height={150}
-              className="h-20 md:h-32 w-auto mx-auto opacity-95"
+              width={600}
+              height={180}
+              className="hero-logo-dominant w-auto mx-auto opacity-95"
               priority
             />
           </motion.div>
 
-          {/* Impact Text Central - MENSAJE PRINCIPAL */}
+          {/* Content Zone - Eslogan Principal */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-            className="flex-1 flex items-center justify-center w-full"
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+            className="hero-content text-center px-4"
           >
-            <div
-              style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-              className="w-full py-premium-lg px-premium-md flex justify-center rounded-2xl backdrop-blur-sm"
-            >
-              <Image
-                src="/assets/impact_text/vivilaexperiencia.PNG"
-                alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                width={800}
-                height={200}
-                className="max-w-full h-auto"
-                priority
-              />
-            </div>
+            <h1 className="hero-slogan-refined mb-6">
+              Viví la experiencia de encontrar tu lugar en el mundo
+            </h1>
+            <p className="hero-subtitle-elegant max-w-2xl mx-auto">
+              +200 propiedades cuidadosamente seleccionadas en las mejores ubicaciones de Reconquista
+            </p>
           </motion.div>
 
-          {/* CTA Bottom - LLAMADA A LA ACCIÓN */}
+          {/* CTA Zone - Llamada a la Acción */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
-            className="text-center pb-premium-lg"
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.6 }}
+            className="hero-footer text-center"
           >
             <Link href="/propiedades">
-              <Button size="xl" className="mb-premium-sm">
+              <button className="hero-cta-prominent rounded-xl border-0 text-white hover:text-white mb-4">
                 EXPLORAR PROPIEDADES
-                <ArrowRight className="w-6 h-6 ml-3" />
-              </Button>
+                <ArrowRight className="w-5 h-5 ml-3 inline" />
+              </button>
             </Link>
-            <p className="caption-lg text-bone-white/80">
-              +200 propiedades cuidadosamente seleccionadas
+            <p className="hero-text-subtle text-sm">
+              Acompañamiento profesional en cada paso
             </p>
           </motion.div>
         </div>
