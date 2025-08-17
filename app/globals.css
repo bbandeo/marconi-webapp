@@ -290,16 +290,16 @@
     /* 45deg diagonal from top to bottom-right, fading to transparent */
     background: linear-gradient(
       135deg,
-      rgba(243, 115, 33, 0.55) 0%,
-      rgba(243, 115, 33, 0.35) 30%,
-      rgba(243, 115, 33, 0.15) 65%,
+      rgba(243, 115, 33, 0.75) 0%,
+      rgba(243, 115, 33, 0.55) 35%,
+      rgba(243, 115, 33, 0.30) 70%,
       transparent 100%
     );
-    height: 26vh; /* tenue y más corto que el hero */
+    height: 38vh; /* más alto y más saturado */
   }
   @media (min-width: 768px) {
     .section-gradient-diagonal-soft {
-      height: 22vh;
+      height: 30vh;
     }
   }
 
