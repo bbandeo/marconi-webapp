@@ -28,7 +28,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header"
-import Footer from "@/components/Footer";
+import Footer from "@/components/Footer"
+import { LeadSourceSelector, useLeadSourceDetection, useLeadSourceSelector } from "@/components/LeadSourceSelector"
+import { useAnalytics } from "@/hooks/useAnalytics"
+import { type LeadSourceCode } from "@/types/analytics"
 
 export default function ContactoPage() {
   const [contactForm, setContactForm] = useState({
@@ -42,12 +45,18 @@ export default function ContactoPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
+  // Analytics and lead source tracking
+  const analytics = useAnalytics({ enableAutoTracking: true });
+  const detectedSource = useLeadSourceDetection();
+  const leadSourceSelector = useLeadSourceSelector(detectedSource || 'web_form');
+
   const handleSubmitContact = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitLoading(true);
     setSubmitError("");
 
     try {
+      // Create the lead first
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: {
@@ -58,12 +67,29 @@ export default function ContactoPage() {
           email: contactForm.email,
           phone: contactForm.phone,
           message: `Asunto: ${contactForm.subject}\n\n${contactForm.message}`,
-          source: 'contact_page',
+          source: leadSourceSelector.selectedSource || 'web_form',
           property_id: null,
         }),
       });
 
       if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id && leadSourceSelector.selectedSource) {
+          await analytics.trackLeadGeneration(
+            leadData.id,
+            leadSourceSelector.selectedSource as LeadSourceCode,
+            undefined, // no specific property
+            {
+              form_type: 'contact_page',
+              utm_source: new URLSearchParams(window.location.search).get('utm_source') || undefined,
+              utm_medium: new URLSearchParams(window.location.search).get('utm_medium') || undefined,
+              utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || undefined
+            }
+          );
+        }
+
         setSubmitSuccess(true);
         setContactForm({
           name: "",
@@ -72,6 +98,7 @@ export default function ContactoPage() {
           subject: "",
           message: "",
         });
+        leadSourceSelector.reset();
       } else {
         throw new Error('Error al enviar la consulta');
       }
@@ -300,6 +327,21 @@ export default function ContactoPage() {
 
                       <div>
                         <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
+                          ¿Cómo nos encontraste? *
+                        </label>
+                        <LeadSourceSelector
+                          {...leadSourceSelector.selectorProps}
+                          showDescription={true}
+                          variant="select"
+                          className="w-full"
+                        />
+                        {!leadSourceSelector.isValid && (
+                          <p className="text-red-400 text-sm mt-1">Por favor selecciona cómo nos encontraste</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                           Mensaje *
                         </label>
                         <Textarea
@@ -321,7 +363,7 @@ export default function ContactoPage() {
                         type="submit"
                         size="lg"
                         className="w-full"
-                        disabled={submitLoading || !contactForm.name || !contactForm.email || !contactForm.subject || !contactForm.message}
+                        disabled={submitLoading || !contactForm.name || !contactForm.email || !contactForm.subject || !contactForm.message || !leadSourceSelector.isValid}
                       >
                         {submitLoading ? "Enviando..." : "Enviar Consulta"}
                         <Send className="w-5 h-5 ml-2" />

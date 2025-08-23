@@ -16,6 +16,7 @@ import PropertyCard from "@/components/PropertyCard"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
 import { PropertyService } from "@/services/properties"
 import type { Property as PropertyType } from "@/lib/supabase"
+import { useAnalytics } from "@/hooks/useAnalytics"
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -29,6 +30,9 @@ export default function PropiedadesPage() {
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
+  
+  // Analytics tracking
+  const analytics = useAnalytics({ enableAutoTracking: true })
 
   // Filters
   const [searchTerm, setSearchTerm] = useState("")

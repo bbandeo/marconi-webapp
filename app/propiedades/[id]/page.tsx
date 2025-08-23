@@ -33,6 +33,7 @@ import {
 } from "lucide-react"
 import type { Property as PropertyType } from "@/lib/supabase"
 import Header from "@/components/Header"
+import { ComprehensivePropertyTracker, ContactTracker, ImageGalleryTracker, useImageGalleryTracker } from "@/components/PropertyViewTracker"
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -205,6 +206,14 @@ export default function PropertyDetailPage() {
 
   return (
     <div className="min-h-screen bg-premium-main">
+      {/* Analytics Tracking */}
+      <ComprehensivePropertyTracker 
+        propertyId={property.id}
+        title={property.title}
+        totalImages={property.images?.length || 0}
+        onViewTracked={(eventId) => console.log('Property view tracked:', eventId)}
+      />
+
       {/* Header Premium */}
       <Header />
       
@@ -228,9 +237,13 @@ export default function PropertyDetailPage() {
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Image Gallery */}
-            <div className="relative mb-premium-lg">
-              <div className="relative h-96 rounded-2xl overflow-hidden bg-premium-card hover-lift">
-                {property.images && property.images.length > 0 ? (
+            <ImageGalleryTracker 
+              propertyId={property.id} 
+              totalImages={property.images?.length || 0}
+            >
+              <div className="relative mb-premium-lg">
+                <div className="relative h-96 rounded-2xl overflow-hidden bg-premium-card hover-lift">
+                  {property.images && property.images.length > 0 ? (
                   <>
                     <Image
                       src={property.images[currentImageIndex]}
@@ -316,7 +329,8 @@ export default function PropertyDetailPage() {
                   ))}
                 </div>
               )}
-            </div>
+              </div>
+            </ImageGalleryTracker>
 
             {/* Property Details */}
             <Card className="hover-lift">
@@ -434,41 +448,49 @@ export default function PropertyDetailPage() {
                 
                 {!showContactForm ? (
                   <div className="space-y-premium-sm">
-                    <Button
-                      onClick={() => setShowContactForm(true)}
-                      className="w-full"
-                      size="lg"
-                    >
-                      <MessageCircle className="w-4 h-4 mr-2" />
-                      Enviar consulta
-                    </Button>
+                    <ContactTracker propertyId={property.id} type="form" metadata={{ form_type: 'property_inquiry' }}>
+                      <Button
+                        onClick={() => setShowContactForm(true)}
+                        className="w-full"
+                        size="lg"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        Enviar consulta
+                      </Button>
+                    </ContactTracker>
                     
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      size="lg"
-                    >
-                      <Phone className="w-4 h-4 mr-2" />
-                      Llamar ahora
-                    </Button>
+                    <ContactTracker propertyId={property.id} type="phone" metadata={{ contact_method: 'direct_call' }}>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        size="lg"
+                      >
+                        <Phone className="w-4 h-4 mr-2" />
+                        Llamar ahora
+                      </Button>
+                    </ContactTracker>
                     
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      size="lg"
-                    >
-                      <Mail className="w-4 h-4 mr-2" />
-                      Enviar email
-                    </Button>
+                    <ContactTracker propertyId={property.id} type="email" metadata={{ contact_method: 'direct_email' }}>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        size="lg"
+                      >
+                        <Mail className="w-4 h-4 mr-2" />
+                        Enviar email
+                      </Button>
+                    </ContactTracker>
                     
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      size="lg"
-                    >
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Agendar visita
-                    </Button>
+                    <ContactTracker propertyId={property.id} type="form" metadata={{ form_type: 'schedule_visit' }}>
+                      <Button
+                        variant="outline"
+                        className="w-full"
+                        size="lg"
+                      >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Agendar visita
+                      </Button>
+                    </ContactTracker>
                   </div>
                 ) : (
                   <form onSubmit={handleContactSubmit} className="space-y-premium-md">
