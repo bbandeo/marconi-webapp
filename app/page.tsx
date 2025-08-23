@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import {
   Search,
   MapPin,
@@ -30,6 +30,66 @@ import Header from "@/components/Header";
 import { useIsClient } from "@/hooks/use-is-client";
 import { PropertyService } from "@/services/properties";
 import type { Property } from "@/lib/supabase";
+
+// Componente para animación de contador
+function CounterAnimation({ value, label, icon: Icon }: { value: string, label: string, icon: any }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      const numericValue = parseInt(value.replace(/\D/g, ''));
+      let start = 0;
+      const duration = 2000;
+      const increment = numericValue / (duration / 16);
+      
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= numericValue) {
+          setCount(numericValue);
+          clearInterval(timer);
+        } else {
+          setCount(Math.floor(start));
+        }
+      }, 16);
+      
+      return () => clearInterval(timer);
+    }
+  }, [isInView, value]);
+
+  const displayValue = isInView ? 
+    (value.includes('+') ? `${count}+` : 
+     value.includes('%') ? `${count}%` : 
+     value.includes('.') ? value : 
+     count.toString()) : '0';
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      className="text-center group"
+    >
+      <motion.div 
+        whileHover={{ scale: 1.05 }}
+        className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-orange-600 to-red-600 rounded-full mb-6 shadow-xl shadow-orange-600/30 group-hover:shadow-orange-600/50 transition-all duration-300"
+      >
+        <Icon className="h-12 w-12 text-white" />
+      </motion.div>
+      <motion.div 
+        className="text-4xl font-bold text-white mb-3"
+        animate={isInView ? { scale: [1, 1.1, 1] } : {}}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        {displayValue}
+      </motion.div>
+      <div className="text-gray-300 text-lg font-medium">{label}</div>
+    </motion.div>
+  );
+}
 
 export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
@@ -228,76 +288,112 @@ export default function HomePage() {
             </div>
           ) : (
             <>
-              {/* GRID 2 COLUMNAS - MÁXIMO 6 PROPIEDADES */}
-              <div className="grid md:grid-cols-2 gap-premium-lg max-w-7xl mx-auto">
-                {featuredProperties.slice(0, 6).map((property) => (
-                  <Card
+              {/* GRID PROPIEDADES - DISEÑO ESTRATÉGICO PREMIUM */}
+              <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
+                {featuredProperties.slice(0, 6).map((property, index) => (
+                  <motion.div
                     key={property.id}
-                    className="group cursor-pointer hover-lift"
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1, duration: 0.6 }}
+                    viewport={{ once: true }}
                   >
-                    {/* IMAGEN PROTAGONISTA - PREMIUM */}
-                    <Link href={`/propiedades/${property.id}`}>
-                      <div className="relative overflow-hidden h-80 md:h-96">
-                        {property.images && property.images.length > 0 ? (
-                          <Image
-                            src={property.images[0]}
-                            alt={property.title}
-                            fill
-                            className="object-cover hover-scale"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement;
-                              target.src = "/placeholder.svg";
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-premium-card flex items-center justify-center">
-                            <div className="text-premium-secondary text-center">
-                              <Home className="w-16 h-16 mx-auto mb-4 opacity-40" />
-                              <p className="body-md">Sin imagen disponible</p>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Overlay Premium Sutil */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-night-blue/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        
-                        {/* Status Badge Minimalista - CONTRASTE MEJORADO */}
-                        <div className="absolute top-premium-sm left-premium-sm">
-                          <div className="bg-night-blue/90 text-bone-white px-premium-sm py-2 rounded-xl caption-lg font-semibold backdrop-blur-md border border-vibrant-orange/30">
-                            {property.operation_type === "venta" ? "VENTA" : "ALQUILER"}
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-
-                    {/* INFORMACIÓN ESENCIAL - SOLO 4 ELEMENTOS */}
-                    <CardContent className="card-premium">
+                    <Card className="group overflow-hidden bg-gray-800/50 border border-gray-700/30 backdrop-blur-sm hover:border-orange-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 cursor-pointer">
+                      {/* IMAGEN CON OVERLAYS ESTRATÉGICOS */}
                       <Link href={`/propiedades/${property.id}`}>
-                        {/* TÍTULO */}
-                        <h3 className="heading-md text-premium-primary mb-premium-sm hover:text-vibrant-orange transition-colors cursor-pointer line-clamp-2">
-                          {property.title}
-                        </h3>
-                        
-                        {/* UBICACIÓN */}
-                        <div className="flex items-center text-premium-secondary mb-premium-sm">
-                          <MapPin className="w-5 h-5 mr-2 text-vibrant-orange" />
-                          <span className="body-md">{property.neighborhood}, Reconquista</span>
-                        </div>
-                        
-                        {/* PRECIO - PROMINENTE */}
-                        <div className="text-right">
-                          <div className="display-sm text-premium-primary">
-                            {property.currency}$ {property.price.toLocaleString()}
-                          </div>
-                          {property.operation_type === "alquiler" && (
-                            <div className="caption-lg text-premium-secondary">
-                              por mes
+                        <div className="relative overflow-hidden h-80 md:h-96">
+                          {property.images && property.images.length > 0 ? (
+                            <Image
+                              src={property.images[0]}
+                              alt={property.title}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-700"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.src = "/placeholder.svg";
+                              }}
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-700 flex items-center justify-center">
+                              <div className="text-gray-400 text-center">
+                                <Home className="w-16 h-16 mx-auto mb-4 opacity-40" />
+                                <p className="text-sm font-medium">Sin imagen disponible</p>
+                              </div>
                             </div>
                           )}
+
+                          {/* Gradiente inferior para destacar precio */}
+                          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                          
+                          {/* PILL BADGE - VENTA/ALQUILER CON GRADIENTE */}
+                          <div className="absolute top-6 left-6">
+                            <div className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg shadow-orange-600/30 hover:shadow-orange-600/50 transition-shadow duration-300 backdrop-blur-sm">
+                              {property.operation_type === "venta" ? "VENTA" : "ALQUILER"}
+                            </div>
+                          </div>
+
+                          {/* PRECIO EN OVERLAY - TIPOGRAFÍA BOLD */}
+                          <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="absolute bottom-6 right-6 text-right"
+                          >
+                            <div className="bg-black/70 backdrop-blur-md rounded-xl px-4 py-3 border border-white/10">
+                              <div className="text-2xl font-bold text-white mb-1">
+                                {property.currency}$ {property.price.toLocaleString()}
+                              </div>
+                              {property.operation_type === "alquiler" && (
+                                <div className="text-xs text-gray-300 font-medium">
+                                  por mes
+                                </div>
+                              )}
+                            </div>
+                          </motion.div>
                         </div>
                       </Link>
-                    </CardContent>
-                  </Card>
+
+                      {/* INFORMACIÓN CON MÁS AIRE - PADDING GENEROSO */}
+                      <CardContent className="p-8">
+                        <Link href={`/propiedades/${property.id}`}>
+                          {/* TÍTULO CON JERARQUÍA CLARA */}
+                          <h3 className="text-xl font-bold text-white mb-4 hover:text-orange-400 transition-colors cursor-pointer line-clamp-2 leading-tight">
+                            {property.title}
+                          </h3>
+                          
+                          {/* UBICACIÓN - GRIS CLARO LEGIBLE */}
+                          <div className="flex items-center text-gray-300 mb-6">
+                            <MapPin className="w-5 h-5 mr-3 text-orange-400" />
+                            <span className="text-base font-medium">{property.neighborhood}, Reconquista</span>
+                          </div>
+                          
+                          {/* CARACTERÍSTICAS SI ESTÁN DISPONIBLES */}
+                          {(property.bedrooms || property.bathrooms || property.area_m2) && (
+                            <div className="flex items-center gap-4 text-gray-400 text-sm">
+                              {property.bedrooms && (
+                                <div className="flex items-center bg-gray-700/50 px-3 py-2 rounded-lg">
+                                  <Bed className="w-4 h-4 mr-2 text-orange-400" />
+                                  <span className="font-medium">{property.bedrooms}</span>
+                                </div>
+                              )}
+                              {property.bathrooms && (
+                                <div className="flex items-center bg-gray-700/50 px-3 py-2 rounded-lg">
+                                  <Bath className="w-4 h-4 mr-2 text-orange-400" />
+                                  <span className="font-medium">{property.bathrooms}</span>
+                                </div>
+                              )}
+                              {property.area_m2 && (
+                                <div className="flex items-center bg-gray-700/50 px-3 py-2 rounded-lg">
+                                  <Square className="w-4 h-4 mr-2 text-orange-400" />
+                                  <span className="font-medium">{property.area_m2}m²</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
                 ))}
               </div>
 
@@ -313,106 +409,221 @@ export default function HomePage() {
                 </div>
               )}
 
-              {/* CTA Premium - Solo si hay propiedades */}
+              {/* CTA PREMIUM - BOTÓN FULL WIDTH LLAMATIVO */}
               {featuredProperties.length > 0 && (
-                <div className="text-center mt-premium-xl">
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  viewport={{ once: true }}
+                  className="text-center mt-16"
+                >
                   <Link href="/propiedades">
-                    <Button size="lg" variant="outline">
+                    <Button 
+                      size="lg" 
+                      className="w-full max-w-md bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-4 px-8 rounded-2xl shadow-2xl shadow-orange-600/30 hover:shadow-orange-600/50 transition-all duration-300 hover:scale-105 group border-0"
+                    >
                       VER TODO EL CATÁLOGO
-                      <ArrowRight className="w-5 h-5 ml-3" />
+                      <motion.div
+                        animate={{ x: [0, 5, 0] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                        className="ml-3"
+                      >
+                        <ArrowRight className="w-5 h-5" />
+                      </motion.div>
                     </Button>
                   </Link>
-                  <p className="caption-lg text-premium-secondary mt-premium-sm">
-                    Más de 200 propiedades disponibles
+                  <p className="text-gray-300 mt-4 text-lg font-medium">
+                    Más de 200 propiedades premium disponibles
                   </p>
-                </div>
+                </motion.div>
               )}
             </>
           )}
         </div>
       </section>
 
-      {/* Stats Section - PREMIUM REFINADO */}
-      <section className="section-premium bg-premium-main">
-        <div className="container-premium">
+      {/* STATS SECTION - DINÁMICO CON ANIMACIONES DE CONTADOR */}
+      <section className="py-20 bg-gray-900 relative overflow-hidden">
+        {/* Separador decorativo con líneas sutiles */}
+        <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent" />
+        
+        <div className="container mx-auto px-4">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-premium-lg"
+            className="text-center mb-16"
           >
-            {[
-              { icon: Home, number: "500+", label: "Propiedades Vendidas" },
-              { icon: Users, number: "1000+", label: "Clientes Satisfechos" },
-              { icon: Award, number: "15+", label: "Años de Experiencia" },
-              { icon: Star, number: "4.9", label: "Calificación Promedio" },
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="inline-flex items-center justify-center w-20 h-20 bg-vibrant-orange/10 rounded-2xl mb-premium-sm">
-                  <stat.icon className="h-10 w-10 text-vibrant-orange" />
-                </div>
-                <div className="display-md text-premium-primary mb-premium-sm">
-                  {stat.number}
-                </div>
-                <div className="body-md text-premium-secondary">{stat.label}</div>
-              </motion.div>
-            ))}
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              RESULTADOS QUE <span className="text-orange-500">HABLAN</span>
+            </h2>
+            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+              La confianza de nuestros clientes respalda nuestra trayectoria
+            </p>
           </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+            <CounterAnimation value="500+" label="Propiedades Vendidas" icon={Home} />
+            <CounterAnimation value="1000+" label="Clientes Satisfechos" icon={Users} />
+            <CounterAnimation value="15+" label="Años de Experiencia" icon={Award} />
+            <CounterAnimation value="4.9" label="Calificación Promedio" icon={Star} />
+          </div>
+
+          {/* Líneas divisorias sutiles entre métricas */}
+          <div className="hidden md:block absolute inset-0 pointer-events-none">
+            <div className="container mx-auto px-4 h-full flex items-center">
+              <div className="w-full relative">
+                <div className="absolute left-1/4 top-1/2 w-px h-24 bg-gradient-to-b from-transparent via-gray-600/30 to-transparent transform -translate-y-1/2" />
+                <div className="absolute left-2/4 top-1/2 w-px h-24 bg-gradient-to-b from-transparent via-gray-600/30 to-transparent transform -translate-y-1/2" />
+                <div className="absolute left-3/4 top-1/2 w-px h-24 bg-gradient-to-b from-transparent via-gray-600/30 to-transparent transform -translate-y-1/2" />
+              </div>
+            </div>
+          </div>
         </div>
+        
+        {/* Separador decorativo inferior */}
+        <div className="absolute bottom-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent" />
       </section>
 
-      {/* CTA Section - PREMIUM NARANJA VIBRANTE */}
-      <section className="section-premium bg-vibrant-orange">
-        <div className="container-premium text-center">
+      {/* CTA SECTION - GRADIENTE DIAGONAL PREMIUM */}
+      <section className="py-20 bg-gradient-to-br from-orange-600 via-orange-500 to-red-600 relative overflow-hidden">
+        {/* Patrón de textura sutil */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `repeating-linear-gradient(
+              45deg,
+              transparent,
+              transparent 2px,
+              rgba(255,255,255,0.1) 2px,
+              rgba(255,255,255,0.1) 4px
+            )`
+          }} />
+        </div>
+        
+        {/* Elementos decorativos flotantes */}
+        <motion.div 
+          animate={{ 
+            y: [0, -20, 0],
+            rotate: [0, 5, 0]
+          }}
+          transition={{ 
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-20 left-20 w-32 h-32 rounded-full bg-white/5 backdrop-blur-sm"
+        />
+        <motion.div 
+          animate={{ 
+            y: [0, 20, 0],
+            rotate: [0, -5, 0]
+          }}
+          transition={{ 
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute bottom-20 right-20 w-24 h-24 rounded-full bg-white/5 backdrop-blur-sm"
+        />
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             viewport={{ once: true }}
             className="max-w-4xl mx-auto"
           >
-            <h2 className="display-lg text-bone-white mb-premium-lg">
-              COMENZÁ TU BÚSQUEDA HOY
-            </h2>
-            <p className="body-xl text-bone-white/90 mb-premium-xl max-w-2xl mx-auto">
-              Acompañamiento profesional para encontrar la propiedad perfecta para vos y tu familia
-            </p>
-            <div className="flex flex-col sm:flex-row gap-premium-md justify-center items-center">
+            <motion.h2 
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-5xl md:text-6xl font-black text-white mb-8 tracking-tight"
+              style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
+            >
+              COMENZÁ TU BÚSQUEDA
+              <span className="block text-4xl md:text-5xl font-bold mt-2">HOY MISMO</span>
+            </motion.h2>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto font-medium leading-relaxed"
+            >
+              Acompañamiento profesional premium para encontrar la propiedad perfecta que transforme tu vida
+            </motion.p>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              viewport={{ once: true }}
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+            >
               <Link href="/propiedades">
                 <Button
-                  size="xl"
-                  className="bg-night-blue text-bone-white hover:bg-night-blue/90 border border-bone-white/20 shadow-2xl"
+                  size="lg"
+                  className="bg-gray-900 text-white hover:bg-gray-800 px-8 py-4 text-lg font-bold rounded-full shadow-2xl shadow-black/30 hover:shadow-black/50 transition-all duration-300 hover:scale-105 border-2 border-white/20 hover:border-white/40 min-w-[280px]"
                 >
                   EXPLORAR PROPIEDADES
-                  <ArrowRight className="ml-3 h-6 w-6" />
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="ml-3"
+                  >
+                    <ArrowRight className="h-6 w-6" />
+                  </motion.div>
                 </Button>
               </Link>
+              
               <Link href="/contacto">
                 <Button
-                  size="xl"
+                  size="lg"
                   variant="outline"
-                  className="border-bone-white/60 text-bone-white hover:bg-bone-white/10 hover:border-bone-white bg-transparent"
+                  className="border-2 border-white text-white hover:bg-white hover:text-orange-600 px-8 py-4 text-lg font-bold rounded-full bg-transparent backdrop-blur-sm hover:scale-105 transition-all duration-300 shadow-xl min-w-[280px]"
                 >
                   CONTACTAR EXPERTO
                 </Button>
               </Link>
-            </div>
+            </motion.div>
+
+            {/* Elemento decorativo inferior */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              viewport={{ once: true }}
+              className="mt-12"
+            >
+              <div className="w-24 h-1 bg-white/40 mx-auto rounded-full" />
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
+      {/* SEPARADOR WAVE DIVIDER */}
+      <div className="relative">
+        <svg 
+          className="w-full h-24 text-gray-900" 
+          viewBox="0 0 1200 120" 
+          preserveAspectRatio="none"
+          fill="currentColor"
+        >
+          <path d="M0,40 C300,120 900,0 1200,40 L1200,120 L0,120 Z" />
+        </svg>
+      </div>
+
       {/* Footer - PREMIUM DESIGN */}
-      <footer className="bg-premium-main border-t border-support-gray/20 section-premium">
-        <div className="container-premium">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-premium-lg">
+      <footer className="bg-gray-900 pt-8 pb-16 relative">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-premium-md">
+              <div className="flex items-center space-x-2 mb-6">
                 <Image
                   src="/assets/logos/marconi_title.svg"
                   alt="Marconi Inmobiliaria"
@@ -421,19 +632,32 @@ export default function HomePage() {
                   className="h-10 w-auto"
                 />
               </div>
-              <p className="body-lg text-premium-secondary mb-premium-md max-w-md">
+              <p className="text-lg text-gray-300 mb-6 max-w-md leading-relaxed">
                 Experiencia premium en bienes raíces. Comprometidos con encontrar 
                 la propiedad perfecta para cada familia.
               </p>
+              
+              {/* Iconos de redes sociales minimalistas */}
+              <div className="flex space-x-4">
+                <div className="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center hover:border-orange-500 hover:bg-orange-500/10 transition-all duration-300 cursor-pointer group">
+                  <div className="w-4 h-4 bg-gray-400 group-hover:bg-orange-500 transition-colors duration-300 rounded-sm"></div>
+                </div>
+                <div className="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center hover:border-orange-500 hover:bg-orange-500/10 transition-all duration-300 cursor-pointer group">
+                  <div className="w-4 h-4 bg-gray-400 group-hover:bg-orange-500 transition-colors duration-300 rounded-sm"></div>
+                </div>
+                <div className="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center hover:border-orange-500 hover:bg-orange-500/10 transition-all duration-300 cursor-pointer group">
+                  <div className="w-4 h-4 bg-gray-400 group-hover:bg-orange-500 transition-colors duration-300 rounded-sm"></div>
+                </div>
+              </div>
             </div>
 
             <div>
-              <h3 className="heading-sm text-premium-primary mb-premium-md">Enlaces</h3>
-              <ul className="space-y-3 text-premium-secondary">
+              <h3 className="text-lg font-bold text-white mb-6">Enlaces</h3>
+              <ul className="space-y-4 text-gray-300">
                 <li>
                   <Link
                     href="/propiedades"
-                    className="body-md hover:text-vibrant-orange transition-colors"
+                    className="text-base hover:text-orange-400 transition-colors duration-300 hover:translate-x-1 inline-block"
                   >
                     Propiedades
                   </Link>
@@ -441,7 +665,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="/agentes"
-                    className="body-md hover:text-vibrant-orange transition-colors"
+                    className="text-base hover:text-orange-400 transition-colors duration-300 hover:translate-x-1 inline-block"
                   >
                     Agentes
                   </Link>
@@ -449,7 +673,7 @@ export default function HomePage() {
                 <li>
                   <Link
                     href="/contacto"
-                    className="body-md hover:text-vibrant-orange transition-colors"
+                    className="text-base hover:text-orange-400 transition-colors duration-300 hover:translate-x-1 inline-block"
                   >
                     Contacto
                   </Link>
@@ -458,17 +682,17 @@ export default function HomePage() {
             </div>
 
             <div>
-              <h3 className="heading-sm text-premium-primary mb-premium-md">Contacto</h3>
-              <ul className="space-y-3 text-premium-secondary">
-                <li className="body-md">Reconquista, Santa Fe</li>
-                <li className="body-md">+54 9 3482 308100</li>
-                <li className="body-md">marconinegociosinmobiliarios@hotmail.com</li>
+              <h3 className="text-lg font-bold text-white mb-6">Contacto</h3>
+              <ul className="space-y-4 text-gray-300">
+                <li className="text-base">📍 Reconquista, Santa Fe</li>
+                <li className="text-base">📞 +54 9 3482 308100</li>
+                <li className="text-base">✉️ marconinegociosinmobiliarios@hotmail.com</li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-support-gray/20 mt-premium-xl pt-premium-lg text-center">
-            <p className="caption-lg text-premium-secondary">
+          <div className="border-t border-gray-700/50 mt-12 pt-8 text-center">
+            <p className="text-gray-400 text-base">
               &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
             </p>
           </div>
