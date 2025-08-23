@@ -95,10 +95,13 @@ export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
   const isClient = useIsClient();
   
-  // Parallax effect para el hero
+  // Parallax effect para el hero - Fixed to prevent overflow
   const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 1000], [0, -300]);
-  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.7]);
+  const heroY = useTransform(scrollY, [0, 800], [0, -150]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.8]);
+  const contentY = useTransform(scrollY, [0, 400], [0, -50]);
+  const bottomY = useTransform(scrollY, [0, 500], [0, -30]);
+  const scrollIndicatorY = useTransform(scrollY, [0, 300], [0, -20]);
 
   // Estados para datos del backend
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
@@ -202,11 +205,11 @@ export default function HomePage() {
       {/* Header Premium */}
       <Header />
 
-      {/* HERO SECTION - LAYOUT MODERNO Y CONV ERSIÓN */}
+      {/* HERO SECTION - LAYOUT MODERNO Y CONVERSIÓN */}
       <section className="relative min-h-screen overflow-hidden">
-        {/* Background con Parallax */}
+        {/* Background con Parallax - Fixed overflow containment */}
         <motion.div 
-          className="absolute inset-0"
+          className="absolute inset-0 overflow-hidden"
           style={{ y: heroY, opacity: heroOpacity }}
         >
           <Image
@@ -223,7 +226,7 @@ export default function HomePage() {
             }
             alt="Reconquista - Marconi Inmobiliaria"
             fill
-            className="object-cover scale-105" // Ligera escala para efecto parallax
+            className="object-cover scale-110" // Reduced scale to prevent overflow
             priority
           />
           
@@ -238,7 +241,7 @@ export default function HomePage() {
         </motion.div>
 
         {/* CONTENIDO PRINCIPAL - LAYOUT UNIFICADO PARA TODOS LOS TAMAÑOS */}
-        <div className="relative z-10 w-full min-h-screen flex flex-col">
+        <div className="relative z-10 w-full min-h-screen flex flex-col overflow-hidden">
           
           {/* CONTENIDO SUPERIOR - CLAIM CENTRADO */}
           <div className="flex-1 flex items-center justify-center">
@@ -248,6 +251,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 60, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
+                style={{ y: contentY }}
               >
                 <div className="relative inline-block">
                   <Image
@@ -269,6 +273,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
+            style={{ y: bottomY }}
             className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-6 sm:pb-8 lg:pb-10"
           >
             {/* LOGO RESPONSIVO AGRANDADO PARA DESKTOP */}
@@ -314,6 +319,7 @@ export default function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
+          style={{ y: scrollIndicatorY }}
           className="absolute bottom-64 sm:bottom-72 lg:bottom-80 left-1/2 transform -translate-x-1/2 z-10"
         >
           <motion.div
