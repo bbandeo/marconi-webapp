@@ -316,6 +316,12 @@ export default function HomePage() {
             </Link>
           </motion.div>
         </div>
+        {/* Separador curvo: Hero → Propiedades */}
+        <div className="absolute bottom-0 left-0 right-0 z-0 pointer-events-none" aria-hidden="true">
+          <svg className="block w-full h-24 md:h-32 text-slate-900" viewBox="0 0 1440 120" preserveAspectRatio="none" focusable="false">
+            <path fill="currentColor" d="M0,64 C240,120 480,0 720,40 C960,80 1200,40 1440,80 L1440,120 L0,120 Z"></path>
+          </svg>
+        </div>
       </section>
       {/* Propiedades Destacadas - PREMIUM DESIGN */}
       <section
@@ -422,6 +428,12 @@ export default function HomePage() {
               )}
             </>
           )}
+        </div>
+        {/* Separador curvo: Propiedades → Quiénes somos */}
+        <div className="absolute bottom-0 left-0 right-0 z-0 pointer-events-none" aria-hidden="true">
+          <svg className="block w-full h-24 md:h-32 text-gray-900" viewBox="0 0 1440 120" preserveAspectRatio="none" focusable="false">
+            <path fill="currentColor" d="M0,32 C240,80 480,16 720,48 C960,80 1200,64 1440,96 L1440,120 L0,120 Z"></path>
+          </svg>
         </div>
       </section>
 
