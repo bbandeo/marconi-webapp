@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { PropertyDetailMap } from "@/components/PropertyDetailMap"
 import { 
   ArrowLeft, 
   MapPin, 
@@ -418,21 +419,7 @@ export default function PropertyDetailPage() {
               <Card className="hover-lift mt-premium-lg">
                 <CardContent className="card-premium">
                   <h3 className="heading-lg text-premium-primary mb-premium-md">Ubicación</h3>
-                  <div className="relative h-80 rounded-2xl overflow-hidden bg-premium-card flex items-center justify-center">
-                    {/* Static map placeholder - easily replaceable with actual Google Maps */}
-                    <div className="text-center text-premium-secondary">
-                      <MapPin className="w-12 h-12 mx-auto mb-3 text-vibrant-orange" />
-                      <p className="heading-md text-premium-primary">{property.address}</p>
-                      <p className="body-md text-premium-secondary">{property.neighborhood}, {property.city}</p>
-                      <p className="caption-lg mt-3 text-premium-secondary">Mapa interactivo próximamente</p>
-                      <Button 
-                        className="mt-premium-md"
-                        onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${property.address}, ${property.neighborhood}, ${property.city}`)}`)}
-                      >
-                        Ver en Google Maps
-                      </Button>
-                    </div>
-                  </div>
+                  <PropertyDetailMap property={property} className="h-80" />
                 </CardContent>
               </Card>
             )}

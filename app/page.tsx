@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FeaturedPropertiesSlider } from "@/components/FeaturedPropertiesSlider";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Link from "next/link";
 import Image from "next/image";
@@ -338,126 +339,10 @@ export default function HomePage() {
             </div>
           ) : (
             <>
-              {/* GRID PROPIEDADES - DISEÑO ESTRATÉGICO PREMIUM */}
-              <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
-                {featuredProperties.slice(0, 6).map((property, index) => (
-                  <motion.div
-                    key={property.id}
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1, duration: 0.6 }}
-                    viewport={{ once: true }}
-                  >
-                    <Card className="group overflow-hidden bg-gray-800/50 border border-gray-700/30 backdrop-blur-sm hover:border-orange-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 cursor-pointer">
-                      {/* IMAGEN CON OVERLAYS ESTRATÉGICOS */}
-                      <Link href={`/propiedades/${property.id}`}>
-                        <div className="relative overflow-hidden h-80 md:h-96">
-                          {property.images && property.images.length > 0 ? (
-                            <Image
-                              src={property.images[0]}
-                              alt={property.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-700"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = "/placeholder.svg";
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                              <div className="text-gray-400 text-center">
-                                <Home className="w-16 h-16 mx-auto mb-4 opacity-40" />
-                                <p className="text-sm font-medium">Sin imagen disponible</p>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Gradiente inferior para destacar precio */}
-                          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                          
-                          {/* PILL BADGE - VENTA/ALQUILER CON GRADIENTE */}
-                          <div className="absolute top-6 left-6">
-                            <div className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg shadow-orange-600/30 hover:shadow-orange-600/50 transition-shadow duration-300 backdrop-blur-sm">
-                              {property.operation_type === "venta" ? "VENTA" : "ALQUILER"}
-                            </div>
-                          </div>
-
-                          {/* PRECIO EN OVERLAY - TIPOGRAFÍA BOLD */}
-                          <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="absolute bottom-6 right-6 text-right"
-                          >
-                            <div className="bg-black/70 backdrop-blur-md rounded-xl px-4 py-3 border border-white/10">
-                              <div className="text-2xl font-bold text-white mb-1">
-                                {property.currency}$ {property.price.toLocaleString()}
-                              </div>
-                              {property.operation_type === "alquiler" && (
-                                <div className="text-xs text-gray-300 font-medium">
-                                  por mes
-                                </div>
-                              )}
-                            </div>
-                          </motion.div>
-                        </div>
-                      </Link>
-
-                      {/* INFORMACIÓN CON MÁS AIRE - PADDING GENEROSO */}
-                      <CardContent className="p-8">
-                        <Link href={`/propiedades/${property.id}`}>
-                          {/* TÍTULO CON JERARQUÍA CLARA */}
-                          <h3 className="text-xl font-bold text-white mb-4 hover:text-orange-400 transition-colors cursor-pointer line-clamp-2 leading-tight">
-                            {property.title}
-                          </h3>
-                          
-                          {/* UBICACIÓN - GRIS CLARO LEGIBLE */}
-                          <div className="flex items-center text-gray-300 mb-6">
-                            <MapPin className="w-5 h-5 mr-3 text-orange-400" />
-                            <span className="text-base font-medium">{property.neighborhood}, Reconquista</span>
-                          </div>
-                          
-                          {/* CARACTERÍSTICAS SI ESTÁN DISPONIBLES */}
-                          {(property.bedrooms || property.bathrooms || property.area_m2) && (
-                            <div className="flex items-center gap-4 text-gray-400 text-sm">
-                              {property.bedrooms && (
-                                <div className="flex items-center bg-gray-700/50 px-3 py-2 rounded-lg">
-                                  <Bed className="w-4 h-4 mr-2 text-orange-400" />
-                                  <span className="font-medium">{property.bedrooms}</span>
-                                </div>
-                              )}
-                              {property.bathrooms && (
-                                <div className="flex items-center bg-gray-700/50 px-3 py-2 rounded-lg">
-                                  <Bath className="w-4 h-4 mr-2 text-orange-400" />
-                                  <span className="font-medium">{property.bathrooms}</span>
-                                </div>
-                              )}
-                              {property.area_m2 && (
-                                <div className="flex items-center bg-gray-700/50 px-3 py-2 rounded-lg">
-                                  <Square className="w-4 h-4 mr-2 text-orange-400" />
-                                  <span className="font-medium">{property.area_m2}m²</span>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </Link>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+              {/* SLIDER PROPIEDADES - DISEÑO ESTRATÉGICO PREMIUM */}
+              <div className="max-w-7xl mx-auto">
+                <FeaturedPropertiesSlider properties={featuredProperties} />
               </div>
-
-              {featuredProperties.length === 0 && (
-                <div className="text-center py-premium-xl">
-                  <Home className="w-16 h-16 text-premium-secondary mx-auto mb-premium-md opacity-40" />
-                  <h3 className="heading-lg text-premium-primary mb-premium-sm">
-                    Propiedades en preparación
-                  </h3>
-                  <p className="body-md text-premium-secondary">
-                    Estamos seleccionando las mejores propiedades para ti
-                  </p>
-                </div>
-              )}
 
               {/* CTA PREMIUM - BOTÓN FULL WIDTH LLAMATIVO */}
               {featuredProperties.length > 0 && (

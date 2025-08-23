@@ -17,7 +17,10 @@
       "Bash(git checkout:*)",
       "Bash(git push:*)",
       "Bash(git commit:*)",
-      "Bash(pnpm local:*)"
+      "Bash(pnpm local:*)",
+      "WebSearch",
+      "WebSearch",
+      "Bash(pnpm add:*)"
     ],
     "deny": []
   }
