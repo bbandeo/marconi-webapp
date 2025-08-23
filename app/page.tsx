@@ -172,10 +172,10 @@ export default function HomePage() {
             className="hero-header flex justify-center items-start"
           >
             <Image
-              src="/assets/logos/marconi_header_orangewhite.png"
-              alt="Marconi Inmobiliaria"
-              width={600}
-              height={180}
+              src="/assets/logos/noesperesmas_logo.svg"
+              alt="No esperes más"
+              width={700}
+              height={200}
               className="hero-logo-dominant w-auto mx-auto opacity-95"
               priority
             />
@@ -194,6 +194,23 @@ export default function HomePage() {
             <p className="hero-subtitle-elegant max-w-2xl mx-auto">
               +200 propiedades cuidadosamente seleccionadas en las mejores ubicaciones de Reconquista
             </p>
+          </motion.div>
+
+          {/* Marca Secundaria - Marconi */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.45 }}
+            className="flex justify-center items-center mb-4"
+          >
+            <Image
+              src="/assets/logos/marconi_title.svg"
+              alt="Marconi Inmobiliaria"
+              width={220}
+              height={70}
+              className="opacity-95 drop-shadow"
+              priority
+            />
           </motion.div>
 
           {/* CTA Zone - Llamada a la Acción */}
