@@ -284,13 +284,13 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.7, type: "spring", bounce: 0.3 }}
               className="mb-6 sm:mb-8"
             >
-              <div className="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl px-8 sm:px-10 lg:px-16 py-6 sm:py-7 lg:py-10 border border-white/20 shadow-2xl shadow-black/30">
+              <div className="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl px-8 sm:px-10 lg:px-20 py-6 sm:py-7 lg:py-12 border border-white/20 shadow-2xl shadow-black/30">
                 <Image
                   src="/assets/logos/marconi_header_orangewhite.png"
                   alt="Marconi Inmobiliaria"
-                  width={600}
-                  height={180}
-                  className="h-20 sm:h-24 lg:h-36 w-auto opacity-95"
+                  width={900}
+                  height={270}
+                  className="h-20 sm:h-24 lg:h-54 w-auto opacity-95"
                 />
               </div>
             </motion.div>
@@ -314,18 +314,6 @@ export default function HomePage() {
             </Link>
           </motion.div>
         </div>
-        
-        {/* INDICADOR DE SCROLL SUTIL - POSICIONADO ENTRE CONTENIDO Y LOGO */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="absolute bottom-64 sm:bottom-72 lg:bottom-80 left-1/2 transform -translate-x-1/2 z-10"
-        >
-          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/70 rounded-full mt-2"></div>
-          </div>
-        </motion.div>
       </section>
       {/* Propiedades Destacadas - PREMIUM DESIGN */}
       <section
