@@ -231,14 +231,14 @@ export default function HomePage() {
             priority
           />
           
-          {/* OVERLAY DINÁMICO REDUCIDO - DEGRADADO MÁS SUTIL */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/15 to-black/50" />
+          {/* OVERLAY DINÁMICO AJUSTADO - NUEVAS OPACIDADES */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/80" />
           
-          {/* EFECTO DIFUMINADO NARANJA RECUPERADO - REDUCIDO */}
-          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/60 via-orange-500/25 to-transparent" />
+          {/* EFECTO DIFUMINADO NARANJA AJUSTADO */}
+          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
           
-          {/* Overlay adicional reducido para mejor contraste en el centro */}
-          <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/10 to-black/25" />
+          {/* Overlay radial ajustado */}
+          <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/0 to-black/25" />
         </motion.div>
 
         {/* CONTENIDO PRINCIPAL - LAYOUT UNIFICADO PARA TODOS LOS TAMAÑOS */}
