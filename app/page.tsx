@@ -5,6 +5,7 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import {
   Search,
   MapPin,
+  Landmark,
   Bed,
   Bath,
   Square,
@@ -425,48 +426,109 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* STATS SECTION - DINÁMICO CON ANIMACIONES DE CONTADOR */}
+      {/* QUIÉNES SOMOS - Sección informativa con diseño consistente */}
       <section className="py-20 bg-gray-900 relative overflow-hidden">
-        {/* Separador decorativo con líneas sutiles */}
-        <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent" />
-        
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Columna de texto */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="space-y-6"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              RESULTADOS QUE <span className="text-orange-500">HABLAN</span>
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-800/60 border border-gray-700/60 text-gray-200 text-sm">
+              Conocé nuestro equipo
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-white">
+              ¿Quiénes <span className="text-orange-500">somos?</span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              Resultados sólidos que avalan nuestro compromiso.
+            <p className="text-lg text-gray-300">
+              Somos <span className="font-semibold text-white">Marconi Inmobiliaria</span>, una empresa local que entiende tus
+              necesidades. Conocemos Reconquista como la palma de nuestra mano y te acompañamos en cada paso.
             </p>
-          </motion.div>
+            <p className="text-lg text-gray-300">
+              Con un enfoque joven y dinámico, nos especializamos en encontrar la propiedad perfecta para cada cliente,
+              desde hogares familiares hasta inversiones estratégicas.
+            </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-            <CounterAnimation value="500+" label="Propiedades Vendidas" icon={Home} />
-            <CounterAnimation value="1000+" label="Clientes Satisfechos" icon={Users} />
-            <CounterAnimation value="15+" label="Años de Experiencia" icon={Award} />
-            <CounterAnimation value="4.9" label="Calificación Promedio" icon={Star} />
-          </div>
-
-          {/* Líneas divisorias sutiles entre métricas */}
-          <div className="hidden md:block absolute inset-0 pointer-events-none">
-            <div className="container mx-auto px-4 h-full flex items-center">
-              <div className="w-full relative">
-                <div className="absolute left-1/4 top-1/2 w-px h-24 bg-gradient-to-b from-transparent via-gray-600/30 to-transparent transform -translate-y-1/2" />
-                <div className="absolute left-2/4 top-1/2 w-px h-24 bg-gradient-to-b from-transparent via-gray-600/30 to-transparent transform -translate-y-1/2" />
-                <div className="absolute left-3/4 top-1/2 w-px h-24 bg-gradient-to-b from-transparent via-gray-600/30 to-transparent transform -translate-y-1/2" />
+            {/* Beneficios */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Confianza local</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <Landmark className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Conocimiento del mercado</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Atención personalizada</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <Award className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Experiencia comprobada</span>
               </div>
             </div>
-          </div>
+
+            <Link href="/agentes">
+              <Button 
+                size="lg" 
+                className="mt-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold px-8 py-4 rounded-full shadow-2xl shadow-orange-600/30 hover:shadow-orange-600/50 transition-all duration-300 group border-0 w-fit"
+              >
+                Conocé más
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                  className="ml-3"
+                >
+                  <ArrowRight className="w-5 h-5" />
+                </motion.div>
+              </Button>
+            </Link>
+          </motion.div>
+
+          {/* Columna imagen */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="relative rotate-[-4deg]">
+              <div className="rounded-3xl border-4 border-orange-500/30 p-2 bg-orange-500/10">
+                <div className="rounded-2xl overflow-hidden bg-gray-800">
+                  <Image
+                    src={
+                      getOptimizedImageUrl("gustavo_vdczse", { width: 900, height: 600, gravity: "face", format: "auto", quality: "auto" }) || "/placeholder.svg"
+                    }
+                    alt="Foto de Gustavo Marconi"
+                    width={900}
+                    height={600}
+                    className="w-full h-[360px] md:h-[420px] object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Tarjeta de nombre */}
+            <div className="absolute -bottom-6 left-6 bg-black/80 text-white rounded-xl px-4 py-3 shadow-2xl border border-white/10">
+              <div className="font-semibold">Gustavo Marconi</div>
+              <div className="text-sm text-gray-300">Fundador & Agente Principal</div>
+              <div className="text-orange-400 text-xs">★★★★★</div>
+            </div>
+          </motion.div>
         </div>
-        
-        {/* Separador decorativo inferior */}
-        <div className="absolute bottom-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent" />
       </section>
 
       {/* CTA SECTION - GRADIENTE DIAGONAL PREMIUM */}
