@@ -230,112 +230,157 @@ export default function HomePage() {
           {/* OVERLAY DINÁMICO - DEGRADADO TOP TO BOTTOM */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
           
+          {/* EFECTO DIFUMINADO NARANJA RECUPERADO */}
+          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
+          
           {/* Overlay adicional para mejor contraste en el centro */}
           <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/20 to-black/40" />
         </motion.div>
 
-        {/* CONTENIDO PRINCIPAL - JERARQUÍA VISUAL CLARA */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-20">
-          <div className="text-center">
-            
-            {/* CLAIM PRINCIPAL - MÁS AIRE Y ESCALA */}
-            <motion.div
-              initial={{ opacity: 0, y: 60, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="mb-12"
-            >
-              {/* Claim principal con más espacio - RESPONSIVE */}
-              <div className="relative inline-block mb-8">
-                <Image
-                  src="/assets/impact_text/vivilaexperiencia.PNG"
-                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                  width={1000}
-                  height={250}
-                  className="w-full max-w-[90%] sm:max-w-3xl lg:max-w-4xl h-auto" // Mobile: 90%, Desktop: 40% del ancho aprox
-                  priority
-                />
-                
-                {/* Decoración adicional detrás del texto */}
-                <div className="absolute -inset-2 lg:-inset-4 bg-gradient-to-r from-orange-600/10 via-transparent to-red-600/10 rounded-2xl lg:rounded-3xl blur-2xl lg:blur-3xl -z-10" />
-              </div>
+        {/* CONTENIDO PRINCIPAL - LAYOUT DIFERENCIADO MOBILE/DESKTOP */}
+        <div className="relative z-10 w-full h-full flex flex-col">
+          
+          {/* CONTENIDO SUPERIOR - CLAIM CENTRADO */}
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center px-4">
+              {/* CLAIM PRINCIPAL */}
+              <motion.div
+                initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="mb-8 lg:mb-0"
+              >
+                <div className="relative inline-block">
+                  <Image
+                    src="/assets/impact_text/vivilaexperiencia.PNG"
+                    alt="Viví la experiencia de encontrar tu lugar en el mundo"
+                    width={1000}
+                    height={250}
+                    className="w-full max-w-[90%] sm:max-w-3xl lg:max-w-4xl h-auto"
+                    priority
+                  />
+                  <div className="absolute -inset-2 lg:-inset-4 bg-gradient-to-r from-orange-600/10 via-transparent to-red-600/10 rounded-2xl lg:rounded-3xl blur-2xl lg:blur-3xl -z-10" />
+                </div>
+              </motion.div>
               
-              {/* SUBTÍTULO COMPLEMENTARIO - RESPONSIVE */}
+              {/* SUBTÍTULO - SOLO MOBILE */}
               <motion.p 
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="text-lg sm:text-xl lg:text-2xl text-white/90 font-light max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto mb-12 lg:mb-16 leading-relaxed px-4 sm:px-0"
+                className="lg:hidden text-lg sm:text-xl text-white/90 font-light max-w-xl mx-auto mb-12 leading-relaxed"
                 style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
               >
                 Más de 200 propiedades premium en las mejores ubicaciones de Reconquista
               </motion.p>
-            </motion.div>
-
-            {/* CTAs PRIMARIOS - CONVERSIÓN DIRECTA */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex flex-col lg:flex-row gap-4 lg:gap-6 justify-center items-center mb-16 lg:mb-20 px-4 sm:px-0"
-            >
-              {/* CTA Primario - Responsive */}
-              <Link href="/propiedades">
-                <Button 
-                  size="lg"
-                  className="group bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold px-8 lg:px-10 py-5 lg:py-6 text-base lg:text-lg rounded-full shadow-2xl shadow-orange-600/40 hover:shadow-orange-600/60 transition-all duration-300 hover:scale-105 border-0 w-full sm:w-auto min-w-[280px] lg:min-w-[300px]"
-                >
-                  <Search className="w-4 lg:w-5 h-4 lg:h-5 mr-2 lg:mr-3" />
-                  EXPLORAR PROPIEDADES
-                  <motion.div
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="ml-2 lg:ml-3"
-                  >
-                    <ArrowRight className="w-4 lg:w-5 h-4 lg:h-5" />
-                  </motion.div>
-                </Button>
-              </Link>
               
-              {/* CTA Secundario - Responsive */}
-              <Link href="/contacto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="group border-2 border-white/80 text-white hover:bg-white hover:text-gray-900 px-8 lg:px-10 py-5 lg:py-6 text-base lg:text-lg font-bold rounded-full bg-transparent backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-xl shadow-black/20 w-full sm:w-auto min-w-[280px] lg:min-w-[300px]"
-                >
-                  <MessageCircle className="w-4 lg:w-5 h-4 lg:h-5 mr-2 lg:mr-3" />
-                  CONTACTAR AGENTE
-                </Button>
-              </Link>
-            </motion.div>
-
-            {/* LOGO COMO SELLO DE MARCA - CAJA FLOTANTE RESPONSIVE */}
+              {/* CTAs MOBILE - AMBOS BOTONES */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="lg:hidden flex flex-col gap-4 justify-center items-center mb-16"
+              >
+                <Link href="/propiedades">
+                  <Button 
+                    size="lg"
+                    className="group bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold px-8 py-5 text-base rounded-full shadow-2xl shadow-orange-600/40 hover:shadow-orange-600/60 transition-all duration-300 hover:scale-105 border-0 w-full min-w-[280px]"
+                  >
+                    <Search className="w-4 h-4 mr-2" />
+                    EXPLORAR PROPIEDADES
+                    <motion.div
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                      className="ml-2"
+                    >
+                      <ArrowRight className="w-4 h-4" />
+                    </motion.div>
+                  </Button>
+                </Link>
+                
+                <Link href="/contacto">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="group border-2 border-white/80 text-white hover:bg-white hover:text-gray-900 px-8 py-5 text-base font-bold rounded-full bg-transparent backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-xl shadow-black/20 w-full min-w-[280px]"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    CONTACTAR AGENTE
+                  </Button>
+                </Link>
+              </motion.div>
+              
+              {/* LOGO MOBILE */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 0.7, type: "spring", bounce: 0.3 }}
+                className="lg:hidden inline-block"
+              >
+                <div className="bg-white/10 backdrop-blur-md rounded-xl px-6 py-4 border border-white/20 shadow-2xl shadow-black/30">
+                  <Image
+                    src="/assets/logos/marconi_header_orangewhite.png"
+                    alt="Marconi Inmobiliaria"
+                    width={300}
+                    height={90}
+                    className="h-12 sm:h-16 w-auto opacity-95"
+                  />
+                </div>
+              </motion.div>
+            </div>
+          </div>
+          
+          {/* CONTENIDO INFERIOR - DESKTOP SOLO: LOGO + CTA CON PADDING GENEROSO */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            className="hidden lg:flex flex-col items-center pb-20"
+          >
+            {/* LOGO AGRANDADO DESKTOP */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.7, type: "spring", bounce: 0.3 }}
-              className="inline-block px-4 sm:px-0"
+              className="mb-8"
             >
-              <div className="bg-white/10 backdrop-blur-md rounded-xl lg:rounded-2xl px-6 lg:px-8 py-4 lg:py-6 border border-white/20 shadow-2xl shadow-black/30">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl px-12 py-8 border border-white/20 shadow-2xl shadow-black/30">
                 <Image
                   src="/assets/logos/marconi_header_orangewhite.png"
                   alt="Marconi Inmobiliaria"
-                  width={300}
-                  height={90}
-                  className="h-12 sm:h-16 lg:h-20 w-auto opacity-95"
+                  width={500}
+                  height={150}
+                  className="h-28 w-auto opacity-95"
                 />
               </div>
             </motion.div>
-          </div>
+            
+            {/* SOLO CTA PRIMARIO DESKTOP */}
+            <Link href="/propiedades">
+              <Button 
+                size="lg"
+                className="group bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold px-12 py-6 text-xl rounded-full shadow-2xl shadow-orange-600/40 hover:shadow-orange-600/60 transition-all duration-300 hover:scale-105 border-0 min-w-[350px]"
+              >
+                <Search className="w-6 h-6 mr-4" />
+                EXPLORAR PROPIEDADES
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ repeat: Infinity, duration: 2 }}
+                  className="ml-4"
+                >
+                  <ArrowRight className="w-6 h-6" />
+                </motion.div>
+              </Button>
+            </Link>
+          </motion.div>
         </div>
         
-        {/* INDICADOR DE SCROLL SUTIL */}
+        {/* INDICADOR DE SCROLL SUTIL - SOLO MOBILE */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+          className="lg:hidden absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
