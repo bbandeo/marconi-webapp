@@ -319,17 +319,63 @@ export default function HomePage() {
       {/* Propiedades Destacadas - PREMIUM DESIGN */}
       <section
         id="propiedades"
-        className="section-premium bg-premium-main relative overflow-hidden"
+        className="section-premium relative overflow-hidden"
       >
+        {/* Fondo dinámico con degradado y profundidad */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800">
+          {/* Línea decorativa animada */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-0.5">
+            <div className="w-full h-full bg-gradient-to-r from-transparent via-orange-500/60 to-transparent animate-pulse" />
+          </div>
+          
+          {/* Sombras suaves para profundidad */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10" />
+        </div>
+
         <div className="container-premium relative z-10">
-          {/* Header Premium - ESPACIADO GENEROSO */}
-          <div className="text-center mb-premium-xl">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
-            </h2>
-            <p className="body-lg text-premium-secondary max-w-2xl mx-auto">
-              Selección exclusiva de propiedades premium en ubicaciones estratégicas
-            </p>
+          {/* Header Premium - ESPACIADO GENEROSO CON JERARQUÍA MEJORADA */}
+          <div className="text-center mb-premium-xl group">
+            {/* Título con jerarquía visual clara y microinteracciones */}
+            <motion.h2 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 cursor-pointer"
+            >
+              <span className="hover:text-gray-200 transition-colors duration-300">PROPIEDADES</span>
+              <br className="sm:hidden" />
+              <span className="sm:ml-4"> </span>
+              <motion.span 
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl bg-gradient-to-r from-orange-500 via-orange-600 to-red-500 bg-clip-text text-transparent font-extrabold relative inline-block group-hover:from-orange-400 group-hover:via-orange-500 group-hover:to-red-400 transition-all duration-500"
+                whileHover={{ scale: 1.05 }}
+              >
+                DESTACADAS
+                {/* Subrayado animado */}
+                <motion.div
+                  className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full opacity-0 group-hover:opacity-100"
+                  initial={{ width: 0 }}
+                  whileHover={{ width: "100%" }}
+                  transition={{ duration: 0.3 }}
+                />
+              </motion.span>
+            </motion.h2>
+            
+            {/* Subtítulo más legible con tipografía y espaciado mejorado */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="max-w-3xl mx-auto"
+            >
+              <div className="inline-flex items-center px-6 py-3 bg-gray-800/50 backdrop-blur-sm rounded-full border border-gray-700/50 hover:border-orange-500/30 hover:bg-gray-700/50 transition-all duration-300 cursor-pointer group/subtitle">
+                <div className="w-2 h-2 bg-orange-500 rounded-full mr-4 group-hover/subtitle:bg-white transition-colors duration-300" />
+                <p className="text-lg font-light text-gray-300 group-hover/subtitle:text-white transition-colors duration-300">
+                  Hogares seleccionados con estándares de excelencia.
+                </p>
+              </div>
+            </motion.div>
           </div>
 
           {loadingProperties ? (
@@ -369,7 +415,7 @@ export default function HomePage() {
                     </Button>
                   </Link>
                   <p className="text-gray-300 mt-4 text-lg font-medium">
-                    Más de 200 propiedades premium disponibles
+                    Encontrá la propiedad perfecta para vos.
                   </p>
                 </motion.div>
               )}
@@ -395,7 +441,7 @@ export default function HomePage() {
               RESULTADOS QUE <span className="text-orange-500">HABLAN</span>
             </h2>
             <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              La confianza de nuestros clientes respalda nuestra trayectoria
+              Resultados sólidos que avalan nuestro compromiso.
             </p>
           </motion.div>
 
