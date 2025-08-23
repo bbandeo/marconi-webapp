@@ -1,4 +1,4 @@
-import { supabase, type Property, type PropertyInsert, type PropertyUpdate, STATUS_MAP } from "@/lib/supabase"
+import { supabase, type Property, type PropertyInsert, type PropertyUpdate, STATUS_MAP, isSupabaseConfigured } from "@/lib/supabase"
 
 export interface PropertyFilters {
   property_type?: string
@@ -23,6 +23,10 @@ export interface PropertySearchParams extends PropertyFilters {
 export class PropertyService {
   static async getProperties(params: PropertySearchParams = {}) {
     const { page = 1, limit = 10, search, sort_by = "created_at", sort_order = "desc", ...filters } = params
+
+    if (!isSupabaseConfigured || !supabase) {
+      return { properties: [], total: 0, page, limit, totalPages: 0 }
+    }
 
     let query = supabase.from("properties").select("*", { count: "exact" })
 
@@ -97,6 +101,7 @@ export class PropertyService {
   }
 
   static async getPropertyById(id: number): Promise<Property | null> {
+    if (!isSupabaseConfigured || !supabase) return null
     const { data, error } = await supabase.from("properties").select("*").eq("id", id).single()
 
     if (error) {
@@ -110,6 +115,7 @@ export class PropertyService {
   }
 
   static async createProperty(property: PropertyInsert): Promise<Property> {
+    if (!isSupabaseConfigured || !supabase) throw new Error("Supabase not configured")
     const { data, error } = await supabase.from("properties").insert([property]).select().single()
 
     if (error) {
@@ -120,6 +126,7 @@ export class PropertyService {
   }
 
   static async updateProperty(id: number, updates: PropertyUpdate): Promise<Property> {
+    if (!isSupabaseConfigured || !supabase) throw new Error("Supabase not configured")
     const { data, error } = await supabase.from("properties").update(updates).eq("id", id).select().single()
 
     if (error) {
@@ -130,6 +137,7 @@ export class PropertyService {
   }
 
   static async deleteProperty(id: number): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) throw new Error("Supabase not configured")
     const { error } = await supabase.from("properties").delete().eq("id", id)
 
     if (error) {
@@ -138,6 +146,7 @@ export class PropertyService {
   }
 
   static async incrementViews(id: number): Promise<void> {
+    if (!isSupabaseConfigured || !supabase) return
     const { error } = await supabase.rpc("increment_property_views", {
       property_id: id,
     })
@@ -149,6 +158,7 @@ export class PropertyService {
   }
 
   static async getFeaturedProperties(limit = 6): Promise<Property[]> {
+    if (!isSupabaseConfigured || !supabase) return []
     const { data, error } = await supabase
       .from("properties")
       .select("*")
@@ -165,6 +175,7 @@ export class PropertyService {
   }
 
   static async getNeighborhoods(): Promise<string[]> {
+    if (!isSupabaseConfigured || !supabase) return []
     const { data, error } = await supabase
       .from("properties")
       .select("neighborhood")
@@ -181,6 +192,9 @@ export class PropertyService {
   }
 
   static async getPropertyStats() {
+    if (!isSupabaseConfigured || !supabase) {
+      return { total: 0, available: 0, sold: 0, rented: 0, reserved: 0, featured: 0, totalViews: 0 }
+    }
     const { data, error } = await supabase.from("properties").select("status, featured, views")
 
     if (error) {

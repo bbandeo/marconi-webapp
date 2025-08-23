@@ -1,8 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { supabase, isSupabaseConfigured } from "@/lib/supabase"
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    if (!isSupabaseConfigured || !supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 503 })
     const { data, error } = await supabase.from("leads").select("*").eq("id", params.id).single()
 
     if (error) {
@@ -17,6 +18,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
 export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    if (!isSupabaseConfigured || !supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 503 })
     const body = await request.json()
 
     const updateData: any = {
@@ -46,6 +48,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   try {
+    if (!isSupabaseConfigured || !supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 503 })
     const { error } = await supabase.from("leads").delete().eq("id", params.id)
 
     if (error) {

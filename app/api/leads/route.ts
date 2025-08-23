@@ -1,8 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { supabase } from "@/lib/supabase"
+import { supabase, isSupabaseConfigured } from "@/lib/supabase"
 
 export async function GET() {
   try {
+    if (!isSupabaseConfigured || !supabase) return NextResponse.json([])
     const { data, error } = await supabase.from("leads").select("*").order("created_at", { ascending: false })
 
     if (error) {
@@ -36,6 +37,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!isSupabaseConfigured || !supabase) return NextResponse.json({ error: "Supabase not configured" }, { status: 503 })
     const body = await request.json()
 
     const { data, error } = await supabase

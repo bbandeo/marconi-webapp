@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
     if (!supabaseAdmin) {
       return NextResponse.json(
         { error: 'Supabase admin client not configured' },
-        { status: 500 }
+        { status: 503 }
       )
     }
 
