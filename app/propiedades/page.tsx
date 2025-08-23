@@ -230,10 +230,14 @@ export default function PropiedadesPage() {
             <h1 className="display-lg text-premium-primary mb-premium-md">
               NUESTRAS <span className="accent-premium">PROPIEDADES</span>
             </h1>
-            <p className="body-xl text-premium-secondary mb-premium-lg max-w-4xl mx-auto font-medium">
-              Descubrí las mejores propiedades cuidadosamente seleccionadas por nuestro equipo  
-              y encontrá tu propiedad ideal con nuestro acompañamiento profesional.
-            </p>
+            <div className="mb-premium-lg max-w-4xl mx-auto">
+              <div className="bg-black/20 backdrop-blur-sm rounded-2xl px-8 py-6 border border-white/10">
+                <p className="body-xl text-white font-medium leading-relaxed text-center">
+                  Descubrí las mejores propiedades cuidadosamente seleccionadas por nuestro equipo  
+                  y encontrá tu propiedad ideal con nuestro acompañamiento profesional.
+                </p>
+              </div>
+            </div>
             <div className="caption-lg text-premium-secondary">
               <p>{filteredProperties.length} propiedades disponibles</p>
             </div>
