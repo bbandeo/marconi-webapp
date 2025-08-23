@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import {
   Search,
   MapPin,
@@ -94,6 +94,11 @@ function CounterAnimation({ value, label, icon: Icon }: { value: string, label: 
 export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
   const isClient = useIsClient();
+  
+  // Parallax effect para el hero
+  const { scrollY } = useScroll();
+  const heroY = useTransform(scrollY, [0, 1000], [0, -300]);
+  const heroOpacity = useTransform(scrollY, [0, 400], [1, 0.7]);
 
   // Estados para datos del backend
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
@@ -197,73 +202,149 @@ export default function HomePage() {
       {/* Header Premium */}
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[92vh] flex flex-col overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
+      {/* HERO SECTION - LAYOUT MODERNO Y CONV ERSIÓN */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Background con Parallax */}
+        <motion.div 
+          className="absolute inset-0"
+          style={{ y: heroY, opacity: heroOpacity }}
+        >
           <Image
             src={
               getOptimizedImageUrl("IMG_2850_c7gzcr", {
                 width: 1920,
                 height: 1080,
-                // crop: "none",
                 gravity: "south",
                 quality: "auto",
                 format: "auto",
+                saturation: 10, // Mejorar saturación
+                contrast: 10,   // Mejorar contraste
               }) || "/placeholder.svg"
             }
             alt="Reconquista - Marconi Inmobiliaria"
             fill
-            className="object-cover"
+            className="object-cover scale-105" // Ligera escala para efecto parallax
             priority
           />
-          {/* Subtle dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
-          {/* Orange fade overlay above wallpaper and below content */}
-          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
-        </div>
+          
+          {/* OVERLAY DINÁMICO - DEGRADADO TOP TO BOTTOM */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
+          
+          {/* Overlay adicional para mejor contraste en el centro */}
+          <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/20 to-black/40" />
+        </motion.div>
 
-        {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center">
-          {/* Centered Impact Text */}
-          <div className="flex-1 flex items-center justify-center w-full">
+        {/* CONTENIDO PRINCIPAL - JERARQUÍA VISUAL CLARA */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 py-20">
+          <div className="text-center">
+            
+            {/* CLAIM PRINCIPAL - MÁS AIRE Y ESCALA */}
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full"
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="mb-12"
             >
-              <div
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                className="w-full p-20 flex justify-center"
-              >
+              {/* Claim principal con más espacio - RESPONSIVE */}
+              <div className="relative inline-block mb-8">
                 <Image
                   src="/assets/impact_text/vivilaexperiencia.PNG"
                   alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                  width={800}
-                  height={200}
+                  width={1000}
+                  height={250}
+                  className="w-full max-w-[90%] sm:max-w-3xl lg:max-w-4xl h-auto" // Mobile: 90%, Desktop: 40% del ancho aprox
                   priority
+                />
+                
+                {/* Decoración adicional detrás del texto */}
+                <div className="absolute -inset-2 lg:-inset-4 bg-gradient-to-r from-orange-600/10 via-transparent to-red-600/10 rounded-2xl lg:rounded-3xl blur-2xl lg:blur-3xl -z-10" />
+              </div>
+              
+              {/* SUBTÍTULO COMPLEMENTARIO - RESPONSIVE */}
+              <motion.p 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="text-lg sm:text-xl lg:text-2xl text-white/90 font-light max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto mb-12 lg:mb-16 leading-relaxed px-4 sm:px-0"
+                style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
+              >
+                Más de 200 propiedades premium en las mejores ubicaciones de Reconquista
+              </motion.p>
+            </motion.div>
+
+            {/* CTAs PRIMARIOS - CONVERSIÓN DIRECTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="flex flex-col lg:flex-row gap-4 lg:gap-6 justify-center items-center mb-16 lg:mb-20 px-4 sm:px-0"
+            >
+              {/* CTA Primario - Responsive */}
+              <Link href="/propiedades">
+                <Button 
+                  size="lg"
+                  className="group bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold px-8 lg:px-10 py-5 lg:py-6 text-base lg:text-lg rounded-full shadow-2xl shadow-orange-600/40 hover:shadow-orange-600/60 transition-all duration-300 hover:scale-105 border-0 w-full sm:w-auto min-w-[280px] lg:min-w-[300px]"
+                >
+                  <Search className="w-4 lg:w-5 h-4 lg:h-5 mr-2 lg:mr-3" />
+                  EXPLORAR PROPIEDADES
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="ml-2 lg:ml-3"
+                  >
+                    <ArrowRight className="w-4 lg:w-5 h-4 lg:h-5" />
+                  </motion.div>
+                </Button>
+              </Link>
+              
+              {/* CTA Secundario - Responsive */}
+              <Link href="/contacto">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="group border-2 border-white/80 text-white hover:bg-white hover:text-gray-900 px-8 lg:px-10 py-5 lg:py-6 text-base lg:text-lg font-bold rounded-full bg-transparent backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-xl shadow-black/20 w-full sm:w-auto min-w-[280px] lg:min-w-[300px]"
+                >
+                  <MessageCircle className="w-4 lg:w-5 h-4 lg:h-5 mr-2 lg:mr-3" />
+                  CONTACTAR AGENTE
+                </Button>
+              </Link>
+            </motion.div>
+
+            {/* LOGO COMO SELLO DE MARCA - CAJA FLOTANTE RESPONSIVE */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.7, type: "spring", bounce: 0.3 }}
+              className="inline-block px-4 sm:px-0"
+            >
+              <div className="bg-white/10 backdrop-blur-md rounded-xl lg:rounded-2xl px-6 lg:px-8 py-4 lg:py-6 border border-white/20 shadow-2xl shadow-black/30">
+                <Image
+                  src="/assets/logos/marconi_header_orangewhite.png"
+                  alt="Marconi Inmobiliaria"
+                  width={300}
+                  height={90}
+                  className="h-12 sm:h-16 lg:h-20 w-auto opacity-95"
                 />
               </div>
             </motion.div>
           </div>
-
-          {/* Company Branding at Bottom */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0, duration: 0.4 }}
-            className="mb-8 text-center px-4"
-          >
-            <Image
-              src="/assets/logos/marconi_header_orangewhite.png"
-              alt="Marconi Inmobiliaria"
-              width={400}
-              height={120}
-              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
-            />
-          </motion.div>
         </div>
+        
+        {/* INDICADOR DE SCROLL SUTIL */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2 }}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+        >
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+            className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center"
+          >
+            <div className="w-1 h-3 bg-white/70 rounded-full mt-2"></div>
+          </motion.div>
+        </motion.div>
       </section>
       {/* Propiedades Destacadas - PREMIUM DESIGN */}
       <section
