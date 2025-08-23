@@ -95,13 +95,14 @@ export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
   const isClient = useIsClient();
   
-  // Parallax effect para el hero - Fixed to prevent overflow
+  // Parallax effects DISABLED to prevent elements escaping hero boundaries
   const { scrollY } = useScroll();
-  const heroY = useTransform(scrollY, [0, 800], [0, -150]);
-  const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.8]);
-  const contentY = useTransform(scrollY, [0, 400], [0, -50]);
-  const bottomY = useTransform(scrollY, [0, 500], [0, -30]);
-  const scrollIndicatorY = useTransform(scrollY, [0, 300], [0, -20]);
+  // All transforms set to 0 to eliminate any movement
+  const heroY = useTransform(scrollY, [0, 800], [0, 0]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, 1]);
+  const contentY = useTransform(scrollY, [0, 400], [0, 0]);
+  const bottomY = useTransform(scrollY, [0, 500], [0, 0]);
+  const scrollIndicatorY = useTransform(scrollY, [0, 300], [0, 0]);
 
   // Estados para datos del backend
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
@@ -206,7 +207,7 @@ export default function HomePage() {
       <Header />
 
       {/* HERO SECTION - LAYOUT MODERNO Y CONVERSIÓN */}
-      <section className="relative min-h-screen overflow-hidden">
+      <section className="relative min-h-screen overflow-hidden" style={{ contain: 'layout style paint', clipPath: 'inset(0)' }}>
         {/* Background con Parallax - Fixed overflow containment */}
         <motion.div 
           className="absolute inset-0 overflow-hidden"
@@ -226,7 +227,7 @@ export default function HomePage() {
             }
             alt="Reconquista - Marconi Inmobiliaria"
             fill
-            className="object-cover scale-110" // Reduced scale to prevent overflow
+            className="object-cover scale-105" // Further reduced scale to prevent overflow
             priority
           />
           
@@ -241,7 +242,7 @@ export default function HomePage() {
         </motion.div>
 
         {/* CONTENIDO PRINCIPAL - LAYOUT UNIFICADO PARA TODOS LOS TAMAÑOS */}
-        <div className="relative z-10 w-full min-h-screen flex flex-col overflow-hidden">
+        <div className="relative z-10 w-full min-h-screen flex flex-col overflow-hidden" style={{ contain: 'layout style' }}>
           
           {/* CONTENIDO SUPERIOR - CLAIM CENTRADO */}
           <div className="flex-1 flex items-center justify-center">
@@ -319,16 +320,11 @@ export default function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          style={{ y: scrollIndicatorY }}
           className="absolute bottom-64 sm:bottom-72 lg:bottom-80 left-1/2 transform -translate-x-1/2 z-10"
         >
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center"
-          >
+          <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
             <div className="w-1 h-3 bg-white/70 rounded-full mt-2"></div>
-          </motion.div>
+          </div>
         </motion.div>
       </section>
       {/* Propiedades Destacadas - PREMIUM DESIGN */}
