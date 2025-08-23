@@ -203,7 +203,7 @@ export default function HomePage() {
       <Header />
 
       {/* HERO SECTION - LAYOUT MODERNO Y CONV ERSIÓN */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen overflow-hidden">
         {/* Background con Parallax */}
         <motion.div 
           className="absolute inset-0"
@@ -238,10 +238,10 @@ export default function HomePage() {
         </motion.div>
 
         {/* CONTENIDO PRINCIPAL - LAYOUT UNIFICADO PARA TODOS LOS TAMAÑOS */}
-        <div className="relative z-10 w-full h-full flex flex-col">
+        <div className="relative z-10 w-full min-h-screen flex flex-col">
           
           {/* CONTENIDO SUPERIOR - CLAIM CENTRADO */}
-          <div className="flex-1 flex items-center justify-center pb-32">
+          <div className="flex-1 flex items-center justify-center">
             <div className="text-center px-4">
               {/* CLAIM PRINCIPAL */}
               <motion.div
@@ -314,7 +314,7 @@ export default function HomePage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          className="absolute bottom-40 sm:bottom-44 lg:bottom-48 left-1/2 transform -translate-x-1/2 z-10"
+          className="absolute bottom-64 sm:bottom-72 lg:bottom-80 left-1/2 transform -translate-x-1/2 z-10"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
