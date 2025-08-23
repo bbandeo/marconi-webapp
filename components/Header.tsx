@@ -126,19 +126,6 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
           >
             {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>
-
-          {/* Mobile Search Bar - PREMIUM STYLED */}
-          {showMobileSearch && (
-            <div className="md:hidden flex-1 max-w-xs ml-4 mr-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-bone-white/60" />
-                <Input
-                  placeholder="Buscar propiedades..."
-                  className="pl-10 h-10 bg-premium-card border-support-gray/30 text-bone-white placeholder:text-bone-white/60 text-sm focus:border-vibrant-orange"
-                />
-              </div>
-            </div>
-          )}
         </div>
       </div>
 

@@ -11,7 +11,13 @@
       "Bash(mkdir:*)",
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
-      "Bash(pnpm dev:*)"
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(git pull:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(pnpm local:*)"
     ],
     "deny": []
   }

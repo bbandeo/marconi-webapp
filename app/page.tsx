@@ -231,18 +231,18 @@ export default function HomePage() {
             priority
           />
           
-          {/* OVERLAY DINÁMICO - DEGRADADO TOP TO BOTTOM */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
+          {/* OVERLAY DINÁMICO REDUCIDO - DEGRADADO MÁS SUTIL */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/15 to-black/50" />
           
-          {/* EFECTO DIFUMINADO NARANJA RECUPERADO */}
-          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
+          {/* EFECTO DIFUMINADO NARANJA RECUPERADO - REDUCIDO */}
+          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/60 via-orange-500/25 to-transparent" />
           
-          {/* Overlay adicional para mejor contraste en el centro */}
-          <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/20 to-black/40" />
+          {/* Overlay adicional reducido para mejor contraste en el centro */}
+          <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/10 to-black/25" />
         </motion.div>
 
         {/* CONTENIDO PRINCIPAL - LAYOUT UNIFICADO PARA TODOS LOS TAMAÑOS */}
-        <div className="relative z-10 w-full min-h-screen flex flex-col overflow-hidden" style={{ contain: 'layout style' }}>
+        <div className="relative z-10 w-full min-h-screen flex flex-col overflow-hidden" style={{ contain: 'layout style', transform: 'translateY(-20vh)' }}>
           
           {/* CONTENIDO SUPERIOR - CLAIM CENTRADO */}
           <div className="flex-1 flex items-center justify-center">
@@ -687,7 +687,7 @@ export default function HomePage() {
             <div className="md:col-span-2">
               <div className="flex items-center space-x-2 mb-6">
                 <Image
-                  src="/assets/logos/marconi_title.svg"
+                  src="/assets/logos/marconi_header_orangewhite.png"
                   alt="Marconi Inmobiliaria"
                   width={140}
                   height={45}
