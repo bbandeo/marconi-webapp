@@ -241,7 +241,7 @@ export default function HomePage() {
         <div className="relative z-10 w-full h-full flex flex-col">
           
           {/* CONTENIDO SUPERIOR - CLAIM CENTRADO */}
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center pb-32">
             <div className="text-center px-4">
               {/* CLAIM PRINCIPAL */}
               <motion.div
@@ -264,12 +264,12 @@ export default function HomePage() {
             </div>
           </div>
           
-          {/* CONTENIDO INFERIOR - LOGO + CTA UNIFICADO PARA TODOS LOS TAMAÑOS */}
+          {/* CONTENIDO INFERIOR - LOGO + CTA POSICIONADO EN EL FONDO ABSOLUTO */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex flex-col items-center pb-12 sm:pb-16 lg:pb-20"
+            className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-6 sm:pb-8 lg:pb-10"
           >
             {/* LOGO RESPONSIVO AGRANDADO PARA DESKTOP */}
             <motion.div
@@ -309,12 +309,12 @@ export default function HomePage() {
           </motion.div>
         </div>
         
-        {/* INDICADOR DE SCROLL SUTIL - TODOS LOS TAMAÑOS */}
+        {/* INDICADOR DE SCROLL SUTIL - POSICIONADO ENTRE CONTENIDO Y LOGO */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+          className="absolute bottom-40 sm:bottom-44 lg:bottom-48 left-1/2 transform -translate-x-1/2 z-10"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
