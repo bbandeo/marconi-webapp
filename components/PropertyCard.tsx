@@ -77,9 +77,9 @@ export function PropertyCard({ property }: PropertyCardProps) {
           </Button>
         </div>
 
-        {/* Featured badge */}
+        {/* Featured badge - Movido a esquina inferior derecha */}
         {property.featured && (
-          <div className="absolute top-4 right-20 z-10 bg-gradient-to-r from-yellow-500 to-yellow-600 text-night-blue px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg border border-white/20">
+          <div className="absolute bottom-4 right-4 z-10 bg-gradient-to-r from-yellow-500 to-yellow-600 text-night-blue px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg border border-white/20">
             <Eye className="w-3.5 h-3.5" />
             DESTACADA
           </div>
@@ -106,7 +106,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
               {property.title}
             </h3>
           </Link>
-          <div className="flex items-center justify-center text-vibrant-orange body-md font-medium">
+          <div className="flex items-center justify-center text-gray-300 body-md font-medium">
             <MapPin className="w-5 h-5 mr-2" />
             <span>{property.neighborhood}, Reconquista</span>
           </div>
@@ -116,21 +116,21 @@ export function PropertyCard({ property }: PropertyCardProps) {
         {(property.bedrooms || property.bathrooms || property.area_m2) && (
           <div className="flex items-center justify-center gap-6 text-premium-primary py-4">
             {property.bedrooms && (
-              <div className="flex items-center gap-2">
-                <Bed className="w-5 h-5 text-vibrant-orange" />
-                <span className="font-medium">{property.bedrooms} dorm.</span>
+              <div className="flex items-center gap-1">
+                <Bed className="w-4 h-4 text-vibrant-orange" />
+                <span className="text-sm font-medium">{property.bedrooms} dorm.</span>
               </div>
             )}
             {property.bathrooms && (
-              <div className="flex items-center gap-2">
-                <Bath className="w-5 h-5 text-vibrant-orange" />
-                <span className="font-medium">{property.bathrooms} baños</span>
+              <div className="flex items-center gap-1">
+                <Bath className="w-4 h-4 text-vibrant-orange" />
+                <span className="text-sm font-medium">{property.bathrooms} baños</span>
               </div>
             )}
             {property.area_m2 && (
-              <div className="flex items-center gap-2">
-                <Square className="w-5 h-5 text-vibrant-orange" />
-                <span className="font-medium">{property.area_m2}m²</span>
+              <div className="flex items-center gap-1">
+                <Square className="w-4 h-4 text-vibrant-orange" />
+                <span className="text-sm font-medium">{property.area_m2}m²</span>
               </div>
             )}
           </div>
