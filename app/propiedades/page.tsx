@@ -219,8 +219,8 @@ export default function PropiedadesPage() {
           />
           {/* Premium overlay */}
           <div className="absolute inset-0 bg-night-blue/50" />
-          {/* Orange fade overlay - imported effect */}
-          <div className="absolute inset-x-0 bottom-0 h-32 md:h-48 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
+          {/* Orange fade overlay - imported effect - Enhanced overlay for better text contrast */}
+          <div className="absolute inset-x-0 bottom-0 h-32 md:h-48 bg-gradient-to-t from-orange-600/85 via-orange-500/50 to-transparent" />
         </div>
 
         <div className="container-premium relative z-10">
@@ -229,7 +229,7 @@ export default function PropiedadesPage() {
             <h1 className="display-lg text-premium-primary mb-premium-md">
               NUESTRAS <span className="accent-premium">PROPIEDADES</span>
             </h1>
-            <p className="body-xl text-premium-secondary mb-premium-lg max-w-4xl mx-auto">
+            <p className="body-xl text-premium-secondary mb-premium-lg max-w-4xl mx-auto font-medium">
               Descubrí las mejores propiedades cuidadosamente seleccionadas por nuestro equipo  
               y encontrá tu propiedad ideal con nuestro acompañamiento profesional.
             </p>
@@ -255,14 +255,14 @@ export default function PropiedadesPage() {
                       placeholder="Buscar por título, dirección o barrio..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange backdrop-blur-sm"
+                      className="pl-10 bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange backdrop-blur-sm rounded-xl py-3 focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
                     />
                   </div>
                 </div>
 
                 {/* Operation */}
                 <Select value={operationFilter} onValueChange={setOperationFilter}>
-                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
                     <SelectValue placeholder="Operación" />
                   </SelectTrigger>
                   <SelectContent className="bg-premium-card border-support-gray/30">
@@ -274,7 +274,7 @@ export default function PropiedadesPage() {
 
                 {/* Type */}
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
                     <SelectValue placeholder="Tipo" />
                   </SelectTrigger>
                   <SelectContent className="bg-premium-card border-support-gray/30">
@@ -293,18 +293,18 @@ export default function PropiedadesPage() {
                   placeholder="Precio mín."
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm"
+                  className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
                 />
                 <Input
                   placeholder="Precio máx."
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm"
+                  className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
                 />
 
                 {/* Bedrooms */}
                 <Select value={bedroomsFilter} onValueChange={setBedroomsFilter}>
-                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
                     <SelectValue placeholder="Dormitorios" />
                   </SelectTrigger>
                   <SelectContent className="bg-premium-card border-support-gray/30">
@@ -318,7 +318,7 @@ export default function PropiedadesPage() {
 
                 {/* Bathrooms */}
                 <Select value={bathroomsFilter} onValueChange={setBathroomsFilter}>
-                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
                     <SelectValue placeholder="Baños" />
                   </SelectTrigger>
                   <SelectContent className="bg-premium-card border-support-gray/30">
@@ -331,7 +331,7 @@ export default function PropiedadesPage() {
 
                 {/* Sort */}
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
                     <SelectValue placeholder="Ordenar por" />
                   </SelectTrigger>
                   <SelectContent className="bg-premium-card border-support-gray/30">
@@ -346,7 +346,7 @@ export default function PropiedadesPage() {
                 <Button
                   onClick={clearFilters}
                   variant="outline"
-                  className="hover:bg-vibrant-orange/80 hover:text-bone-white hover:border-vibrant-orange/60 transition-all duration-300"
+                  className="hover:bg-vibrant-orange/80 hover:text-bone-white hover:border-vibrant-orange/60 transition-all duration-300 rounded-xl px-4 py-3 font-medium"
                 >
                   Limpiar
                 </Button>
@@ -370,19 +370,19 @@ export default function PropiedadesPage() {
             {currentProperties.map((property) => (
               <Card
                 key={property.id}
-                className="group overflow-hidden hover-lift"
+                className="group overflow-hidden hover-lift shadow-lg hover:shadow-2xl transition-all duration-500"
               >
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
                   {/* Image Section */}
                   <div className="lg:col-span-2 relative">
                     <Link href={`/propiedades/${property.id}`}>
-                      <div className="relative cursor-pointer h-64 lg:h-80">
+                      <div className="relative cursor-pointer h-64 lg:h-80 overflow-hidden rounded-t-xl">
                         {property.images && property.images.length > 0 ? (
                           <Image
                             src={property.images[0]}
                             alt={property.title}
                             fill
-                            className="object-cover hover-scale"
+                            className="object-cover hover-scale transition-transform duration-700 group-hover:scale-105"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement
                               target.src = "/placeholder.svg"
@@ -398,16 +398,16 @@ export default function PropiedadesPage() {
                         )}
 
                         {/* Status badges */}
-                        <div className="absolute top-premium-sm left-premium-sm">
-                          <div className="bg-night-blue/90 text-bone-white px-premium-sm py-2 rounded-xl caption-lg font-semibold backdrop-blur-md border border-vibrant-orange/30">
+                        <div className="absolute top-3 left-3">
+                          <div className="bg-gradient-to-r from-vibrant-orange to-red-600 text-bone-white px-3 py-1.5 rounded-lg text-xs font-bold tracking-wider shadow-lg border border-white/10">
                             {property.operation === "sale" ? "VENTA" : "ALQUILER"}
                           </div>
                         </div>
 
                         {/* Featured badge */}
                         {property.featured && (
-                          <div className="absolute top-premium-sm right-premium-sm bg-gradient-to-r from-vibrant-orange/90 to-vibrant-orange/70 text-bone-white px-premium-sm py-2 rounded-xl caption-lg flex items-center gap-2 backdrop-blur-md shadow-lg">
-                            <Eye className="w-4 h-4" />
+                          <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-gray-900 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-lg">
+                            <Eye className="w-3.5 h-3.5" />
                             DESTACADA
                           </div>
                         )}
@@ -416,33 +416,33 @@ export default function PropiedadesPage() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          className="absolute bottom-premium-sm right-premium-sm bg-night-blue/80 hover:bg-night-blue text-bone-white hover:text-vibrant-orange backdrop-blur-md rounded-xl p-3 shadow-lg"
+                          className="absolute bottom-3 right-3 bg-black/70 hover:bg-black/90 text-bone-white hover:text-vibrant-orange backdrop-blur-md rounded-full p-2.5 shadow-lg hover:scale-110 transition-all duration-300"
                         >
-                          <Heart className="w-5 h-5" />
+                          <Heart className="w-4 h-4" />
                         </Button>
                       </div>
                     </Link>
                   </div>
 
                   {/* Content Section */}
-                  <div className="lg:col-span-3 p-premium-md lg:p-premium-lg flex flex-col justify-between">
+                  <div className="lg:col-span-3 p-6 lg:p-8 flex flex-col justify-between">
                     <div>
                       {/* Header */}
-                      <div className="flex items-start justify-between mb-premium-md">
+                      <div className="flex items-start justify-between mb-6">
                         <div className="flex-1">
                           <Link href={`/propiedades/${property.id}`}>
                             <h3 className="heading-lg text-premium-primary mb-premium-sm hover:text-vibrant-orange transition-colors cursor-pointer">
                               {property.title}
                             </h3>
                           </Link>
-                          <div className="flex items-center text-vibrant-orange body-md mb-premium-sm">
+                          <div className="flex items-center text-vibrant-orange body-md mb-premium-sm font-normal">
                             <MapPin className="w-5 h-5 mr-2" />
                             {property.neighborhood}, Reconquista
                           </div>
                         </div>
                         <div className="text-right ml-premium-md">
-                          <div className="display-sm text-premium-primary mb-premium-sm">
-                            {property.currency}$ {property.price.toLocaleString()}
+                          <div className="text-2xl md:text-3xl font-bold text-premium-primary mb-premium-sm flex items-baseline gap-1 justify-end">
+                            <span className="text-xl font-medium">{property.currency}</span><span className="font-extrabold">${property.price.toLocaleString()}</span>
                           </div>
                           <div className="caption-lg text-premium-secondary">
                             {property.operation === "rent" ? "por mes" : ""}
@@ -452,33 +452,33 @@ export default function PropiedadesPage() {
 
                       {/* Property Details */}
                       {(property.bedrooms || property.bathrooms || property.area_m2) && (
-                        <div className="flex items-center gap-premium-md text-premium-primary mb-premium-lg">
+                        <div className="flex items-center gap-4 text-premium-primary mb-8">
                           {property.bedrooms && (
-                            <div className="flex items-center bg-support-gray/10 px-premium-sm py-2 rounded-xl">
+                            <div className="flex items-center bg-support-gray/10 px-3 py-2.5 rounded-xl">
                               <Bed className="w-5 h-5 mr-2 text-vibrant-orange" />
-                              <span className="body-md font-medium">{property.bedrooms} dormitorios</span>
+                              <span className="text-sm font-medium">{property.bedrooms} dormitorios</span>
                             </div>
                           )}
                           {property.bathrooms && (
-                            <div className="flex items-center bg-support-gray/10 px-premium-sm py-2 rounded-xl">
+                            <div className="flex items-center bg-support-gray/10 px-3 py-2.5 rounded-xl">
                               <Bath className="w-5 h-5 mr-2 text-vibrant-orange" />
-                              <span className="body-md font-medium">{property.bathrooms} baños</span>
+                              <span className="text-sm font-medium">{property.bathrooms} baños</span>
                             </div>
                           )}
-                          <div className="flex items-center bg-support-gray/10 px-premium-sm py-2 rounded-xl">
+                          <div className="flex items-center bg-support-gray/10 px-3 py-2.5 rounded-xl">
                             <Square className="w-5 h-5 mr-2 text-vibrant-orange" />
-                            <span className="body-md font-medium">{property.area_m2}m²</span>
+                            <span className="text-sm font-medium">{property.area_m2}m²</span>
                           </div>
                         </div>
                       )}
 
                       {/* Features */}
                       {property.features && property.features.length > 0 && (
-                        <div className="mb-premium-lg">
-                          <h4 className="heading-sm text-premium-primary mb-premium-sm">Características:</h4>
+                        <div className="mb-8">
+                          <h4 className="heading-sm text-premium-primary mb-4">Características:</h4>
                           <div className="flex flex-wrap gap-2">
                             {property.features.slice(0, 5).map((feature, i) => (
-                              <span key={i} className="bg-vibrant-orange/15 text-vibrant-orange border border-vibrant-orange/25 px-3 py-1 rounded-xl caption-lg font-medium">
+                              <span key={i} className="bg-vibrant-orange/15 text-vibrant-orange border border-vibrant-orange/25 px-3 py-1.5 rounded-xl text-sm font-medium">
                                 {feature}
                               </span>
                             ))}
@@ -491,16 +491,16 @@ export default function PropiedadesPage() {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="flex gap-premium-sm pt-premium-md border-t border-support-gray/20">
+                    <div className="flex gap-3 pt-6 border-t border-support-gray/20">
                       <Link href={`/propiedades/${property.id}`} className="flex-1">
-                        <Button className="w-full" size="lg">
+                        <Button className="w-full hover:shadow-lg transition-all duration-300" size="lg">
                           Ver detalles completos <ArrowLeft className="w-5 h-5 ml-2 rotate-180" />
                         </Button>
                       </Link>
                       <Button
                         variant="outline"
                         size="lg"
-                        className="px-premium-md"
+                        className="px-4 hover:shadow-md transition-all duration-300"
                       >
                         <Heart className="w-5 h-5 mr-2" />
                         Guardar
@@ -508,7 +508,7 @@ export default function PropiedadesPage() {
                       <Button
                         variant="outline"
                         size="lg"
-                        className="px-premium-md"
+                        className="px-4 hover:shadow-md transition-all duration-300"
                       >
                         Contactar
                       </Button>
