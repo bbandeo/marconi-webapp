@@ -237,7 +237,7 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/20 to-black/40" />
         </motion.div>
 
-        {/* CONTENIDO PRINCIPAL - LAYOUT DIFERENCIADO MOBILE/DESKTOP */}
+        {/* CONTENIDO PRINCIPAL - LAYOUT UNIFICADO PARA TODOS LOS TAMAÑOS */}
         <div className="relative z-10 w-full h-full flex flex-col">
           
           {/* CONTENIDO SUPERIOR - CLAIM CENTRADO */}
@@ -248,7 +248,6 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 60, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="mb-8 lg:mb-0"
               >
                 <div className="relative inline-block">
                   <Image
@@ -262,125 +261,60 @@ export default function HomePage() {
                   <div className="absolute -inset-2 lg:-inset-4 bg-gradient-to-r from-orange-600/10 via-transparent to-red-600/10 rounded-2xl lg:rounded-3xl blur-2xl lg:blur-3xl -z-10" />
                 </div>
               </motion.div>
-              
-              {/* SUBTÍTULO - SOLO MOBILE */}
-              <motion.p 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="lg:hidden text-lg sm:text-xl text-white/90 font-light max-w-xl mx-auto mb-12 leading-relaxed"
-                style={{ fontFamily: 'Inter, system-ui, sans-serif' }}
-              >
-                Más de 200 propiedades premium en las mejores ubicaciones de Reconquista
-              </motion.p>
-              
-              {/* CTAs MOBILE - AMBOS BOTONES */}
-              <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                className="lg:hidden flex flex-col gap-4 justify-center items-center mb-16"
-              >
-                <Link href="/propiedades">
-                  <Button 
-                    size="lg"
-                    className="group bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold px-8 py-5 text-base rounded-full shadow-2xl shadow-orange-600/40 hover:shadow-orange-600/60 transition-all duration-300 hover:scale-105 border-0 w-full min-w-[280px]"
-                  >
-                    <Search className="w-4 h-4 mr-2" />
-                    EXPLORAR PROPIEDADES
-                    <motion.div
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                      className="ml-2"
-                    >
-                      <ArrowRight className="w-4 h-4" />
-                    </motion.div>
-                  </Button>
-                </Link>
-                
-                <Link href="/contacto">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="group border-2 border-white/80 text-white hover:bg-white hover:text-gray-900 px-8 py-5 text-base font-bold rounded-full bg-transparent backdrop-blur-sm transition-all duration-300 hover:scale-105 shadow-xl shadow-black/20 w-full min-w-[280px]"
-                  >
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    CONTACTAR AGENTE
-                  </Button>
-                </Link>
-              </motion.div>
-              
-              {/* LOGO MOBILE */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.7, type: "spring", bounce: 0.3 }}
-                className="lg:hidden inline-block"
-              >
-                <div className="bg-white/10 backdrop-blur-md rounded-xl px-6 py-4 border border-white/20 shadow-2xl shadow-black/30">
-                  <Image
-                    src="/assets/logos/marconi_header_orangewhite.png"
-                    alt="Marconi Inmobiliaria"
-                    width={300}
-                    height={90}
-                    className="h-12 sm:h-16 w-auto opacity-95"
-                  />
-                </div>
-              </motion.div>
             </div>
           </div>
           
-          {/* CONTENIDO INFERIOR - DESKTOP SOLO: LOGO + CTA CON PADDING GENEROSO */}
+          {/* CONTENIDO INFERIOR - LOGO + CTA UNIFICADO PARA TODOS LOS TAMAÑOS */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="hidden lg:flex flex-col items-center pb-20"
+            className="flex flex-col items-center pb-12 sm:pb-16 lg:pb-20"
           >
-            {/* LOGO AGRANDADO DESKTOP */}
+            {/* LOGO RESPONSIVO AGRANDADO */}
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.7, type: "spring", bounce: 0.3 }}
-              className="mb-8"
+              className="mb-6 sm:mb-8"
             >
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl px-12 py-8 border border-white/20 shadow-2xl shadow-black/30">
+              <div className="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl px-8 sm:px-10 lg:px-12 py-6 sm:py-7 lg:py-8 border border-white/20 shadow-2xl shadow-black/30">
                 <Image
                   src="/assets/logos/marconi_header_orangewhite.png"
                   alt="Marconi Inmobiliaria"
                   width={500}
                   height={150}
-                  className="h-28 w-auto opacity-95"
+                  className="h-20 sm:h-24 lg:h-28 w-auto opacity-95"
                 />
               </div>
             </motion.div>
             
-            {/* SOLO CTA PRIMARIO DESKTOP */}
+            {/* CTA PRIMARIO ÚNICO PARA TODOS LOS TAMAÑOS */}
             <Link href="/propiedades">
               <Button 
                 size="lg"
-                className="group bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold px-12 py-6 text-xl rounded-full shadow-2xl shadow-orange-600/40 hover:shadow-orange-600/60 transition-all duration-300 hover:scale-105 border-0 min-w-[350px]"
+                className="group bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold px-10 sm:px-11 lg:px-12 py-5 sm:py-5.5 lg:py-6 text-lg sm:text-xl rounded-full shadow-2xl shadow-orange-600/40 hover:shadow-orange-600/60 transition-all duration-300 hover:scale-105 border-0 min-w-[300px] sm:min-w-[320px] lg:min-w-[350px]"
               >
-                <Search className="w-6 h-6 mr-4" />
+                <Search className="w-5 sm:w-5.5 lg:w-6 h-5 sm:h-5.5 lg:h-6 mr-3 sm:mr-3.5 lg:mr-4" />
                 EXPLORAR PROPIEDADES
                 <motion.div
                   animate={{ x: [0, 5, 0] }}
                   transition={{ repeat: Infinity, duration: 2 }}
-                  className="ml-4"
+                  className="ml-3 sm:ml-3.5 lg:ml-4"
                 >
-                  <ArrowRight className="w-6 h-6" />
+                  <ArrowRight className="w-5 sm:w-5.5 lg:w-6 h-5 sm:h-5.5 lg:h-6" />
                 </motion.div>
               </Button>
             </Link>
           </motion.div>
         </div>
         
-        {/* INDICADOR DE SCROLL SUTIL - SOLO MOBILE */}
+        {/* INDICADOR DE SCROLL SUTIL - TODOS LOS TAMAÑOS */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
-          className="lg:hidden absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
