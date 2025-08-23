@@ -4,6 +4,7 @@ import { Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
+import ClientMotionProvider from "@/components/ClientMotionProvider"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,10 +28,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" className="dark" suppressHydrationWarning>
+    <html lang="es" className="dark scroll-smooth" suppressHydrationWarning>
       <body className={`${inter.variable} ${playfairDisplay.variable} font-sans`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          {children}
+          <ClientMotionProvider>
+            {children}
+          </ClientMotionProvider>
           <Toaster />
         </ThemeProvider>
       </body>
