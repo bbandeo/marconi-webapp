@@ -27,7 +27,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
 import Link from "next/link";
-import Header from "@/components/Header";
+import Header from "@/components/Header"
+import Footer from "@/components/Footer";
 
 export default function ContactoPage() {
   const [contactForm, setContactForm] = useState({
@@ -580,74 +581,7 @@ export default function ContactoPage() {
         </div>
       </section>
 
-      {/* Footer - PREMIUM DESIGN */}
-      <footer className="bg-premium-main border-t border-support-gray/20 section-premium">
-        <div className="container-premium">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-premium-lg">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-premium-md">
-                <Image
-                  src="/assets/logos/marconi_title.svg"
-                  alt="Marconi Inmobiliaria"
-                  width={140}
-                  height={45}
-                  className="h-10 w-auto"
-                />
-              </div>
-              <p className="body-lg text-premium-secondary mb-premium-md max-w-md">
-                Experiencia premium en bienes raíces. Comprometidos con encontrar 
-                la propiedad perfecta para cada familia.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="heading-sm text-premium-primary mb-premium-md">Enlaces</h3>
-              <ul className="space-y-3 text-premium-secondary">
-                <li>
-                  <Link
-                    href="/propiedades"
-                    className="body-md hover:text-vibrant-orange transition-colors"
-                  >
-                    Propiedades
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/agentes"
-                    className="body-md hover:text-vibrant-orange transition-colors"
-                  >
-                    Agentes
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contacto"
-                    className="body-md hover:text-vibrant-orange transition-colors accent-premium"
-                  >
-                    Contacto
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="heading-sm text-premium-primary mb-premium-md">Contacto</h3>
-              <ul className="space-y-3 text-premium-secondary">
-                <li className="body-md">Jorge Newbery 1562</li>
-                <li className="body-md">Reconquista, Santa Fe</li>
-                <li className="body-md">+54 3482 308100</li>
-                <li className="body-md">marconinegociosinmobiliarios@hotmail.com</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-support-gray/20 mt-premium-xl pt-premium-lg text-center">
-            <p className="caption-lg text-premium-secondary">
-              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

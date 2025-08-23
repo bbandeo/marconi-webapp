@@ -20,7 +20,8 @@
       "Bash(pnpm local:*)",
       "WebSearch",
       "WebSearch",
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }
