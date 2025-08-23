@@ -290,7 +290,7 @@ export default function HomePage() {
                   alt="Marconi Inmobiliaria"
                   width={900}
                   height={270}
-                  className="h-20 sm:h-24 lg:h-54 w-auto opacity-95"
+                  className="h-20 sm:h-24 lg:h-36 w-auto opacity-95"
                 />
               </div>
             </motion.div>
@@ -323,8 +323,8 @@ export default function HomePage() {
         <div className="container-premium relative z-10">
           {/* Header Premium - ESPACIADO GENEROSO */}
           <div className="text-center mb-premium-xl">
-            <h2 className="display-lg text-premium-primary mb-premium-md">
-              PROPIEDADES <span className="accent-premium">DESTACADAS</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
             </h2>
             <p className="body-lg text-premium-secondary max-w-2xl mx-auto">
               Selección exclusiva de propiedades premium en ubicaciones estratégicas
