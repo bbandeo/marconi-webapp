@@ -4,6 +4,7 @@ import { Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
+import { getAnalyticsClient } from '@/lib/analytics-client'
 
 const inter = Inter({
   subsets: ["latin"],
@@ -13,6 +14,11 @@ const inter = Inter({
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair-display",
+})
+
+// Inicializar cliente de analytics con logging habilitado
+getAnalyticsClient({
+  enableConsoleLogging: true
 })
 
 export const metadata: Metadata = {
