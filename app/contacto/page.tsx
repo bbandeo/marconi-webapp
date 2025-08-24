@@ -31,7 +31,8 @@ import Header from "@/components/Header"
 import Footer from "@/components/Footer"
 import { LeadSourceSelector, useLeadSourceDetection, useLeadSourceSelector } from "@/components/LeadSourceSelector"
 import { useAnalytics } from "@/hooks/useAnalytics"
-import { type LeadSourceCode } from "@/types/analytics"
+import { trackLead } from '@/lib/analytics-client'
+import { type LeadSourceCode, LEAD_SOURCE_CODES } from "@/types/analytics"
 
 export default function ContactoPage() {
   const [contactForm, setContactForm] = useState({
@@ -107,6 +108,125 @@ export default function ContactoPage() {
       setSubmitError('Hubo un error al enviar tu consulta. Por favor, intenta nuevamente.');
     } finally {
       setSubmitLoading(false);
+    }
+  };
+
+  // Handle phone contact lead generation
+  const handlePhoneClick = async () => {
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: 'Cliente - Llamada telefónica',
+          phone: '+54 3482 308100',
+          message: 'Solicitud de contacto telefónico desde página de contacto',
+          source: 'telefono',
+          property_id: null,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, LEAD_SOURCE_CODES.TELEFONO);
+        }
+      }
+    } catch (error) {
+      console.error('Error creating phone lead:', error);
+    }
+  };
+
+  // Handle WhatsApp contact lead generation
+  const handleWhatsAppClick = async () => {
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: 'Cliente - WhatsApp',
+          phone: '+54 9 3482 308100',
+          message: 'Solicitud de contacto por WhatsApp desde página de contacto',
+          source: 'whatsapp',
+          property_id: null,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, LEAD_SOURCE_CODES.WHATSAPP);
+        }
+      }
+    } catch (error) {
+      console.error('Error creating WhatsApp lead:', error);
+    }
+  };
+
+  // Handle email contact lead generation
+  const handleEmailClick = async () => {
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: 'Cliente - Email',
+          email: 'marconinegociosinmobiliarios@hotmail.com',
+          message: 'Solicitud de contacto por email desde página de contacto',
+          source: 'email',
+          property_id: null,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, LEAD_SOURCE_CODES.EMAIL);
+        }
+      }
+    } catch (error) {
+      console.error('Error creating email lead:', error);
+    }
+  };
+
+  // Handle social media contact lead generation
+  const handleSocialClick = async (platform: 'facebook' | 'instagram') => {
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `Cliente - ${platform.charAt(0).toUpperCase() + platform.slice(1)}`,
+          message: `Contacto desde ${platform} en página de contacto`,
+          source: platform,
+          property_id: null,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, platform === 'facebook' ? LEAD_SOURCE_CODES.FACEBOOK : LEAD_SOURCE_CODES.INSTAGRAM);
+        }
+      }
+    } catch (error) {
+      console.error(`Error creating ${platform} lead:`, error);
     }
   };
 
@@ -206,14 +326,23 @@ export default function ContactoPage() {
                   className="text-center"
                 >
                   <Button
-                    asChild
                     size="lg"
                     className="w-full"
+                    onClick={async () => {
+                      if (method.title === "Teléfono") {
+                        await handlePhoneClick();
+                        window.location.href = method.action;
+                      } else if (method.title === "WhatsApp") {
+                        await handleWhatsAppClick();
+                        window.open(method.action, '_blank', 'noopener,noreferrer');
+                      } else if (method.title === "Email") {
+                        await handleEmailClick();
+                        window.location.href = method.action;
+                      }
+                    }}
                   >
-                    <a href={method.action} target="_blank" rel="noopener noreferrer">
-                      <method.icon className="w-5 h-5 mr-2" />
-                      {method.title}
-                    </a>
+                    <method.icon className="w-5 h-5 mr-2" />
+                    {method.title}
                   </Button>
                   <p className="caption-lg text-premium-secondary mt-premium-sm">{method.content}</p>
                 </motion.div>
@@ -450,23 +579,25 @@ export default function ContactoPage() {
                         variant="outline"
                         size="sm"
                         className="hover:bg-blue-600 hover:text-bone-white hover:border-blue-600"
-                        asChild
+                        onClick={async () => {
+                          await handleSocialClick('facebook');
+                          window.open('https://facebook.com', '_blank', 'noopener,noreferrer');
+                        }}
                       >
-                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                          <Facebook className="w-4 h-4 mr-2" />
-                          Facebook
-                        </a>
+                        <Facebook className="w-4 h-4 mr-2" />
+                        Facebook
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         className="hover:bg-pink-600 hover:text-bone-white hover:border-pink-600"
-                        asChild
+                        onClick={async () => {
+                          await handleSocialClick('instagram');
+                          window.open('https://instagram.com', '_blank', 'noopener,noreferrer');
+                        }}
                       >
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                          <Instagram className="w-4 h-4 mr-2" />
-                          Instagram
-                        </a>
+                        <Instagram className="w-4 h-4 mr-2" />
+                        Instagram
                       </Button>
                     </div>
                   </CardContent>

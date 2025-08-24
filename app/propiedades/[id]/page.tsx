@@ -34,7 +34,8 @@ import {
 import type { Property as PropertyType } from "@/lib/supabase"
 import Header from "@/components/Header"
 import { ComprehensivePropertyTracker, ContactTracker, ImageGalleryTracker, useImageGalleryTracker } from "@/components/PropertyViewTracker"
-import { trackPropertyView, trackContactClick, trackWhatsAppClick } from '@/lib/analytics-client'
+import { trackPropertyView, trackContactClick, trackWhatsAppClick, trackLead } from '@/lib/analytics-client'
+import { LEAD_SOURCE_CODES } from '@/types/analytics'
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -168,11 +169,42 @@ export default function PropertyDetailPage() {
   // Contact form handler
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement contact form submission
-    console.log("Contact form submitted:", contactForm)
-    alert("¡Mensaje enviado! Nos pondremos en contacto contigo pronto.")
-    setShowContactForm(false)
-    setContactForm({ name: "", email: "", phone: "", message: "" })
+    
+    try {
+      // Create the lead first
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: contactForm.name,
+          email: contactForm.email,
+          phone: contactForm.phone,
+          message: contactForm.message,
+          source: 'formulario_web',
+          property_id: property?.id,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, LEAD_SOURCE_CODES.FORMULARIO_WEB, property?.id);
+        }
+
+        alert("¡Mensaje enviado! Nos pondremos en contacto contigo pronto.")
+        setShowContactForm(false)
+        setContactForm({ name: "", email: "", phone: "", message: "" })
+      } else {
+        throw new Error('Error al enviar el mensaje');
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      alert('Hubo un error al enviar tu mensaje. Por favor, intenta nuevamente.');
+    }
   }
 
   if (loading) {
@@ -476,8 +508,36 @@ export default function PropertyDetailPage() {
                     <ContactTracker propertyId={property.id} type="phone" metadata={{ contact_method: 'direct_call' }}>
                       <Button
                         variant="outline"
-                        onClick={() => {
+                        onClick={async () => {
                           trackContactClick(property.id)
+                          
+                          // Create lead for phone contact
+                          try {
+                            const response = await fetch('/api/leads', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                name: 'Cliente - Llamada telefónica',
+                                phone: '+54 3482 308100',
+                                message: `Solicitud de llamada para propiedad "${property.title}" - Código #${property.id}`,
+                                source: 'telefono',
+                                property_id: property.id,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const leadData = await response.json();
+                              
+                              // Track the lead generation in analytics
+                              if (leadData.id) {
+                                await trackLead(leadData.id, LEAD_SOURCE_CODES.TELEFONO, property.id);
+                              }
+                            }
+                          } catch (error) {
+                            console.error('Error creating phone lead:', error);
+                          }
                         }}
                         className="w-full"
                         size="lg"
@@ -490,8 +550,36 @@ export default function PropertyDetailPage() {
                     <ContactTracker propertyId={property.id} type="email" metadata={{ contact_method: 'direct_email' }}>
                       <Button
                         variant="outline"
-                        onClick={() => {
+                        onClick={async () => {
                           trackContactClick(property.id)
+                          
+                          // Create lead for email contact
+                          try {
+                            const response = await fetch('/api/leads', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                name: 'Cliente - Email',
+                                email: 'marconinegociosinmobiliarios@hotmail.com',
+                                message: `Consulta por email para propiedad "${property.title}" - Código #${property.id}`,
+                                source: 'email',
+                                property_id: property.id,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const leadData = await response.json();
+                              
+                              // Track the lead generation in analytics
+                              if (leadData.id) {
+                                await trackLead(leadData.id, LEAD_SOURCE_CODES.EMAIL, property.id);
+                              }
+                            }
+                          } catch (error) {
+                            console.error('Error creating email lead:', error);
+                          }
                         }}
                         className="w-full"
                         size="lg"
@@ -504,8 +592,35 @@ export default function PropertyDetailPage() {
                     <ContactTracker propertyId={property.id} type="form" metadata={{ form_type: 'schedule_visit' }}>
                       <Button
                         variant="outline"
-                        onClick={() => {
+                        onClick={async () => {
                           trackContactClick(property.id)
+                          
+                          // Create lead for visit request
+                          try {
+                            const response = await fetch('/api/leads', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                name: 'Cliente - Solicitud de visita',
+                                message: `Solicitud de visita para propiedad "${property.title}" - Código #${property.id}`,
+                                source: 'formulario_web',
+                                property_id: property.id,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const leadData = await response.json();
+                              
+                              // Track the lead generation in analytics
+                              if (leadData.id) {
+                                await trackLead(leadData.id, LEAD_SOURCE_CODES.FORMULARIO_WEB, property.id);
+                              }
+                            }
+                          } catch (error) {
+                            console.error('Error creating visit request lead:', error);
+                          }
                         }}
                         className="w-full"
                         size="lg"
@@ -516,8 +631,37 @@ export default function PropertyDetailPage() {
                     </ContactTracker>
                     
                     <Button
-                      onClick={() => {
+                      onClick={async () => {
                         trackWhatsAppClick(property.id)
+                        
+                        // Create lead for WhatsApp contact
+                        try {
+                          const response = await fetch('/api/leads', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                              name: 'Cliente - WhatsApp',
+                              phone: '+54 9 1234567890',
+                              message: `Consulta por propiedad "${property.title}" - Código #${property.id}`,
+                              source: 'whatsapp',
+                              property_id: property.id,
+                            }),
+                          });
+
+                          if (response.ok) {
+                            const leadData = await response.json();
+                            
+                            // Track the lead generation in analytics
+                            if (leadData.id) {
+                              await trackLead(leadData.id, LEAD_SOURCE_CODES.WHATSAPP, property.id);
+                            }
+                          }
+                        } catch (error) {
+                          console.error('Error creating WhatsApp lead:', error);
+                        }
+                        
                         // Abrir WhatsApp con mensaje predeterminado
                         const message = encodeURIComponent(`Hola! Me interesa la propiedad "${property.title}" - Código #${property.id}`)
                         window.open(`https://wa.me/5491234567890?text=${message}`, '_blank')
