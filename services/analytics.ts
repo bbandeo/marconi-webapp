@@ -51,46 +51,64 @@ export class AnalyticsService {
       // Generate session ID
       const sessionId = crypto.randomUUID()
       
-      // Hash IP address for GDPR compliance
-      const ipHash = await this.hashString(sessionData.ip_address + 'marconi_salt_2025')
-      
-      const { data, error } = await supabase
-        .from('analytics_sessions')
-        .insert([
-          {
-            session_id: sessionId,
-            ip_hash: ipHash,
-            user_agent: sessionData.user_agent,
-            device_type: sessionData.device_type,
-            browser_name: sessionData.browser,
-            os_name: sessionData.os,
-            referrer_domain: sessionData.referrer_domain,
-            utm_source: sessionData.utm_source,
-            utm_medium: sessionData.utm_medium,
-            utm_campaign: sessionData.utm_campaign,
-            utm_term: sessionData.utm_term,
-            utm_content: sessionData.utm_content,
-            country_code: sessionData.country_code,
-            language: 'es'
-          }
-        ])
-        .select()
-        .single()
-      
-      if (error) {
-        throw new Error(`Failed to create analytics session: ${error.message}`)
+      // Try to hash IP address for GDPR compliance
+      let ipHash: string
+      try {
+        ipHash = await this.hashString(sessionData.ip_address + 'marconi_salt_2025')
+      } catch (hashError) {
+        console.warn('Failed to hash IP for new session, using placeholder:', hashError)
+        ipHash = 'hashed_' + sessionId.substring(0, 16) // Fallback hash
       }
       
-      return sessionId
+      try {
+        const { data, error } = await supabase
+          .from('analytics_sessions')
+          .insert([
+            {
+              session_id: sessionId,
+              ip_hash: ipHash,
+              user_agent: sessionData.user_agent?.substring(0, 500) || null, // Truncate to avoid DB errors
+              device_type: sessionData.device_type,
+              browser_name: sessionData.browser?.substring(0, 100) || null,
+              os_name: sessionData.os?.substring(0, 100) || null,
+              referrer_domain: sessionData.referrer_domain?.substring(0, 255) || null,
+              utm_source: sessionData.utm_source?.substring(0, 100) || null,
+              utm_medium: sessionData.utm_medium?.substring(0, 100) || null,
+              utm_campaign: sessionData.utm_campaign?.substring(0, 100) || null,
+              utm_term: sessionData.utm_term?.substring(0, 100) || null,
+              utm_content: sessionData.utm_content?.substring(0, 255) || null,
+              country_code: sessionData.country_code?.substring(0, 2) || null,
+              language: 'es'
+            }
+          ])
+          .select()
+          .single()
+        
+        if (error) {
+          console.error('Database error creating session:', error)
+          // If database insert fails, still return the session ID for local tracking
+          console.warn(`Session ${sessionId} created locally due to database error`)
+          return sessionId
+        }
+        
+        return sessionId
+      } catch (dbError) {
+        console.error('Database connection failed, creating local session:', dbError)
+        return sessionId // Return local session ID as fallback
+      }
     } catch (error) {
       console.error('Analytics session creation failed:', error)
-      throw error
+      
+      // Final fallback: generate a basic session ID
+      const fallbackSessionId = `fallback-session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      console.warn('Using fallback session ID:', fallbackSessionId)
+      return fallbackSessionId
     }
   }
 
   /**
    * Gets or creates a session for the current user
-   * Handles session persistence and deduplication
+   * Handles session persistence and deduplication with fallbacks
    */
   static async getOrCreateSession(
     ipAddress: string,
@@ -98,22 +116,43 @@ export class AnalyticsService {
     additionalData?: Partial<CreateAnalyticsSessionInput>
   ): Promise<string> {
     try {
-      // Check if we have a recent session for this IP hash
-      const ipHash = await this.hashString(ipAddress)
+      // Validate input
+      if (!ipAddress) {
+        throw new Error('IP address is required for session management')
+      }
+
+      // Try to hash IP address
+      let ipHash: string
+      try {
+        ipHash = await this.hashString(ipAddress + 'marconi_salt_2025')
+      } catch (hashError) {
+        console.warn('Failed to hash IP address, using fallback method:', hashError)
+        // Fallback: create session without IP checking
+        return await this.createSession({
+          ip_address: ipAddress,
+          user_agent: userAgent,
+          ...additionalData
+        })
+      }
       
-      const { data: existingSessions, error } = await supabase
-        .from('analytics_sessions')
-        .select('session_id, last_seen')
-        .eq('ip_hash', ipHash)
-        .gte('last_seen', new Date(Date.now() - ANALYTICS_CONSTANTS.MAX_SESSION_DURATION_HOURS * 60 * 60 * 1000).toISOString())
-        .order('last_seen', { ascending: false })
-        .limit(1)
+      // Check for existing session
+      try {
+        const { data: existingSessions, error } = await supabase
+          .from('analytics_sessions')
+          .select('session_id, last_seen')
+          .eq('ip_hash', ipHash)
+          .gte('last_seen', new Date(Date.now() - ANALYTICS_CONSTANTS.MAX_SESSION_DURATION_HOURS * 60 * 60 * 1000).toISOString())
+          .order('last_seen', { ascending: false })
+          .limit(1)
 
-      if (error) throw error
-
-      // Return existing session if found and still active
-      if (existingSessions && existingSessions.length > 0) {
-        return existingSessions[0].session_id
+        if (error) {
+          console.warn('Failed to query existing sessions:', error)
+          // Don't throw, continue to create new session
+        } else if (existingSessions && existingSessions.length > 0) {
+          return existingSessions[0].session_id
+        }
+      } catch (queryError) {
+        console.warn('Session query failed, creating new session:', queryError)
       }
 
       // Create new session
@@ -124,7 +163,15 @@ export class AnalyticsService {
       })
     } catch (error) {
       console.error('Session management failed:', error)
-      throw error
+      
+      // Last resort fallback: return a predictable session ID
+      try {
+        const fallbackId = `fallback-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        console.warn('Using fallback session ID:', fallbackId)
+        return fallbackId
+      } catch {
+        throw new Error('Complete session management failure')
+      }
     }
   }
 

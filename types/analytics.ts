@@ -413,3 +413,28 @@ export interface AnalyticsServiceConfig {
   viewDebounceDuration: number
   maxInteractionBatchSize: number
 }
+
+// ================== ERROR CLASSES ==================
+
+export class AnalyticsValidationError extends Error {
+  constructor(message: string, public field: string, public value: any) {
+    super(message)
+    this.name = 'AnalyticsValidationError'
+  }
+}
+
+export class AnalyticsPrivacyError extends Error {
+  constructor(message: string, public sessionId?: string) {
+    super(message)
+    this.name = 'AnalyticsPrivacyError'
+  }
+}
+
+// ================== CONSTANTS ==================
+
+export const ANALYTICS_CONSTANTS = {
+  MAX_SESSION_DURATION_HOURS: 4,
+  VIEW_DEBOUNCE_DURATION_HOURS: 2,
+  RETENTION_MONTHS: 25,
+  MAX_BATCH_SIZE: 100
+} as const
