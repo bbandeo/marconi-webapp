@@ -29,20 +29,23 @@ export const ARGENTINA_BOUNDS = {
 // Reconquista, Santa Fe coordinates
 export const RECONQUISTA_CENTER: [number, number] = [-29.15, -59.65]
 
-// Geocoding service for Spanish addresses
+// Geocoding service for Spanish addresses - using internal API to avoid CORS
 export const geocodeAddress = async (address: string): Promise<[number, number] | null> => {
   if (!address || address.trim() === '') {
     return RECONQUISTA_CENTER
   }
 
   try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=AR&limit=1`
-    )
+    const response = await fetch(`/api/geocode?address=${encodeURIComponent(address)}`)
+    
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}`)
+    }
+    
     const data = await response.json()
     
-    if (data && data.length > 0) {
-      return [parseFloat(data[0].lat), parseFloat(data[0].lon)]
+    if (data && data.lat && data.lng) {
+      return [data.lat, data.lng]
     }
   } catch (error) {
     console.error('Geocoding error:', error)
