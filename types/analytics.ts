@@ -414,23 +414,189 @@ export interface AnalyticsServiceConfig {
   maxInteractionBatchSize: number
 }
 
-// ================== ERROR CLASSES ==================
+// ================== SERVICE INPUT TYPES ==================
 
-export class AnalyticsValidationError extends Error {
-  constructor(message: string, public field: string, public value: any) {
-    super(message)
-    this.name = 'AnalyticsValidationError'
-  }
+export interface CreateAnalyticsSessionInput {
+  ip_address: string
+  user_agent?: string
+  country_code?: string
+  device_type?: 'desktop' | 'mobile' | 'tablet'
+  browser?: string
+  os?: string
+  referrer_domain?: string
+  landing_page?: string
+  utm_source?: string
+  utm_medium?: string
+  utm_campaign?: string
+  utm_term?: string
+  utm_content?: string
 }
 
-export class AnalyticsPrivacyError extends Error {
-  constructor(message: string, public sessionId?: string) {
-    super(message)
-    this.name = 'AnalyticsPrivacyError'
-  }
+export interface CreatePropertyViewInput {
+  session_id: string
+  property_id: number
+  page_url?: string
+  referrer_url?: string
+  search_query?: string
+  time_on_page?: number
+  scroll_depth?: number
+  contact_button_clicked?: boolean
+  whatsapp_clicked?: boolean
+  phone_clicked?: boolean
+  email_clicked?: boolean
+  images_viewed?: number
+  map_interacted?: boolean
+  similar_properties_clicked?: boolean
 }
 
-// ================== CONSTANTS ==================
+export interface CreateLeadGenerationEventInput {
+  lead_id: number
+  session_id?: string
+  property_id?: number
+  lead_source_id: number
+  form_type?: string
+  time_to_conversion?: number
+  conversion_page?: string
+  utm_source?: string
+  utm_medium?: string
+  utm_campaign?: string
+  utm_term?: string
+  utm_content?: string
+}
+
+export interface CreateUserInteractionEventInput {
+  session_id: string
+  property_id?: number
+  event_type: string
+  event_target?: string
+  page_url?: string
+  event_data?: any
+  timestamp?: number
+}
+
+// ================== MISSING ANALYTICS TYPES ==================
+
+export interface PropertyViewEvent {
+  id: string
+  property_id: number
+  session_id?: string
+  view_duration_seconds: number
+  page_url: string
+  referrer_url?: string
+  viewed_at: string
+  created_at: string
+}
+
+export interface LeadGenerationEvent {
+  id: string
+  lead_id: number
+  session_id?: string
+  property_id?: number
+  lead_source_id: number
+  generated_at: string
+  created_at: string
+}
+
+export interface UserInteractionEvent {
+  id: string
+  session_id: string
+  event_type: string
+  event_target?: string
+  page_url: string
+  occurred_at: string
+  created_at: string
+}
+
+export interface TopPropertyResult {
+  property_id: number
+  title: string
+  metric_value: number
+  unique_views: number
+  leads: number
+}
+
+export interface DashboardStats {
+  total_sessions: number
+  total_property_views: number
+  unique_property_views: number
+  total_leads: number
+  conversion_rate: number
+  avg_time_on_page: number
+  top_properties: TopPropertyResult[]
+  top_lead_sources: Array<{
+    source_id: number
+    source_name: string
+    leads_count: number
+    conversion_rate: number
+  }>
+  traffic_by_device: Array<{
+    device_type: string
+    sessions: number
+    percentage: number
+  }>
+  daily_stats: Array<{
+    date: string
+    sessions: number
+    views: number
+    leads: number
+  }>
+}
+
+export interface LeadSourceStats {
+  source_id: number
+  source_name: string
+  leads_count: number
+  avg_conversion_time?: number | null
+  unique_sessions: number
+  conversion_rate?: number | null
+}
+
+export interface CampaignStats {
+  utm_source: string
+  utm_campaign: string | null
+  sessions: number
+  total_events: number
+  leads: number
+  avg_conversion_time: number | null
+  roas: number | null
+}
+
+export interface DeviceTypeStats {
+  device_type: string
+  sessions: number
+  property_views: number
+  leads: number
+  conversion_rate: number
+}
+
+export interface HourlyTrafficStats {
+  hour: number
+  sessions: number
+  views: number
+  leads: number
+}
+
+export interface AnalyticsFilters {
+  start_date?: string
+  end_date?: string
+  property_id?: number
+  device_type?: string
+  utm_source?: string
+}
+
+export type AnalyticsMetricType = 'views' | 'leads' | 'conversion_rate'
+
+export interface PropertyMetrics {
+  total_views: number
+  unique_views: number
+  avg_time_on_page: number | null
+  avg_scroll_depth: number | null
+  contact_rate: number | null
+  leads_generated: number
+  conversion_rate: number | null
+}
+
+// ================== ADDITIONAL CONSTANTS ==================
 
 export const ANALYTICS_CONSTANTS = {
   MAX_SESSION_DURATION_HOURS: 4,

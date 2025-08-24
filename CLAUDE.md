@@ -1,69 +1,126 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Este archivo proporciona guías estrictas para Claude Code (claude.ai/code) cuando trabaja con código en este repositorio.
 
-## Project Overview
+## DIRECTRICES CRÍTICAS PARA CLAUDE
 
-This is **Marconi Inmobiliaria**, a Spanish real estate platform built with Next.js 15, featuring a public property listing site and a comprehensive admin panel for property and lead management. The application is originally created with v0.dev and deploys to Vercel.
+### 🚫 RESTRICCIONES OBLIGATORIAS
 
-## Development Commands
+1. **SIMPLICIDAD ANTE TODO**
+   - Implementa EXCLUSIVAMENTE lo que se solicita, nada más.
+   - NO añadas características, notificaciones o elementos adicionales no solicitados explícitamente.
+   - Si la solución parece demasiado simple, ESTÁ BIEN. No la compliques.
 
-- `pnpm local` - Run local web server for development
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm start` - Start production server  
-- `pnpm lint` - Run ESLint (Note: disabled during builds via next.config.mjs)
+2. **CONTRA LA SOBRE-INGENIERÍA**
+   - Evita soluciones excesivamente complejas.
+   - Usa siempre el enfoque más directo y sencillo que resuelva el problema.
+   - NO agregues capas de abstracción innecesarias.
 
-## Architecture
+3. **VALIDACIÓN DE INSTRUCCIONES**
+   - Antes de implementar, resume EXACTAMENTE lo que vas a hacer.
+   - Si hay ambigüedad, PREGUNTA antes de proceder con cualquier implementación.
+   - NO asumas requisitos adicionales que no están explícitamente mencionados.
 
-### Core Technologies
-- **Next.js 15** with App Router
-- **React 19** with TypeScript
-- **Supabase** for database and authentication
-- **Cloudinary** for image management
-- **Tailwind CSS** + **shadcn/ui** for styling
+4. **GIT WORKFLOW**
+   - Después de completar una modificación, feature o fix, SIEMPRE realiza un push automático a la rama actual.
+   - Proporciona el comando git exacto que se utilizará para el push al final de cada implementación.
+
+### ✅ COMPORTAMIENTO ESPERADO
+
+1. **EXACTITUD**
+   - Implementa SOLO lo que se pide, ni más ni menos.
+   - Si la tarea es "añadir un botón", solo añade un botón - no añadas un modal, una notificación, o cualquier otra funcionalidad no solicitada.
+
+2. **IMPLEMENTACIÓN DIRECTA**
+   - Utiliza componentes existentes siempre que sea posible.
+   - No refactorices código no relacionado con la tarea actual a menos que se solicite explícitamente.
+
+3. **COMUNICACIÓN CLARA**
+   - Explica tu enfoque antes de mostrar código.
+   - Pregunta cuando necesites clarificación - es mejor preguntar que asumir.
+
+## Información del Proyecto
+
+**Marconi Inmobiliaria** es una plataforma inmobiliaria en español construida con Next.js 15, que incluye un sitio público de listado de propiedades y un panel de administración completo para la gestión de propiedades y leads. La aplicación fue creada originalmente con v0.dev y se despliega en Vercel. Una adición reciente clave es un sistema integral de análisis y seguimiento compatible con GDPR para visualizaciones de propiedades y generación de leads.
+
+## Comandos de Desarrollo
+
+- `pnpm local` - Ejecutar servidor web local para desarrollo
+- `pnpm dev` - Iniciar servidor de desarrollo
+- `pnpm build` - Construir para producción
+- `pnpm start` - Iniciar servidor de producción
+- `pnpm lint` - Ejecutar ESLint (Nota: desactivado durante las builds via next.config.mjs)
+
+## Arquitectura
+
+### Tecnologías Principales
+- **Next.js 15** con App Router
+- **React 19** con TypeScript
+- **Supabase** para base de datos y autenticación
+- **Cloudinary** para gestión de imágenes
+- **Tailwind CSS** + **shadcn/ui** para estilizado
+- **Framer Motion** para animaciones y microinteracciones
 - **Radix UI** primitives
-- **React Hook Form** + **Zod** for forms
-- **Next Themes** for dark/light mode
+- **React Hook Form** + **Zod** para formularios
+- **Next Themes** para modo oscuro/claro
 
-### Database Structure
-The app uses Supabase with three main tables:
-- **properties** - Real estate listings with images, features, pricing
-- **leads** - Contact forms and customer inquiries with CRM features
-- **profiles** - User accounts and roles
+### Estructura de la Base de Datos
+La aplicación utiliza Supabase con dos dominios de datos principales:
+- **Tablas de Negocio Principales**:
+  - **properties** - Listados inmobiliarios con imágenes, características, precios
+  - **leads** - Formularios de contacto y consultas de clientes con funciones CRM
+  - **profiles** - Cuentas de usuario y roles
+- **Esquema de Analítica**: Un conjunto completo de tablas para seguimiento de interacciones:
+  - **analytics_sessions** - Rastrea sesiones anónimas de usuario compatibles con GDPR con IPs hasheadas
+  - **analytics_property_views** - Registra eventos detallados de visualización de propiedades con lógica de debounce de 2 horas
+  - **analytics_lead_sources** - Catálogo de orígenes de leads (ej. WhatsApp, Formulario Web)
+  - **analytics_lead_generation** - Rastrea la creación y atribución de cada lead
+  - **Tablas de Agregación** (daily_stats, weekly_stats, etc.) - Métricas precalculadas para rendimiento rápido del dashboard
+  - **Funciones PostgreSQL (RPCs)** - Implementadas para lógica compleja como debouncing de vistas duplicadas, hashing de IPs y recuperación de métricas del dashboard
 
-### Key Architecture Patterns
+### Patrones Arquitectónicos Clave
 
-**Client Configuration**: Supabase client is configured in `lib/supabase.ts` with both public and admin clients. Environment variables are validated at runtime.
+**Refactorización de Componentes**: El proyecto prioriza un enfoque DRY (Don't Repeat Yourself). Por ejemplo, el footer del sitio se extrajo de múltiples páginas a un único componente reutilizable ubicado en `components/Footer.tsx`.
 
-**Authentication**: Currently disabled in middleware.ts for development. Admin routes are protected when authentication is enabled.
+**Diseño UX/UI Premium**: Se pone un fuerte énfasis en una experiencia de usuario moderna, limpia y profesional.
 
-**Image Handling**: Cloudinary integration split between client (`lib/cloudinary.ts`) and server (`lib/cloudinary-server.ts`) implementations.
+**Capa de Servicio de Analítica**: Toda la funcionalidad de seguimiento está centralizada:
+- **Servicio**: `services/analytics.ts` contiene la lógica principal para interactuar con la base de datos
+- **Endpoints API**: `app/api/analytics/` expone endpoints como `track-view` y `track-lead` para el frontend
+- **Hook Personalizado**: `hooks/useAnalytics.ts` proporciona una interfaz simple y unificada para activar eventos de seguimiento desde cualquier componente
 
-**Data Fetching**: API routes follow RESTful patterns in `app/api/` with dedicated services in `services/` directory.
+**Configuración del Cliente**: El cliente Supabase está configurado en `lib/supabase.ts` con clientes públicos y admin. Las variables de entorno se validan en tiempo de ejecución.
 
-### Directory Structure
+**Autenticación**: Actualmente deshabilitada en middleware.ts para desarrollo. Las rutas de administración están protegidas cuando la autenticación está habilitada.
 
-- `app/` - Next.js App Router pages and API routes
-  - `admin/` - Admin panel pages (properties, contacts, dashboard)
-  - `api/` - REST API endpoints
-  - `propiedades/` - Public property listings
-- `components/` - Reusable React components
-  - `admin/` - Admin-specific components
-  - `ui/` - shadcn/ui components
-- `hooks/` - Custom React hooks for data fetching and UI logic
-- `services/` - Data access layer for properties and leads
-- `lib/` - Utilities and third-party service configurations
+**Manejo de Imágenes**: Integración de Cloudinary dividida entre implementaciones de cliente (`lib/cloudinary.ts`) y servidor (`lib/cloudinary-server.ts`).
 
-### State Management
-- React Hook Form for form state
-- Custom hooks (useContacts, useContactActions, etc.) for data fetching
-- No global state management library
+**Obtención de Datos**: Las rutas API siguen patrones RESTful en `app/api/` con servicios dedicados en el directorio `services/`.
 
-## Important Notes
+### Estructura de Directorios
 
-- TypeScript and ESLint errors are ignored during builds (configured in next.config.mjs)
-- Images are unoptimized (configured for compatibility)
-- Authentication is temporarily bypassed in middleware.ts
-- All text content is in Spanish
-- Dark theme is default via app/layout.tsx
+- `app/` - Páginas y rutas API de Next.js App Router
+  - `admin/` - Páginas del panel de administración (propiedades, contactos, dashboard)
+  - `api/analytics/` - Endpoints API para el sistema de seguimiento
+  - `propiedades/` - Listados públicos de propiedades
+- `components/` - Componentes React reutilizables
+  - `admin/` - Componentes específicos de administración
+  - `ui/` - Componentes shadcn/ui
+- `hooks/` - Hooks React personalizados (`useAnalytics.ts`)
+- `services/` - Capa de acceso a datos (`properties.ts`, `analytics.ts`)
+- `types/` - Definiciones de tipos TypeScript, incluyendo `analytics.ts`
+- `scripts/` - Contiene archivos de migración de base de datos, como `analytics-schema-migration.sql`
+- `lib/` - Utilidades y configuraciones de servicios de terceros
+
+### Gestión de Estado
+- React Hook Form para estado de formularios
+- Hooks personalizados (`useContacts`, `useAnalytics`, etc.) para obtención de datos y lógica
+- Sin librería de gestión de estado global
+
+## Notas Importantes
+
+- Los errores de TypeScript y ESLint se ignoran durante las builds (configurado en next.config.mjs)
+- Las imágenes no están optimizadas (configurado para compatibilidad)
+- La autenticación se omite temporalmente en middleware.ts
+- Todo el contenido textual está en español
+- El tema oscuro es el predeterminado

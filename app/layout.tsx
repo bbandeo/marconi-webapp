@@ -4,7 +4,7 @@ import { Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
-import { getAnalyticsClient } from '@/lib/analytics-client'
+import AnalyticsInitializer from "@/components/AnalyticsInitializer"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -14,11 +14,6 @@ const inter = Inter({
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair-display",
-})
-
-// Inicializar cliente de analytics con logging habilitado
-getAnalyticsClient({
-  enableConsoleLogging: true
 })
 
 export const metadata: Metadata = {
@@ -36,6 +31,7 @@ export default function RootLayout({
     <html lang="es" className="dark" suppressHydrationWarning>
       <body className={`${inter.variable} ${playfairDisplay.variable} font-sans`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <AnalyticsInitializer />
           {children}
           <Toaster />
         </ThemeProvider>

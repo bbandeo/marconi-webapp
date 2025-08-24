@@ -1003,31 +1003,31 @@ export class AnalyticsService {
    */
   private static validatePropertyView(data: CreatePropertyViewInput): void {
     if (!data.session_id) {
-      throw new AnalyticsValidationError('Session ID is required', 'session_id', data.session_id)
+      throw new AnalyticsValidationError('Session ID is required')
     }
     if (!data.property_id || data.property_id <= 0) {
-      throw new AnalyticsValidationError('Valid property ID is required', 'property_id', data.property_id)
+      throw new AnalyticsValidationError('Valid property ID is required')
     }
     if (data.scroll_depth !== undefined && (data.scroll_depth < 0 || data.scroll_depth > 100)) {
-      throw new AnalyticsValidationError('Scroll depth must be between 0 and 100', 'scroll_depth', data.scroll_depth)
+      throw new AnalyticsValidationError('Scroll depth must be between 0 and 100')
     }
   }
 
   private static validateLeadGeneration(data: CreateLeadGenerationEventInput): void {
     if (!data.lead_id || data.lead_id <= 0) {
-      throw new AnalyticsValidationError('Valid lead ID is required', 'lead_id', data.lead_id)
+      throw new AnalyticsValidationError('Valid lead ID is required')
     }
     if (!data.lead_source_id || data.lead_source_id <= 0) {
-      throw new AnalyticsValidationError('Valid lead source ID is required', 'lead_source_id', data.lead_source_id)
+      throw new AnalyticsValidationError('Valid lead source ID is required')
     }
   }
 
   private static validateInteraction(data: CreateUserInteractionEventInput): void {
     if (!data.session_id) {
-      throw new AnalyticsValidationError('Session ID is required', 'session_id', data.session_id)
+      throw new AnalyticsValidationError('Session ID is required')
     }
     if (!data.event_type) {
-      throw new AnalyticsValidationError('Event type is required', 'event_type', data.event_type)
+      throw new AnalyticsValidationError('Event type is required')
     }
   }
 

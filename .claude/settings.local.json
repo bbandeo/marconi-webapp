@@ -22,7 +22,8 @@
       "WebSearch",
       "Bash(pnpm add:*)",
       "Bash(grep:*)",
-      "Read(//data/data/com.termux/files/home/**)"
+      "Read(//data/data/com.termux/files/home/**)",
+      "Bash(pnpm run:*)"
     ],
     "deny": []
   }
