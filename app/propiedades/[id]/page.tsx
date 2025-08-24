@@ -34,6 +34,7 @@ import {
 import type { Property as PropertyType } from "@/lib/supabase"
 import Header from "@/components/Header"
 import { ComprehensivePropertyTracker, ContactTracker, ImageGalleryTracker, useImageGalleryTracker } from "@/components/PropertyViewTracker"
+import { trackPropertyView, trackContactClick, trackWhatsAppClick } from '@/lib/analytics-client'
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -104,6 +105,16 @@ export default function PropertyDetailPage() {
       fetchProperty()
     }
   }, [params.id])
+
+  // Track property view
+  useEffect(() => {
+    if (property?.id) {
+      trackPropertyView(property.id, {
+        pageUrl: window.location.href,
+        referrerUrl: document.referrer
+      })
+    }
+  }, [property?.id])
 
   // Image gallery navigation
   const nextImage = () => {
@@ -450,7 +461,10 @@ export default function PropertyDetailPage() {
                   <div className="space-y-premium-sm">
                     <ContactTracker propertyId={property.id} type="form" metadata={{ form_type: 'property_inquiry' }}>
                       <Button
-                        onClick={() => setShowContactForm(true)}
+                        onClick={() => {
+                          trackContactClick(property.id)
+                          setShowContactForm(true)
+                        }}
                         className="w-full"
                         size="lg"
                       >
@@ -462,6 +476,9 @@ export default function PropertyDetailPage() {
                     <ContactTracker propertyId={property.id} type="phone" metadata={{ contact_method: 'direct_call' }}>
                       <Button
                         variant="outline"
+                        onClick={() => {
+                          trackContactClick(property.id)
+                        }}
                         className="w-full"
                         size="lg"
                       >
@@ -473,6 +490,9 @@ export default function PropertyDetailPage() {
                     <ContactTracker propertyId={property.id} type="email" metadata={{ contact_method: 'direct_email' }}>
                       <Button
                         variant="outline"
+                        onClick={() => {
+                          trackContactClick(property.id)
+                        }}
                         className="w-full"
                         size="lg"
                       >
@@ -484,6 +504,9 @@ export default function PropertyDetailPage() {
                     <ContactTracker propertyId={property.id} type="form" metadata={{ form_type: 'schedule_visit' }}>
                       <Button
                         variant="outline"
+                        onClick={() => {
+                          trackContactClick(property.id)
+                        }}
                         className="w-full"
                         size="lg"
                       >
@@ -491,6 +514,20 @@ export default function PropertyDetailPage() {
                         Agendar visita
                       </Button>
                     </ContactTracker>
+                    
+                    <Button
+                      onClick={() => {
+                        trackWhatsAppClick(property.id)
+                        // Abrir WhatsApp con mensaje predeterminado
+                        const message = encodeURIComponent(`Hola! Me interesa la propiedad "${property.title}" - Código #${property.id}`)
+                        window.open(`https://wa.me/5491234567890?text=${message}`, '_blank')
+                      }}
+                      className="w-full bg-green-600 hover:bg-green-700"
+                      size="lg"
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      WhatsApp
+                    </Button>
                   </div>
                 ) : (
                   <form onSubmit={handleContactSubmit} className="space-y-premium-md">
