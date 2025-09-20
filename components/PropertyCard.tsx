@@ -102,10 +102,10 @@ export function PropertyCard({ property }: PropertyCardProps) {
           )}
         </div>
 
-        {/* UBICACIÓN CON JERARQUÍA CLARA */}
-        <div className="text-center">
+        {/* UBICACIÓN CON JERARQUÍA CLARA - ALTURA FIJA PARA CONSISTENCIA */}
+        <div className="text-center h-24 flex flex-col justify-center">
           <Link href={`/propiedades/${property.id}`}>
-            <h3 className="heading-lg text-premium-primary mb-3 hover:text-vibrant-orange transition-colors cursor-pointer line-clamp-2">
+            <h3 className="heading-lg text-premium-primary mb-3 hover:text-vibrant-orange transition-colors cursor-pointer line-clamp-2 min-h-[3.5rem] flex items-center justify-center">
               {property.title}
             </h3>
           </Link>
@@ -115,60 +115,68 @@ export function PropertyCard({ property }: PropertyCardProps) {
           </div>
         </div>
 
-        {/* LINEAMIENTO 2: CARACTERÍSTICAS CONSOLIDADAS EN LÍNEA HORIZONTAL */}
-        {(() => {
-          const shouldShowRoomInfo = property.type !== 'terreno';
-          const hasCharacteristics = property.bedrooms || property.bathrooms || property.area_m2;
+        {/* LINEAMIENTO 2: CARACTERÍSTICAS CONSOLIDADAS EN LÍNEA HORIZONTAL - ALTURA FIJA */}
+        <div className="h-16 flex items-center justify-center">
+          {(() => {
+            const shouldShowRoomInfo = property.type !== 'terreno';
+            const hasCharacteristics = property.bedrooms || property.bathrooms || property.area_m2;
 
-          return hasCharacteristics && (
-            <div className="flex items-center justify-center gap-6 text-premium-primary py-4">
-              {property.area_m2 && (
-                <div className="flex items-center gap-1">
-                  <Square className="w-4 h-4 text-vibrant-orange" />
-                  <span className="text-sm font-medium">{property.area_m2}m²</span>
-                </div>
-              )}
-              {shouldShowRoomInfo && property.bedrooms && (
-                <div className="flex items-center gap-1">
-                  <Bed className="w-4 h-4 text-vibrant-orange" />
-                  <span className="text-sm font-medium">{property.bedrooms} dorm.</span>
-                </div>
-              )}
-              {shouldShowRoomInfo && property.bathrooms && (
-                <div className="flex items-center gap-1">
-                  <Bath className="w-4 h-4 text-vibrant-orange" />
-                  <span className="text-sm font-medium">{property.bathrooms} baños</span>
-                </div>
-              )}
-            </div>
-          );
-        })()}
+            return hasCharacteristics ? (
+              <div className="flex items-center justify-center gap-6 text-premium-primary">
+                {property.area_m2 && (
+                  <div className="flex items-center gap-1">
+                    <Square className="w-4 h-4 text-vibrant-orange" />
+                    <span className="text-sm font-medium">{property.area_m2}m²</span>
+                  </div>
+                )}
+                {shouldShowRoomInfo && property.bedrooms && (
+                  <div className="flex items-center gap-1">
+                    <Bed className="w-4 h-4 text-vibrant-orange" />
+                    <span className="text-sm font-medium">{property.bedrooms} dorm.</span>
+                  </div>
+                )}
+                {shouldShowRoomInfo && property.bathrooms && (
+                  <div className="flex items-center gap-1">
+                    <Bath className="w-4 h-4 text-vibrant-orange" />
+                    <span className="text-sm font-medium">{property.bathrooms} baños</span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div></div>
+            );
+          })()}
+        </div>
 
-        {/* CARACTERÍSTICAS SECUNDARIAS COMO ETIQUETAS REFINADAS */}
-        {property.features && property.features.length > 0 && (
-          <div className="space-y-3">
-            <h4 className="heading-sm text-premium-primary text-center">Características destacadas</h4>
-            <div className="flex flex-wrap justify-center gap-2">
-              {property.features.slice(0, 4).map((feature, i) => (
-                <Badge 
-                  key={i} 
-                  variant="secondary"
-                  className="bg-vibrant-orange/10 text-vibrant-orange border border-vibrant-orange/25 px-3 py-1.5 rounded-xl text-xs font-medium hover:bg-vibrant-orange/20 transition-colors"
-                >
-                  {feature}
-                </Badge>
-              ))}
-              {property.features.length > 4 && (
-                <Badge 
-                  variant="outline"
-                  className="text-premium-secondary border-premium-secondary/30 px-3 py-1.5 rounded-xl text-xs"
-                >
-                  +{property.features.length - 4} más
-                </Badge>
-              )}
+        {/* CARACTERÍSTICAS SECUNDARIAS COMO ETIQUETAS REFINADAS - ALTURA FIJA */}
+        <div className="h-24 flex flex-col justify-center">
+          {property.features && property.features.length > 0 ? (
+            <div className="space-y-3">
+              <h4 className="heading-sm text-premium-primary text-center">Características destacadas</h4>
+              <div className="flex flex-wrap justify-center gap-2">
+                {property.features.slice(0, 4).map((feature, i) => (
+                  <Badge
+                    key={i}
+                    variant="secondary"
+                    className="bg-vibrant-orange/10 text-vibrant-orange border border-vibrant-orange/25 px-3 py-1.5 rounded-xl text-xs font-medium hover:bg-vibrant-orange/20 transition-colors"
+                  >
+                    {feature}
+                  </Badge>
+                ))}
+                {property.features.length > 4 && (
+                  <Badge
+                    variant="outline"
+                    className="text-premium-secondary border-premium-secondary/30 px-3 py-1.5 rounded-xl text-xs"
+                  >
+                    +{property.features.length - 4} más
+                  </Badge>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          ) : (
+            <div></div>
+          )}
+        </div>
 
         {/* CTA PRINCIPAL - BOTÓN NARANJA PROMINENTE */}
         <div className="pt-4 border-t border-support-gray/20 mt-auto">
