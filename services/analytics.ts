@@ -139,10 +139,10 @@ export class AnalyticsService {
       try {
         const { data: existingSessions, error } = await supabase
           .from('analytics_sessions')
-          .select('session_id, last_seen')
+          .select('session_id, last_seen_at')
           .eq('ip_hash', ipHash)
-          .gte('last_seen', new Date(Date.now() - ANALYTICS_CONSTANTS.MAX_SESSION_DURATION_HOURS * 60 * 60 * 1000).toISOString())
-          .order('last_seen', { ascending: false })
+          .gte('last_seen_at', new Date(Date.now() - ANALYTICS_CONSTANTS.MAX_SESSION_DURATION_HOURS * 60 * 60 * 1000).toISOString())
+          .order('last_seen_at', { ascending: false })
           .limit(1)
 
         if (error) {
@@ -182,7 +182,7 @@ export class AnalyticsService {
     try {
       await supabase
         .from('analytics_sessions')
-        .update({ last_seen: new Date().toISOString() })
+        .update({ last_seen_at: new Date().toISOString() })
         .eq('session_id', sessionId)
     } catch (error) {
       console.error('Failed to update session timestamp:', error)
