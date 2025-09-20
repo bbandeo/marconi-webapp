@@ -1,21 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-import { Save, User, Bell, Shield, Globe } from 'lucide-react'
-
-'use client'
-
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
-import { 
-  User, 
-  Building2, 
-  Globe, 
-  Palette, 
-  Search, 
+import {
+  User,
+  Building2,
+  Globe,
+  Palette,
+  Search,
   Upload,
   Save,
   Loader2,
@@ -45,27 +40,27 @@ const settingsSchema = z.object({
   whatsapp_number: z.string().optional(),
   address: z.string().min(1, 'Dirección requerida'),
   website_url: z.string().url().optional().or(z.literal('')),
-  
+
   // Redes Sociales
   social_facebook: z.string().url().optional().or(z.literal('')),
   social_instagram: z.string().url().optional().or(z.literal('')),
   social_linkedin: z.string().url().optional().or(z.literal('')),
   social_youtube: z.string().url().optional().or(z.literal('')),
   social_twitter: z.string().url().optional().or(z.literal('')),
-  
+
   // SEO
   meta_title: z.string().min(1, 'Título requerido').max(60, 'Máximo 60 caracteres'),
   meta_description: z.string().min(1, 'Descripción requerida').max(160, 'Máximo 160 caracteres'),
   meta_keywords: z.string().optional(),
   google_analytics_id: z.string().optional(),
   google_tag_manager_id: z.string().optional(),
-  
+
   // Métodos de Contacto
   whatsapp_enabled: z.boolean(),
   phone_enabled: z.boolean(),
   email_enabled: z.boolean(),
   contact_form_enabled: z.boolean(),
-  
+
   // Colores
   brand_primary_color: z.string(),
   brand_secondary_color: z.string(),
@@ -101,11 +96,11 @@ export default function SettingsPage() {
     try {
       const response = await fetch('/api/settings')
       const data = await response.json()
-      
+
       if (data.success && data.data) {
         const settings = data.data
         setSettings(settings)
-        
+
         // Mapear datos al formulario
         setValue('company_name', settings.company_name || '')
         setValue('company_description', settings.company_description || '')
@@ -114,27 +109,27 @@ export default function SettingsPage() {
         setValue('whatsapp_number', settings.whatsapp_number || '')
         setValue('address', settings.address || '')
         setValue('website_url', settings.website_url || '')
-        
+
         // Redes sociales
         setValue('social_facebook', settings.social_media?.facebook || '')
         setValue('social_instagram', settings.social_media?.instagram || '')
         setValue('social_linkedin', settings.social_media?.linkedin || '')
         setValue('social_youtube', settings.social_media?.youtube || '')
         setValue('social_twitter', settings.social_media?.twitter || '')
-        
+
         // SEO
         setValue('meta_title', settings.meta_title || '')
         setValue('meta_description', settings.meta_description || '')
         setValue('meta_keywords', settings.meta_keywords || '')
         setValue('google_analytics_id', settings.google_analytics_id || '')
         setValue('google_tag_manager_id', settings.google_tag_manager_id || '')
-        
+
         // Métodos de contacto
         setValue('whatsapp_enabled', settings.contact_methods?.whatsapp_enabled ?? true)
         setValue('phone_enabled', settings.contact_methods?.phone_enabled ?? true)
         setValue('email_enabled', settings.contact_methods?.email_enabled ?? true)
         setValue('contact_form_enabled', settings.contact_methods?.contact_form_enabled ?? true)
-        
+
         // Colores
         setValue('brand_primary_color', settings.brand_colors?.primary || '#f97316')
         setValue('brand_secondary_color', settings.brand_colors?.secondary || '#1f2937')
@@ -158,7 +153,7 @@ export default function SettingsPage() {
         whatsapp_number: data.whatsapp_number || null,
         address: data.address,
         website_url: data.website_url || null,
-        
+
         social_media: {
           facebook: data.social_facebook || null,
           instagram: data.social_instagram || null,
@@ -166,20 +161,20 @@ export default function SettingsPage() {
           youtube: data.social_youtube || null,
           twitter: data.social_twitter || null,
         },
-        
+
         meta_title: data.meta_title,
         meta_description: data.meta_description,
         meta_keywords: data.meta_keywords || null,
         google_analytics_id: data.google_analytics_id || null,
         google_tag_manager_id: data.google_tag_manager_id || null,
-        
+
         contact_methods: {
           whatsapp_enabled: data.whatsapp_enabled,
           phone_enabled: data.phone_enabled,
           email_enabled: data.email_enabled,
           contact_form_enabled: data.contact_form_enabled,
         },
-        
+
         brand_colors: {
           primary: data.brand_primary_color,
           secondary: data.brand_secondary_color,
@@ -193,7 +188,7 @@ export default function SettingsPage() {
       })
 
       const result = await response.json()
-      
+
       if (result.success) {
         toast.success('Configuraciones guardadas exitosamente')
         setSettings(result.data)
@@ -264,7 +259,7 @@ export default function SettingsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="company_name">Nombre de la Empresa *</Label>
-                    <Input 
+                    <Input
                       id="company_name"
                       {...register('company_name')}
                       className={errors.company_name ? 'border-red-500' : ''}
@@ -273,10 +268,10 @@ export default function SettingsPage() {
                       <p className="text-sm text-red-500 mt-1">{errors.company_name.message}</p>
                     )}
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="website_url">Sitio Web</Label>
-                    <Input 
+                    <Input
                       id="website_url"
                       type="url"
                       {...register('website_url')}
@@ -291,7 +286,7 @@ export default function SettingsPage() {
 
                 <div>
                   <Label htmlFor="company_description">Descripción de la Empresa</Label>
-                  <Textarea 
+                  <Textarea
                     id="company_description"
                     {...register('company_description')}
                     rows={3}
@@ -301,7 +296,7 @@ export default function SettingsPage() {
 
                 <div>
                   <Label htmlFor="address">Dirección *</Label>
-                  <Input 
+                  <Input
                     id="address"
                     {...register('address')}
                     placeholder="Calle, Número, Ciudad, Provincia"
@@ -331,7 +326,7 @@ export default function SettingsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="contact_email">Email de Contacto *</Label>
-                    <Input 
+                    <Input
                       id="contact_email"
                       type="email"
                       {...register('contact_email')}
@@ -341,10 +336,10 @@ export default function SettingsPage() {
                       <p className="text-sm text-red-500 mt-1">{errors.contact_email.message}</p>
                     )}
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="contact_phone">Teléfono *</Label>
-                    <Input 
+                    <Input
                       id="contact_phone"
                       {...register('contact_phone')}
                       placeholder="+54 9 3482 308100"
@@ -358,7 +353,7 @@ export default function SettingsPage() {
 
                 <div>
                   <Label htmlFor="whatsapp_number">WhatsApp</Label>
-                  <Input 
+                  <Input
                     id="whatsapp_number"
                     {...register('whatsapp_number')}
                     placeholder="+54 9 3482 308100"
@@ -370,28 +365,28 @@ export default function SettingsPage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="whatsapp_enabled">WhatsApp</Label>
-                      <Switch 
+                      <Switch
                         id="whatsapp_enabled"
                         {...register('whatsapp_enabled')}
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="phone_enabled">Teléfono</Label>
-                      <Switch 
+                      <Switch
                         id="phone_enabled"
                         {...register('phone_enabled')}
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="email_enabled">Email</Label>
-                      <Switch 
+                      <Switch
                         id="email_enabled"
                         {...register('email_enabled')}
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <Label htmlFor="contact_form_enabled">Formulario Web</Label>
-                      <Switch 
+                      <Switch
                         id="contact_form_enabled"
                         {...register('contact_form_enabled')}
                       />
@@ -402,12 +397,38 @@ export default function SettingsPage() {
             </Card>
           </TabsContent>
 
-          {/* Resto de secciones continuará... */}
+          {/* Placeholder para otras secciones */}
+          <TabsContent value="social">
+            <Card>
+              <CardHeader>
+                <CardTitle>Redes Sociales</CardTitle>
+                <CardDescription>Configuración en desarrollo...</CardDescription>
+              </CardHeader>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="seo">
+            <Card>
+              <CardHeader>
+                <CardTitle>SEO</CardTitle>
+                <CardDescription>Configuración en desarrollo...</CardDescription>
+              </CardHeader>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="branding">
+            <Card>
+              <CardHeader>
+                <CardTitle>Marca</CardTitle>
+                <CardDescription>Configuración en desarrollo...</CardDescription>
+              </CardHeader>
+            </Card>
+          </TabsContent>
         </Tabs>
 
         <div className="flex justify-end">
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             disabled={saving}
             className="bg-orange-500 hover:bg-orange-600"
           >
@@ -425,85 +446,6 @@ export default function SettingsPage() {
           </Button>
         </div>
       </form>
-    </div>
-  )
-}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                  <input 
-                    type="email" 
-                    value={settings.email}
-                    onChange={(e) => setSettings(prev => ({ ...prev, email: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
-                <input 
-                  type="tel" 
-                  value={settings.phone}
-                  onChange={(e) => setSettings(prev => ({ ...prev, phone: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <div className="flex items-center space-x-2 mb-4">
-              <Bell className="w-5 h-5 text-orange-500" />
-              <h2 className="text-lg font-semibold text-gray-900">Notificaciones</h2>
-            </div>
-            
-            <div className="space-y-4">
-              {Object.entries(settings.notifications).map(([key, value]) => (
-                <div key={key} className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700">
-                    {key === 'newLeads' && 'Nuevos leads'}
-                    {key === 'propertyViews' && 'Vistas de propiedades'}
-                    {key === 'weeklyReports' && 'Reportes semanales'}
-                  </span>
-                  <input 
-                    type="checkbox" 
-                    checked={value}
-                    onChange={(e) => setSettings(prev => ({
-                      ...prev,
-                      notifications: { ...prev.notifications, [key]: e.target.checked }
-                    }))}
-                    className="rounded border-gray-300 text-orange-500 focus:ring-orange-500"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Actions Sidebar */}
-        <div>
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Acciones</h2>
-            
-            <div className="space-y-3">
-              <button 
-                onClick={handleSave}
-                className="w-full flex items-center justify-center px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Guardar Cambios
-              </button>
-              
-              <button className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                Cambiar Contraseña
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }
