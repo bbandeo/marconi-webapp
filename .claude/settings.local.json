@@ -23,7 +23,8 @@
       "Bash(pnpm add:*)",
       "Bash(grep:*)",
       "Read(//data/data/com.termux/files/home/**)",
-      "Bash(pnpm run:*)"
+      "Bash(pnpm run:*)",
+      "mcp__serena__search_for_pattern"
     ],
     "deny": []
   }
