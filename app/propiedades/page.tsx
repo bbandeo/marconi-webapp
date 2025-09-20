@@ -2,6 +2,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -26,23 +27,30 @@ interface Property extends PropertyType {
 const ITEMS_PER_PAGE = 12
 
 export default function PropiedadesPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [properties, setProperties] = useState<Property[]>([])
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
-  
+  const [uniqueNeighborhoods, setUniqueNeighborhoods] = useState<string[]>([])
+
   // Analytics tracking
   const analytics = useAnalytics({ enableAutoTracking: true })
 
-  // Filters
-  const [searchTerm, setSearchTerm] = useState("")
-  const [operationFilter, setOperationFilter] = useState("all")
-  const [typeFilter, setTypeFilter] = useState("all")
-  const [minPrice, setMinPrice] = useState("")
-  const [maxPrice, setMaxPrice] = useState("")
-  const [bedroomsFilter, setBedroomsFilter] = useState("all")
-  const [bathroomsFilter, setBathroomsFilter] = useState("all")
-  const [sortBy, setSortBy] = useState("newest")
+  // Filters - Initialize from URL params
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "")
+  const [operationFilter, setOperationFilter] = useState(searchParams.get("operation") || "all")
+  const [typeFilter, setTypeFilter] = useState(searchParams.get("type") || "all")
+  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "")
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "")
+  const [minArea, setMinArea] = useState(searchParams.get("minArea") || "")
+  const [maxArea, setMaxArea] = useState(searchParams.get("maxArea") || "")
+  const [bedroomsFilter, setBedroomsFilter] = useState(searchParams.get("bedrooms") || "all")
+  const [bathroomsFilter, setBathroomsFilter] = useState(searchParams.get("bathrooms") || "all")
+  const [neighborhoodFilter, setNeighborhoodFilter] = useState(searchParams.get("neighborhood") || "all")
+  const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "newest")
 
   // Fetch properties from Supabase
   useEffect(() => {
@@ -52,7 +60,8 @@ export default function PropiedadesPage() {
         const result = await PropertyService.getProperties({
           limit: 100, // Get all properties
           sort_by: "created_at",
-          sort_order: "desc"
+          sort_order: "desc",
+          status: "available" // Only show available properties
         })
 
         // Map properties to match the expected interface
@@ -68,6 +77,13 @@ export default function PropiedadesPage() {
 
         setProperties(mappedProperties)
         setFilteredProperties(mappedProperties)
+
+        // Extract unique neighborhoods
+        const neighborhoods = [...new Set(mappedProperties
+          .map(p => p.neighborhood)
+          .filter(n => n && n.trim() !== "")
+        )].sort()
+        setUniqueNeighborhoods(neighborhoods)
       } catch (error) {
         console.error("Error fetching properties:", error)
         setProperties([])
@@ -112,6 +128,14 @@ export default function PropiedadesPage() {
       filtered = filtered.filter((property) => property.price <= Number.parseInt(maxPrice))
     }
 
+    // Area filters
+    if (minArea) {
+      filtered = filtered.filter((property) => property.area_m2 && property.area_m2 >= Number.parseInt(minArea))
+    }
+    if (maxArea) {
+      filtered = filtered.filter((property) => property.area_m2 && property.area_m2 <= Number.parseInt(maxArea))
+    }
+
     // Bedrooms filter
     if (bedroomsFilter !== "all") {
       filtered = filtered.filter((property) => property.bedrooms && property.bedrooms >= Number.parseInt(bedroomsFilter))
@@ -120,6 +144,11 @@ export default function PropiedadesPage() {
     // Bathrooms filter
     if (bathroomsFilter !== "all") {
       filtered = filtered.filter((property) => property.bathrooms && property.bathrooms >= Number.parseInt(bathroomsFilter))
+    }
+
+    // Neighborhood filter
+    if (neighborhoodFilter !== "all") {
+      filtered = filtered.filter((property) => property.neighborhood === neighborhoodFilter)
     }
 
     // Sort
@@ -140,7 +169,29 @@ export default function PropiedadesPage() {
 
     setFilteredProperties(filtered)
     setCurrentPage(1)
-  }, [properties, searchTerm, operationFilter, typeFilter, minPrice, maxPrice, bedroomsFilter, bathroomsFilter, sortBy])
+  }, [properties, searchTerm, operationFilter, typeFilter, minPrice, maxPrice, minArea, maxArea, bedroomsFilter, bathroomsFilter, neighborhoodFilter, sortBy])
+
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams()
+
+    if (searchTerm) params.set("search", searchTerm)
+    if (operationFilter !== "all") params.set("operation", operationFilter)
+    if (typeFilter !== "all") params.set("type", typeFilter)
+    if (minPrice) params.set("minPrice", minPrice)
+    if (maxPrice) params.set("maxPrice", maxPrice)
+    if (minArea) params.set("minArea", minArea)
+    if (maxArea) params.set("maxArea", maxArea)
+    if (bedroomsFilter !== "all") params.set("bedrooms", bedroomsFilter)
+    if (bathroomsFilter !== "all") params.set("bathrooms", bathroomsFilter)
+    if (neighborhoodFilter !== "all") params.set("neighborhood", neighborhoodFilter)
+    if (sortBy !== "newest") params.set("sortBy", sortBy)
+
+    const queryString = params.toString()
+    const newUrl = queryString ? `/propiedades?${queryString}` : "/propiedades"
+
+    router.replace(newUrl, { scroll: false })
+  }, [searchTerm, operationFilter, typeFilter, minPrice, maxPrice, minArea, maxArea, bedroomsFilter, bathroomsFilter, neighborhoodFilter, sortBy, router])
 
   // Pagination
   const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE)
@@ -154,8 +205,11 @@ export default function PropiedadesPage() {
     setTypeFilter("all")
     setMinPrice("")
     setMaxPrice("")
+    setMinArea("")
+    setMaxArea("")
     setBedroomsFilter("all")
     setBathroomsFilter("all")
+    setNeighborhoodFilter("all")
     setSortBy("newest")
   }
 
@@ -256,7 +310,7 @@ export default function PropiedadesPage() {
                 <h2 className="heading-md text-premium-primary">Filtros de búsqueda</h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
                 {/* Search */}
                 <div className="lg:col-span-2">
                   <div className="relative">
@@ -295,9 +349,24 @@ export default function PropiedadesPage() {
                     <SelectItem value="commercial">Comercial</SelectItem>
                   </SelectContent>
                 </Select>
+
+                {/* Neighborhood */}
+                <Select value={neighborhoodFilter} onValueChange={setNeighborhoodFilter}>
+                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
+                    <SelectValue placeholder="Barrio" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-premium-card border-support-gray/30">
+                    <SelectItem value="all">Todos los barrios</SelectItem>
+                    {uniqueNeighborhoods.map((neighborhood) => (
+                      <SelectItem key={neighborhood} value={neighborhood}>
+                        {neighborhood}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
                 {/* Price Range */}
                 <Input
                   placeholder="Precio mín."
@@ -309,6 +378,20 @@ export default function PropiedadesPage() {
                   placeholder="Precio máx."
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
+                  className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
+                />
+
+                {/* Area Range */}
+                <Input
+                  placeholder="m² mín."
+                  value={minArea}
+                  onChange={(e) => setMinArea(e.target.value)}
+                  className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
+                />
+                <Input
+                  placeholder="m² máx."
+                  value={maxArea}
+                  onChange={(e) => setMaxArea(e.target.value)}
                   className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
                 />
 
@@ -396,41 +479,100 @@ export default function PropiedadesPage() {
             </div>
           )}
 
-          {/* Pagination */}
+          {/* Pagination - Enhanced */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="disabled:opacity-50"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Anterior
-              </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-premium-card/50 backdrop-blur-sm rounded-xl p-6 border border-vibrant-orange/10">
+              {/* Pagination Info */}
+              <div className="text-premium-secondary text-sm">
+                Mostrando {startIndex + 1}-{Math.min(endIndex, filteredProperties.length)} de {filteredProperties.length} propiedades
+              </div>
 
-              {[...Array(totalPages)].map((_, i) => (
+              {/* Pagination Controls */}
+              <div className="flex items-center space-x-2">
                 <Button
-                  key={i}
-                  variant={currentPage === i + 1 ? "default" : "outline"}
+                  variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(i + 1)}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="disabled:opacity-50 hover:bg-vibrant-orange/10 hover:border-vibrant-orange/30"
                 >
-                  {i + 1}
+                  <ChevronLeft className="w-4 h-4" />
+                  Anterior
                 </Button>
-              ))}
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="disabled:opacity-50"
-              >
-                Siguiente
-                <ChevronRight className="w-4 h-4" />
-              </Button>
+                {/* Smart pagination - show only relevant pages */}
+                {(() => {
+                  const pagesToShow = []
+                  const maxVisiblePages = 5
+
+                  if (totalPages <= maxVisiblePages) {
+                    // Show all pages if total is small
+                    for (let i = 1; i <= totalPages; i++) {
+                      pagesToShow.push(i)
+                    }
+                  } else {
+                    // Smart pagination logic
+                    let startPage = Math.max(1, currentPage - 2)
+                    let endPage = Math.min(totalPages, currentPage + 2)
+
+                    // Adjust if we're near the start or end
+                    if (currentPage <= 3) {
+                      endPage = Math.min(5, totalPages)
+                    }
+                    if (currentPage > totalPages - 3) {
+                      startPage = Math.max(1, totalPages - 4)
+                    }
+
+                    // Add first page and ellipsis if needed
+                    if (startPage > 1) {
+                      pagesToShow.push(1)
+                      if (startPage > 2) pagesToShow.push('...')
+                    }
+
+                    // Add middle pages
+                    for (let i = startPage; i <= endPage; i++) {
+                      pagesToShow.push(i)
+                    }
+
+                    // Add ellipsis and last page if needed
+                    if (endPage < totalPages) {
+                      if (endPage < totalPages - 1) pagesToShow.push('...')
+                      pagesToShow.push(totalPages)
+                    }
+                  }
+
+                  return pagesToShow.map((page, index) => {
+                    if (page === '...') {
+                      return <span key={`ellipsis-${index}`} className="px-2 text-premium-secondary">...</span>
+                    }
+                    return (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(page as number)}
+                        className={currentPage === page
+                          ? "bg-gradient-to-r from-vibrant-orange to-orange-600 text-bone-white"
+                          : "hover:bg-vibrant-orange/10 hover:border-vibrant-orange/30"
+                        }
+                      >
+                        {page}
+                      </Button>
+                    )
+                  })
+                })()}
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="disabled:opacity-50 hover:bg-vibrant-orange/10 hover:border-vibrant-orange/30"
+                >
+                  Siguiente
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           )}
         </div>

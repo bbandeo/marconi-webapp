@@ -14,7 +14,11 @@ import {
   MapPin,
   Bed,
   Bath,
-  Square
+  Square,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +28,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger
 } from "@/components/ui/dropdown-menu";
 import {
   Select,
@@ -230,6 +238,38 @@ export default function PropertiesPage() {
     }
   };
 
+  const changePropertyStatus = async (propertyId: number, newStatus: string) => {
+    try {
+      const response = await fetch(`/api/properties/${propertyId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          status: newStatus
+        })
+      });
+
+      if (response.ok) {
+        setProperties((prev) =>
+          prev.map((property) =>
+            property.id === propertyId
+              ? { ...property, status: newStatus }
+              : property
+          )
+        );
+
+        // Show success feedback
+        console.log(`Estado de propiedad cambiado a ${getStatusDisplay(newStatus)} exitosamente`);
+      } else {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error("Error changing property status:", error);
+      alert("Error al cambiar el estado de la propiedad");
+    }
+  };
+
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case "available":
@@ -247,6 +287,21 @@ export default function PropertiesPage() {
 
   const getStatusDisplay = (status: string) => {
     return STATUS_MAP[status as keyof typeof STATUS_MAP] || status;
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "available":
+        return CheckCircle;
+      case "sold":
+        return XCircle;
+      case "rented":
+        return Clock;
+      case "reserved":
+        return AlertCircle;
+      default:
+        return CheckCircle;
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -594,7 +649,7 @@ export default function PropertiesPage() {
                     </td>
                     <td className="py-4 px-6">
                       <Badge className={getStatusColor(property.status)}>
-                        {property.status}
+                        {getStatusDisplay(property.status)}
                       </Badge>
                     </td>
                     <td className="py-4 px-6">
@@ -656,6 +711,57 @@ export default function PropertiesPage() {
                               <Edit className="w-4 h-4 mr-2" />
                               Editar
                             </DropdownMenuItem>
+
+                            <DropdownMenuSeparator className="bg-gray-600" />
+
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger className="text-white hover:bg-gray-600">
+                                <span className="flex items-center">
+                                  {(() => {
+                                    const StatusIcon = getStatusIcon(property.status);
+                                    return <StatusIcon className="w-4 h-4 mr-2" />;
+                                  })()}
+                                  Cambiar Estado
+                                </span>
+                              </DropdownMenuSubTrigger>
+                              <DropdownMenuSubContent className="bg-gray-700 border-gray-600">
+                                <DropdownMenuItem
+                                  onClick={() => changePropertyStatus(property.id, "available")}
+                                  className="text-white hover:bg-gray-600"
+                                  disabled={property.status === "available"}
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+                                  Disponible
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => changePropertyStatus(property.id, "sold")}
+                                  className="text-white hover:bg-gray-600"
+                                  disabled={property.status === "sold"}
+                                >
+                                  <XCircle className="w-4 h-4 mr-2 text-red-500" />
+                                  Vendido
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => changePropertyStatus(property.id, "rented")}
+                                  className="text-white hover:bg-gray-600"
+                                  disabled={property.status === "rented"}
+                                >
+                                  <Clock className="w-4 h-4 mr-2 text-blue-500" />
+                                  Alquilado
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => changePropertyStatus(property.id, "reserved")}
+                                  className="text-white hover:bg-gray-600"
+                                  disabled={property.status === "reserved"}
+                                >
+                                  <AlertCircle className="w-4 h-4 mr-2 text-yellow-500" />
+                                  Reservado
+                                </DropdownMenuItem>
+                              </DropdownMenuSubContent>
+                            </DropdownMenuSub>
+
+                            <DropdownMenuSeparator className="bg-gray-600" />
+
                             <DropdownMenuItem
                               onClick={() => deleteProperty(property.id)}
                               className="text-red-400 hover:bg-gray-600 hover:text-red-300"
