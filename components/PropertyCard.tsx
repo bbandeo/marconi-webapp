@@ -20,7 +20,7 @@ interface PropertyCardProps {
 
 export function PropertyCard({ property }: PropertyCardProps) {
   return (
-    <Card className="group overflow-hidden bg-premium-card backdrop-blur-md border border-vibrant-orange/10 shadow-lg hover:shadow-2xl hover:shadow-vibrant-orange/20 transition-all duration-700 hover:-translate-y-1 rounded-2xl">
+    <Card className="group overflow-hidden bg-premium-card backdrop-blur-md border border-vibrant-orange/10 shadow-lg hover:shadow-2xl hover:shadow-vibrant-orange/20 transition-all duration-700 hover:-translate-y-1 rounded-2xl h-full flex flex-col [contain:layout_style]">
       {/* LINEAMIENTO 1: ESTRUCTURA VERTICAL - IMAGEN → PRECIO+OPERACIÓN → UBICACIÓN → CARACTERÍSTICAS → CTAs */}
       
       {/* IMAGEN CON OVERLAYS ESTRATÉGICOS */}
@@ -33,6 +33,9 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 alt={property.title}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkrHB0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyEkJAUYsw9F4Bst2uHTXl2jjG+uKRZTgz0="
+                priority={false}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement
                   target.src = "/placeholder.svg"
@@ -87,7 +90,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
       </div>
 
       {/* LINEAMIENTO 4: CONTENIDO CON ESPACIADO GENEROSO PARA AIRE VISUAL PREMIUM */}
-      <CardContent className="p-8 bg-premium-card/95 space-y-6">
+      <CardContent className="p-8 bg-premium-card/95 space-y-6 flex-1 flex flex-col">
         {/* PRECIO + OPERACIÓN - PROMINENCIA MÁXIMA */}
         <div className="text-center space-y-2">
           <div className="text-3xl md:text-4xl font-bold text-premium-primary flex items-baseline justify-center gap-2">
@@ -113,28 +116,33 @@ export function PropertyCard({ property }: PropertyCardProps) {
         </div>
 
         {/* LINEAMIENTO 2: CARACTERÍSTICAS CONSOLIDADAS EN LÍNEA HORIZONTAL */}
-        {(property.bedrooms || property.bathrooms || property.area_m2) && (
-          <div className="flex items-center justify-center gap-6 text-premium-primary py-4">
-            {property.bedrooms && (
-              <div className="flex items-center gap-1">
-                <Bed className="w-4 h-4 text-vibrant-orange" />
-                <span className="text-sm font-medium">{property.bedrooms} dorm.</span>
-              </div>
-            )}
-            {property.bathrooms && (
-              <div className="flex items-center gap-1">
-                <Bath className="w-4 h-4 text-vibrant-orange" />
-                <span className="text-sm font-medium">{property.bathrooms} baños</span>
-              </div>
-            )}
-            {property.area_m2 && (
-              <div className="flex items-center gap-1">
-                <Square className="w-4 h-4 text-vibrant-orange" />
-                <span className="text-sm font-medium">{property.area_m2}m²</span>
-              </div>
-            )}
-          </div>
-        )}
+        {(() => {
+          const shouldShowRoomInfo = property.type !== 'terreno';
+          const hasCharacteristics = property.bedrooms || property.bathrooms || property.area_m2;
+
+          return hasCharacteristics && (
+            <div className="flex items-center justify-center gap-6 text-premium-primary py-4">
+              {property.area_m2 && (
+                <div className="flex items-center gap-1">
+                  <Square className="w-4 h-4 text-vibrant-orange" />
+                  <span className="text-sm font-medium">{property.area_m2}m²</span>
+                </div>
+              )}
+              {shouldShowRoomInfo && property.bedrooms && (
+                <div className="flex items-center gap-1">
+                  <Bed className="w-4 h-4 text-vibrant-orange" />
+                  <span className="text-sm font-medium">{property.bedrooms} dorm.</span>
+                </div>
+              )}
+              {shouldShowRoomInfo && property.bathrooms && (
+                <div className="flex items-center gap-1">
+                  <Bath className="w-4 h-4 text-vibrant-orange" />
+                  <span className="text-sm font-medium">{property.bathrooms} baños</span>
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* CARACTERÍSTICAS SECUNDARIAS COMO ETIQUETAS REFINADAS */}
         {property.features && property.features.length > 0 && (
@@ -163,7 +171,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
         )}
 
         {/* CTA PRINCIPAL - BOTÓN NARANJA PROMINENTE */}
-        <div className="pt-4 border-t border-support-gray/20">
+        <div className="pt-4 border-t border-support-gray/20 mt-auto">
           <Link href={`/propiedades/${property.id}`} className="block">
             <Button 
               className="w-full bg-gradient-to-r from-vibrant-orange to-orange-600 hover:from-orange-600 hover:to-red-600 text-bone-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 text-base"

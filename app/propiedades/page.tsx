@@ -376,7 +376,7 @@ export default function PropiedadesPage() {
 
           {/* Properties Grid - NUEVO DISEÑO CON LINEAMIENTOS PREMIUM */}
           {currentProperties.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-premium-xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-premium-xl auto-rows-fr">
               {currentProperties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
