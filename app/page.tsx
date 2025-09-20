@@ -278,26 +278,8 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
             style={{ y: bottomY }}
-            className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-6 sm:pb-8 lg:pb-10"
+            className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-8 sm:pb-12 lg:pb-16"
           >
-            {/* LOGO RESPONSIVO AGRANDADO PARA DESKTOP */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.7, type: "spring", bounce: 0.3 }}
-              className="mb-6 sm:mb-8"
-            >
-              <div className="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl px-8 sm:px-10 lg:px-20 py-6 sm:py-7 lg:py-12 border border-white/20 shadow-2xl shadow-black/30">
-                <Image
-                  src="/assets/logos/marconi_header_orangewhite.png"
-                  alt="Marconi Inmobiliaria"
-                  width={900}
-                  height={270}
-                  className="h-20 sm:h-24 lg:h-36 w-auto opacity-95"
-                />
-              </div>
-            </motion.div>
-            
             {/* CTA PRIMARIO ÚNICO PARA TODOS LOS TAMAÑOS */}
             <Link href="/propiedades">
               <Button 
