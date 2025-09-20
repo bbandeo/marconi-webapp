@@ -374,9 +374,9 @@ export default function PropiedadesPage() {
             <p className="body-lg text-premium-secondary">{filteredProperties.length} propiedades encontradas</p>
           </div>
 
-          {/* Properties Grid - NUEVO DISEÑO CON LINEAMIENTOS PREMIUM */}
+          {/* Properties List - DISEÑO VERTICAL CON IMÁGENES PROMINENTES */}
           {currentProperties.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-premium-xl auto-rows-fr">
+            <div className="space-y-8 mb-premium-xl">
               {currentProperties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
               ))}
