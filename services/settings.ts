@@ -148,6 +148,47 @@ export class SettingsService {
     }
   }
 
+  /**
+   * Limpia registros duplicados de configuraciones, manteniendo solo el más reciente
+   */
+  static async cleanupDuplicateSettings(): Promise<void> {
+    try {
+      const { data: allSettings, error: fetchError } = await supabase
+        .from('site_settings')
+        .select('id, created_at')
+        .order('created_at', { ascending: false })
+
+      if (fetchError) {
+        throw new Error(`Error fetching settings for cleanup: ${fetchError.message}`)
+      }
+
+      if (!allSettings || allSettings.length <= 1) {
+        // No hay duplicados
+        return
+      }
+
+      // Mantener solo el más reciente (el primero en la lista ordenada)
+      const [mostRecent, ...duplicates] = allSettings
+      const duplicateIds = duplicates.map(setting => setting.id)
+
+      if (duplicateIds.length > 0) {
+        const { error: deleteError } = await supabase
+          .from('site_settings')
+          .delete()
+          .in('id', duplicateIds)
+
+        if (deleteError) {
+          throw new Error(`Error deleting duplicate settings: ${deleteError.message}`)
+        }
+
+        console.log(`Cleaned up ${duplicateIds.length} duplicate settings records`)
+      }
+    } catch (error) {
+      console.error('Settings cleanup failed:', error)
+      throw error
+    }
+  }
+
   // =============================================
   // WRITE OPERATIONS
   // =============================================
@@ -167,13 +208,26 @@ export class SettingsService {
 
       if (!exists) {
         // Si no existen, crear configuraciones por defecto primero
-        await this.createDefaultSettings()
+        return await this.createDefaultSettings()
       }
 
-      // Actualizar configuraciones
+      // Limpiar duplicados y obtener el ID del registro más reciente
+      await this.cleanupDuplicateSettings()
+
+      // Actualizar configuraciones usando el ID del único registro
+      const { data: settingsData, error: fetchError } = await supabase
+        .from('site_settings')
+        .select('id')
+        .single()
+
+      if (fetchError) {
+        throw new Error(`Error fetching settings ID: ${fetchError.message}`)
+      }
+
       const { data, error } = await supabase
         .from('site_settings')
         .update(validatedData)
+        .eq('id', settingsData.id)
         .select()
         .single()
 
@@ -194,6 +248,21 @@ export class SettingsService {
    */
   static async createDefaultSettings(): Promise<SiteSettings> {
     try {
+      // Primero limpiar cualquier duplicado existente
+      await this.cleanupDuplicateSettings()
+
+      // Verificar si ya existe un registro después de la limpieza
+      const { data: existingSettings, error: checkError } = await supabase
+        .from('site_settings')
+        .select()
+        .single()
+
+      if (!checkError && existingSettings) {
+        // Ya existe un registro, devolverlo
+        return existingSettings as SiteSettings
+      }
+
+      // Crear nuevas configuraciones por defecto solo si no existen
       const defaultSettings = {
         ...DEFAULT_SITE_SETTINGS,
         settings_data: {}
