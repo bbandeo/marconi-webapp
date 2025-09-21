@@ -75,21 +75,22 @@ export class SettingsService {
    */
   static async getSettings(): Promise<SiteSettings | null> {
     try {
-      // Usar la función RPC que creamos en la migración
-      const { data, error } = await supabase.rpc('get_site_settings')
+      // Consulta directa a la tabla site_settings
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('*')
+        .single()
 
       if (error) {
+        // Si no existe la tabla o no hay datos, devolver null
+        if (error.code === 'PGRST116' || error.code === '42P01') {
+          return null
+        }
         console.error('Error fetching settings:', error)
         throw new Error(`Error fetching settings: ${error.message}`)
       }
 
-      // Si no hay configuraciones, devolver null
-      if (!data || data.length === 0) {
-        return null
-      }
-
-      // Tomar solo el primer registro (debería ser único)
-      return data[0] as SiteSettings
+      return data as SiteSettings
     } catch (error) {
       console.error('Settings service error:', error)
       throw error

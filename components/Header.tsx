@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useIsClient } from "@/hooks/use-is-client";
+import { useSettingsWithDefaults } from "@/hooks/useSettings";
 
 interface HeaderProps {
   showMobileSearch?: boolean;
@@ -18,6 +19,7 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isClient = useIsClient();
+  const { settings } = useSettingsWithDefaults();
 
   const isActivePage = (path: string) => {
     return pathname === path;
@@ -79,14 +81,20 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
         <div className="flex items-center justify-between h-20 md:h-24">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <Image
-              src="/assets/logos/marconi_header_orangewhite.png"
-              alt="Marconi Inmobiliaria"
-              width={140}
-              height={45}
-              className="h-8 md:h-12 w-auto"
-              priority
-            />
+            {settings.logo_url ? (
+              <Image
+                src={settings.logo_url}
+                alt={settings.company_name || "Logo"}
+                width={140}
+                height={45}
+                className="h-8 md:h-12 w-auto"
+                priority
+              />
+            ) : (
+              <div className="text-2xl font-bold text-white">
+                {settings.company_name || "Inmobiliaria"}
+              </div>
+            )}
           </Link>
 
           {/* Desktop Navigation - PREMIUM SPACING */}

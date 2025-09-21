@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -67,6 +67,123 @@ const settingsSchema = z.object({
 })
 
 type SettingsFormData = z.infer<typeof settingsSchema>
+
+// Componente para upload de logos
+interface LogoUploadProps {
+  type: 'logo' | 'logo_dark' | 'favicon'
+  title: string
+  description: string
+  currentUrl?: string
+  onUploadSuccess: () => void
+}
+
+function LogoUpload({ type, title, description, currentUrl, onUploadSuccess }: LogoUploadProps) {
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFileSelect = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setUploading(true)
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('type', type)
+
+      const response = await fetch('/api/settings/upload', {
+        method: 'POST',
+        body: formData
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        toast.success(`${title} subido exitosamente`)
+        onUploadSuccess()
+      } else {
+        throw new Error(result.error || 'Error al subir archivo')
+      }
+    } catch (error) {
+      console.error('Upload error:', error)
+      toast.error('Error al subir el archivo')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  return (
+    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-orange-400 transition-colors">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
+      <div className="text-center">
+        <h5 className="font-medium text-gray-900 mb-1">{title}</h5>
+        <p className="text-sm text-gray-600 mb-3">{description}</p>
+
+        {currentUrl ? (
+          <div className="space-y-3">
+            <img
+              src={currentUrl}
+              alt={title}
+              className="max-h-20 mx-auto object-contain"
+            />
+            <div className="flex flex-col gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleFileSelect}
+                disabled={uploading}
+              >
+                {uploading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Subiendo...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4 mr-2" />
+                    Cambiar
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleFileSelect}
+            disabled={uploading}
+            className="mx-auto"
+          >
+            {uploading ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Subiendo...
+              </>
+            ) : (
+              <>
+                <Upload className="w-4 h-4 mr-2" />
+                Seleccionar archivo
+              </>
+            )}
+          </Button>
+        )}
+      </div>
+    </div>
+  )
+}
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
@@ -397,31 +514,338 @@ export default function SettingsPage() {
             </Card>
           </TabsContent>
 
-          {/* Placeholder para otras secciones */}
-          <TabsContent value="social">
+          {/* Sección Redes Sociales */}
+          <TabsContent value="social" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Redes Sociales</CardTitle>
-                <CardDescription>Configuración en desarrollo...</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-orange-500" />
+                  Redes Sociales
+                </CardTitle>
+                <CardDescription>
+                  Configura los enlaces a tus redes sociales para mostrar en el sitio web
+                </CardDescription>
               </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="social_facebook" className="flex items-center gap-2">
+                      <Facebook className="w-4 h-4 text-blue-600" />
+                      Facebook
+                    </Label>
+                    <Input
+                      id="social_facebook"
+                      type="url"
+                      {...register('social_facebook')}
+                      placeholder="https://facebook.com/tu-pagina"
+                      className={errors.social_facebook ? 'border-red-500' : ''}
+                    />
+                    {errors.social_facebook && (
+                      <p className="text-sm text-red-500 mt-1">{errors.social_facebook.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="social_instagram" className="flex items-center gap-2">
+                      <Instagram className="w-4 h-4 text-pink-600" />
+                      Instagram
+                    </Label>
+                    <Input
+                      id="social_instagram"
+                      type="url"
+                      {...register('social_instagram')}
+                      placeholder="https://instagram.com/tu-perfil"
+                      className={errors.social_instagram ? 'border-red-500' : ''}
+                    />
+                    {errors.social_instagram && (
+                      <p className="text-sm text-red-500 mt-1">{errors.social_instagram.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="social_linkedin" className="flex items-center gap-2">
+                      <Linkedin className="w-4 h-4 text-blue-700" />
+                      LinkedIn
+                    </Label>
+                    <Input
+                      id="social_linkedin"
+                      type="url"
+                      {...register('social_linkedin')}
+                      placeholder="https://linkedin.com/company/tu-empresa"
+                      className={errors.social_linkedin ? 'border-red-500' : ''}
+                    />
+                    {errors.social_linkedin && (
+                      <p className="text-sm text-red-500 mt-1">{errors.social_linkedin.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="social_youtube" className="flex items-center gap-2">
+                      <Youtube className="w-4 h-4 text-red-600" />
+                      YouTube
+                    </Label>
+                    <Input
+                      id="social_youtube"
+                      type="url"
+                      {...register('social_youtube')}
+                      placeholder="https://youtube.com/@tu-canal"
+                      className={errors.social_youtube ? 'border-red-500' : ''}
+                    />
+                    {errors.social_youtube && (
+                      <p className="text-sm text-red-500 mt-1">{errors.social_youtube.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="social_twitter" className="flex items-center gap-2">
+                      <Twitter className="w-4 h-4 text-blue-500" />
+                      Twitter/X
+                    </Label>
+                    <Input
+                      id="social_twitter"
+                      type="url"
+                      {...register('social_twitter')}
+                      placeholder="https://twitter.com/tu-perfil"
+                      className={errors.social_twitter ? 'border-red-500' : ''}
+                    />
+                    {errors.social_twitter && (
+                      <p className="text-sm text-red-500 mt-1">{errors.social_twitter.message}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-medium text-blue-900 mb-2">💡 Consejos para redes sociales:</h4>
+                  <ul className="text-sm text-blue-700 space-y-1">
+                    <li>• Usa URLs completas (incluyendo https://)</li>
+                    <li>• Los campos vacíos no se mostrarán en el sitio web</li>
+                    <li>• Verifica que los enlaces funcionen correctamente</li>
+                  </ul>
+                </div>
+              </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="seo">
+          {/* Sección SEO */}
+          <TabsContent value="seo" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>SEO</CardTitle>
-                <CardDescription>Configuración en desarrollo...</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <Search className="w-5 h-5 text-orange-500" />
+                  Configuración SEO
+                </CardTitle>
+                <CardDescription>
+                  Optimiza tu sitio web para motores de búsqueda como Google
+                </CardDescription>
               </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="meta_title">Título SEO (Meta Title) *</Label>
+                    <Input
+                      id="meta_title"
+                      {...register('meta_title')}
+                      placeholder="Inmobiliaria Marconi - Propiedades en venta y alquiler"
+                      className={errors.meta_title ? 'border-red-500' : ''}
+                      maxLength={60}
+                    />
+                    <div className="flex justify-between items-center mt-1">
+                      {errors.meta_title && (
+                        <p className="text-sm text-red-500">{errors.meta_title.message}</p>
+                      )}
+                      <p className={`text-sm ml-auto ${(metaTitle?.length || 0) > 60 ? 'text-red-500' : (metaTitle?.length || 0) > 50 ? 'text-yellow-500' : 'text-gray-500'}`}>
+                        {metaTitle?.length || 0}/60 caracteres
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="meta_description">Descripción SEO (Meta Description) *</Label>
+                    <Textarea
+                      id="meta_description"
+                      {...register('meta_description')}
+                      placeholder="Encuentra tu propiedad ideal en Marconi Inmobiliaria. Casas, departamentos y terrenos en las mejores zonas. Asesoramiento profesional garantizado."
+                      className={errors.meta_description ? 'border-red-500' : ''}
+                      rows={3}
+                      maxLength={160}
+                    />
+                    <div className="flex justify-between items-center mt-1">
+                      {errors.meta_description && (
+                        <p className="text-sm text-red-500">{errors.meta_description.message}</p>
+                      )}
+                      <p className={`text-sm ml-auto ${(metaDescription?.length || 0) > 160 ? 'text-red-500' : (metaDescription?.length || 0) > 140 ? 'text-yellow-500' : 'text-gray-500'}`}>
+                        {metaDescription?.length || 0}/160 caracteres
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="meta_keywords">Palabras Clave (opcional)</Label>
+                    <Input
+                      id="meta_keywords"
+                      {...register('meta_keywords')}
+                      placeholder="inmobiliaria, propiedades, casas, departamentos, alquiler, venta"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">
+                      Separa las palabras clave con comas
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="font-medium text-gray-900">Herramientas de Análisis</h4>
+
+                  <div>
+                    <Label htmlFor="google_analytics_id">Google Analytics ID</Label>
+                    <Input
+                      id="google_analytics_id"
+                      {...register('google_analytics_id')}
+                      placeholder="G-XXXXXXXXXX"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">
+                      Formato: G-XXXXXXXXXX (Google Analytics 4)
+                    </p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="google_tag_manager_id">Google Tag Manager ID</Label>
+                    <Input
+                      id="google_tag_manager_id"
+                      {...register('google_tag_manager_id')}
+                      placeholder="GTM-XXXXXXX"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">
+                      Formato: GTM-XXXXXXX
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-green-50 rounded-lg">
+                  <h4 className="font-medium text-green-900 mb-2">🚀 Vista previa en Google:</h4>
+                  <div className="bg-white p-3 rounded border">
+                    <h3 className="text-blue-600 text-lg font-medium hover:underline cursor-pointer">
+                      {metaTitle || 'Inmobiliaria Marconi - Propiedades en venta y alquiler'}
+                    </h3>
+                    <p className="text-green-700 text-sm">marconi-inmobiliaria.com</p>
+                    <p className="text-gray-600 text-sm mt-1">
+                      {metaDescription || 'Encuentra tu propiedad ideal en Marconi Inmobiliaria. Casas, departamentos y terrenos en las mejores zonas. Asesoramiento profesional garantizado.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                  <h4 className="font-medium text-blue-900 mb-2">💡 Consejos para SEO:</h4>
+                  <ul className="text-sm text-blue-700 space-y-1">
+                    <li>• El título debe ser único y descriptivo (50-60 caracteres)</li>
+                    <li>• La descripción debe resumir tu negocio (140-160 caracteres)</li>
+                    <li>• Incluye palabras clave relevantes naturalmente</li>
+                    <li>• Los IDs de Analytics son opcionales pero recomendados</li>
+                  </ul>
+                </div>
+              </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="branding">
+          {/* Sección Branding */}
+          <TabsContent value="branding" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Marca</CardTitle>
-                <CardDescription>Configuración en desarrollo...</CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <Palette className="w-5 h-5 text-orange-500" />
+                  Identidad de Marca
+                </CardTitle>
+                <CardDescription>
+                  Configura los logos, colores y elementos visuales de tu inmobiliaria
+                </CardDescription>
               </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Upload de Logos */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-gray-900">Logos</h4>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Logo Principal */}
+                    <LogoUpload
+                      type="logo"
+                      title="Logo Principal"
+                      description="Logo para fondo claro (formato PNG recomendado)"
+                      currentUrl={settings?.logo_url}
+                      onUploadSuccess={loadSettings}
+                    />
+
+                    {/* Logo Oscuro */}
+                    <LogoUpload
+                      type="logo_dark"
+                      title="Logo para Fondo Oscuro"
+                      description="Logo para fondo oscuro (opcional)"
+                      currentUrl={settings?.logo_dark_url}
+                      onUploadSuccess={loadSettings}
+                    />
+
+                    {/* Favicon */}
+                    <LogoUpload
+                      type="favicon"
+                      title="Favicon"
+                      description="Ícono que aparece en la pestaña del navegador (32x32px)"
+                      currentUrl={settings?.favicon_url}
+                      onUploadSuccess={loadSettings}
+                    />
+                  </div>
+                </div>
+
+                {/* Colores de Marca */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-gray-900">Colores de Marca</h4>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="brand_primary_color">Color Primario</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id="brand_primary_color"
+                          type="color"
+                          {...register('brand_primary_color')}
+                          className="w-16 h-10 p-1 border rounded cursor-pointer"
+                        />
+                        <Input
+                          type="text"
+                          {...register('brand_primary_color')}
+                          placeholder="#f97316"
+                          className="flex-1"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="brand_secondary_color">Color Secundario</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          id="brand_secondary_color"
+                          type="color"
+                          {...register('brand_secondary_color')}
+                          className="w-16 h-10 p-1 border rounded cursor-pointer"
+                        />
+                        <Input
+                          type="text"
+                          {...register('brand_secondary_color')}
+                          placeholder="#1f2937"
+                          className="flex-1"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 p-4 bg-purple-50 rounded-lg">
+                  <h4 className="font-medium text-purple-900 mb-2">🎨 Consejos de branding:</h4>
+                  <ul className="text-sm text-purple-700 space-y-1">
+                    <li>• Logo: preferiblemente PNG transparente, máximo 5MB</li>
+                    <li>• Favicon: 32x32 píxeles, formato ICO o PNG</li>
+                    <li>• Los colores se aplicarán en elementos del sitio web</li>
+                    <li>• Mantén consistencia visual en todos los elementos</li>
+                  </ul>
+                </div>
+              </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
