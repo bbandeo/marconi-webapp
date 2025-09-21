@@ -322,105 +322,162 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-6 h-6 animate-spin" />
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin text-orange-500 mx-auto" />
+          <p className="text-sm text-gray-500">Cargando configuraciones...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Configuración General</h1>
-        <p className="text-gray-600">Administra la información y configuraciones de tu inmobiliaria</p>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Page Header */}
+      <div className="border-b border-gray-200 pb-6">
+        <div className="space-y-3">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+            Configuración General
+          </h1>
+          <p className="text-lg text-gray-600 max-w-3xl">
+            Administra la información y configuraciones de tu inmobiliaria. 
+            Los cambios se reflejarán automáticamente en el sitio web.
+          </p>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         <Tabs defaultValue="company" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="company" className="flex items-center gap-2">
-              <Building2 className="w-4 h-4" />
-              Empresa
-            </TabsTrigger>
-            <TabsTrigger value="contact" className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              Contacto
-            </TabsTrigger>
-            <TabsTrigger value="social" className="flex items-center gap-2">
-              <Globe className="w-4 h-4" />
-              Redes
-            </TabsTrigger>
-            <TabsTrigger value="seo" className="flex items-center gap-2">
-              <Search className="w-4 h-4" />
-              SEO
-            </TabsTrigger>
-            <TabsTrigger value="branding" className="flex items-center gap-2">
-              <Palette className="w-4 h-4" />
-              Marca
-            </TabsTrigger>
-          </TabsList>
+          {/* Enhanced Tab Navigation */}
+          <div className="border-b border-gray-200 mb-8">
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 bg-gray-50 rounded-lg p-1 h-auto">
+              <TabsTrigger 
+                value="company" 
+                className="flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-sm transition-all"
+              >
+                <Building2 className="w-4 h-4" />
+                <span className="hidden sm:inline">Empresa</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="contact" 
+                className="flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-sm transition-all"
+              >
+                <User className="w-4 h-4" />
+                <span className="hidden sm:inline">Contacto</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="social" 
+                className="flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-sm transition-all"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="hidden sm:inline">Redes</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="seo" 
+                className="flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-sm transition-all"
+              >
+                <Search className="w-4 h-4" />
+                <span className="hidden sm:inline">SEO</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="branding" 
+                className="flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-md data-[state=active]:bg-white data-[state=active]:text-orange-600 data-[state=active]:shadow-sm transition-all"
+              >
+                <Palette className="w-4 h-4" />
+                <span className="hidden sm:inline">Marca</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Sección Empresa */}
-          <TabsContent value="company" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-orange-500" />
-                  Información de la Empresa
-                </CardTitle>
-                <CardDescription>
-                  Datos básicos de tu inmobiliaria que se mostrarán en el sitio web
-                </CardDescription>
+          <TabsContent value="company" className="space-y-8">
+            <Card className="shadow-sm border-gray-200">
+              <CardHeader className="border-b border-gray-100 bg-gray-50/50">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    <Building2 className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <CardTitle className="text-xl font-semibold text-gray-900">
+                      Información de la Empresa
+                    </CardTitle>
+                    <CardDescription className="text-sm text-gray-600">
+                      Datos básicos de tu inmobiliaria que se mostrarán en el sitio web
+                    </CardDescription>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="company_name">Nombre de la Empresa *</Label>
+              <CardContent className="p-6 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="company_name" className="text-sm font-medium text-gray-700">
+                      Nombre de la Empresa *
+                    </Label>
                     <Input
                       id="company_name"
                       {...register('company_name')}
-                      className={errors.company_name ? 'border-red-500' : ''}
+                      className={`transition-colors ${errors.company_name ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
+                      aria-describedby={errors.company_name ? "company_name_error" : undefined}
                     />
                     {errors.company_name && (
-                      <p className="text-sm text-red-500 mt-1">{errors.company_name.message}</p>
+                      <p id="company_name_error" className="text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4">⚠</span>
+                        {errors.company_name.message}
+                      </p>
                     )}
                   </div>
 
-                  <div>
-                    <Label htmlFor="website_url">Sitio Web</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="website_url" className="text-sm font-medium text-gray-700">
+                      Sitio Web
+                    </Label>
                     <Input
                       id="website_url"
                       type="url"
                       {...register('website_url')}
                       placeholder="https://tu-sitio.com"
-                      className={errors.website_url ? 'border-red-500' : ''}
+                      className={`transition-colors ${errors.website_url ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
+                      aria-describedby={errors.website_url ? "website_url_error" : undefined}
                     />
                     {errors.website_url && (
-                      <p className="text-sm text-red-500 mt-1">{errors.website_url.message}</p>
+                      <p id="website_url_error" className="text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4">⚠</span>
+                        {errors.website_url.message}
+                      </p>
                     )}
                   </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="company_description">Descripción de la Empresa</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="company_description" className="text-sm font-medium text-gray-700">
+                    Descripción de la Empresa
+                  </Label>
                   <Textarea
                     id="company_description"
                     {...register('company_description')}
-                    rows={3}
-                    placeholder="Describe tu inmobiliaria..."
+                    rows={4}
+                    placeholder="Describe tu inmobiliaria, sus servicios y valores..."
+                    className="border-gray-300 focus:border-orange-500 focus:ring-orange-500 transition-colors resize-none"
                   />
+                  <p className="text-xs text-gray-500">Esta descripción aparecerá en el footer del sitio web.</p>
                 </div>
 
-                <div>
-                  <Label htmlFor="address">Dirección *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="address" className="text-sm font-medium text-gray-700">
+                    Dirección *
+                  </Label>
                   <Input
                     id="address"
                     {...register('address')}
                     placeholder="Calle, Número, Ciudad, Provincia"
-                    className={errors.address ? 'border-red-500' : ''}
+                    className={`transition-colors ${errors.address ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
+                    aria-describedby={errors.address ? "address_error" : undefined}
                   />
                   {errors.address && (
-                    <p className="text-sm text-red-500 mt-1">{errors.address.message}</p>
+                    <p id="address_error" className="text-sm text-red-600 flex items-center gap-1">
+                      <span className="w-4 h-4">⚠</span>
+                      {errors.address.message}
+                    </p>
                   )}
                 </div>
               </CardContent>
@@ -428,85 +485,142 @@ export default function SettingsPage() {
           </TabsContent>
 
           {/* Sección Contacto */}
-          <TabsContent value="contact" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5 text-orange-500" />
-                  Información de Contacto
-                </CardTitle>
-                <CardDescription>
-                  Configura los métodos de contacto disponibles para los clientes
-                </CardDescription>
+          <TabsContent value="contact" className="space-y-8">
+            <Card className="shadow-sm border-gray-200">
+              <CardHeader className="border-b border-gray-100 bg-gray-50/50">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    <User className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <CardTitle className="text-xl font-semibold text-gray-900">
+                      Información de Contacto
+                    </CardTitle>
+                    <CardDescription className="text-sm text-gray-600">
+                      Configura los métodos de contacto disponibles para los clientes
+                    </CardDescription>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="contact_email">Email de Contacto *</Label>
+              <CardContent className="p-6 space-y-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="contact_email" className="text-sm font-medium text-gray-700">
+                      Email de Contacto *
+                    </Label>
                     <Input
                       id="contact_email"
                       type="email"
                       {...register('contact_email')}
-                      className={errors.contact_email ? 'border-red-500' : ''}
+                      className={`transition-colors ${errors.contact_email ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
+                      aria-describedby={errors.contact_email ? "contact_email_error" : undefined}
                     />
                     {errors.contact_email && (
-                      <p className="text-sm text-red-500 mt-1">{errors.contact_email.message}</p>
+                      <p id="contact_email_error" className="text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4">⚠</span>
+                        {errors.contact_email.message}
+                      </p>
                     )}
                   </div>
 
-                  <div>
-                    <Label htmlFor="contact_phone">Teléfono *</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="contact_phone" className="text-sm font-medium text-gray-700">
+                      Teléfono *
+                    </Label>
                     <Input
                       id="contact_phone"
                       {...register('contact_phone')}
                       placeholder="+54 9 3482 308100"
-                      className={errors.contact_phone ? 'border-red-500' : ''}
+                      className={`transition-colors ${errors.contact_phone ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
+                      aria-describedby={errors.contact_phone ? "contact_phone_error" : undefined}
                     />
                     {errors.contact_phone && (
-                      <p className="text-sm text-red-500 mt-1">{errors.contact_phone.message}</p>
+                      <p id="contact_phone_error" className="text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4">⚠</span>
+                        {errors.contact_phone.message}
+                      </p>
                     )}
                   </div>
                 </div>
 
-                <div>
-                  <Label htmlFor="whatsapp_number">WhatsApp</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="whatsapp_number" className="text-sm font-medium text-gray-700">
+                    WhatsApp
+                  </Label>
                   <Input
                     id="whatsapp_number"
                     {...register('whatsapp_number')}
                     placeholder="+54 9 3482 308100"
+                    className="border-gray-300 focus:border-orange-500 focus:ring-orange-500 transition-colors"
                   />
+                  <p className="text-xs text-gray-500">Número para contacto directo por WhatsApp (opcional).</p>
                 </div>
 
                 <div className="space-y-4">
-                  <h4 className="font-medium">Métodos de Contacto Habilitados</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="whatsapp_enabled">WhatsApp</Label>
-                      <Switch
-                        id="whatsapp_enabled"
-                        {...register('whatsapp_enabled')}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="phone_enabled">Teléfono</Label>
-                      <Switch
-                        id="phone_enabled"
-                        {...register('phone_enabled')}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="email_enabled">Email</Label>
-                      <Switch
-                        id="email_enabled"
-                        {...register('email_enabled')}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="contact_form_enabled">Formulario Web</Label>
-                      <Switch
-                        id="contact_form_enabled"
-                        {...register('contact_form_enabled')}
-                      />
+                  <div className="border-t border-gray-200 pt-6">
+                    <h4 className="text-lg font-medium text-gray-900 mb-4">Métodos de Contacto Habilitados</h4>
+                    <p className="text-sm text-gray-600 mb-6">Selecciona qué métodos de contacto estarán disponibles para los visitantes del sitio web.</p>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <span className="text-green-600 text-sm">📱</span>
+                          </div>
+                          <Label htmlFor="whatsapp_enabled" className="text-sm font-medium text-gray-700 cursor-pointer">
+                            WhatsApp
+                          </Label>
+                        </div>
+                        <Switch
+                          id="whatsapp_enabled"
+                          {...register('whatsapp_enabled')}
+                        />
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-blue-600 text-sm">📞</span>
+                          </div>
+                          <Label htmlFor="phone_enabled" className="text-sm font-medium text-gray-700 cursor-pointer">
+                            Teléfono
+                          </Label>
+                        </div>
+                        <Switch
+                          id="phone_enabled"
+                          {...register('phone_enabled')}
+                        />
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                            <span className="text-purple-600 text-sm">✉️</span>
+                          </div>
+                          <Label htmlFor="email_enabled" className="text-sm font-medium text-gray-700 cursor-pointer">
+                            Email
+                          </Label>
+                        </div>
+                        <Switch
+                          id="email_enabled"
+                          {...register('email_enabled')}
+                        />
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                            <span className="text-orange-600 text-sm">📝</span>
+                          </div>
+                          <Label htmlFor="contact_form_enabled" className="text-sm font-medium text-gray-700 cursor-pointer">
+                            Formulario Web
+                          </Label>
+                        </div>
+                        <Switch
+                          id="contact_form_enabled"
+                          {...register('contact_form_enabled')}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -515,21 +629,27 @@ export default function SettingsPage() {
           </TabsContent>
 
           {/* Sección Redes Sociales */}
-          <TabsContent value="social" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-orange-500" />
-                  Redes Sociales
-                </CardTitle>
-                <CardDescription>
-                  Configura los enlaces a tus redes sociales para mostrar en el sitio web
-                </CardDescription>
+          <TabsContent value="social" className="space-y-8">
+            <Card className="shadow-sm border-gray-200">
+              <CardHeader className="border-b border-gray-100 bg-gray-50/50">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    <Globe className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <CardTitle className="text-xl font-semibold text-gray-900">
+                      Redes Sociales
+                    </CardTitle>
+                    <CardDescription className="text-sm text-gray-600">
+                      Configura los enlaces a tus redes sociales para mostrar en el sitio web
+                    </CardDescription>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="social_facebook" className="flex items-center gap-2">
+              <CardContent className="p-6 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="social_facebook" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                       <Facebook className="w-4 h-4 text-blue-600" />
                       Facebook
                     </Label>
@@ -538,15 +658,19 @@ export default function SettingsPage() {
                       type="url"
                       {...register('social_facebook')}
                       placeholder="https://facebook.com/tu-pagina"
-                      className={errors.social_facebook ? 'border-red-500' : ''}
+                      className={`transition-colors ${errors.social_facebook ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
+                      aria-describedby={errors.social_facebook ? "social_facebook_error" : undefined}
                     />
                     {errors.social_facebook && (
-                      <p className="text-sm text-red-500 mt-1">{errors.social_facebook.message}</p>
+                      <p id="social_facebook_error" className="text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4">⚠</span>
+                        {errors.social_facebook.message}
+                      </p>
                     )}
                   </div>
 
-                  <div>
-                    <Label htmlFor="social_instagram" className="flex items-center gap-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="social_instagram" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                       <Instagram className="w-4 h-4 text-pink-600" />
                       Instagram
                     </Label>
@@ -555,15 +679,19 @@ export default function SettingsPage() {
                       type="url"
                       {...register('social_instagram')}
                       placeholder="https://instagram.com/tu-perfil"
-                      className={errors.social_instagram ? 'border-red-500' : ''}
+                      className={`transition-colors ${errors.social_instagram ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
+                      aria-describedby={errors.social_instagram ? "social_instagram_error" : undefined}
                     />
                     {errors.social_instagram && (
-                      <p className="text-sm text-red-500 mt-1">{errors.social_instagram.message}</p>
+                      <p id="social_instagram_error" className="text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4">⚠</span>
+                        {errors.social_instagram.message}
+                      </p>
                     )}
                   </div>
 
-                  <div>
-                    <Label htmlFor="social_linkedin" className="flex items-center gap-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="social_linkedin" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                       <Linkedin className="w-4 h-4 text-blue-700" />
                       LinkedIn
                     </Label>
@@ -572,15 +700,19 @@ export default function SettingsPage() {
                       type="url"
                       {...register('social_linkedin')}
                       placeholder="https://linkedin.com/company/tu-empresa"
-                      className={errors.social_linkedin ? 'border-red-500' : ''}
+                      className={`transition-colors ${errors.social_linkedin ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
+                      aria-describedby={errors.social_linkedin ? "social_linkedin_error" : undefined}
                     />
                     {errors.social_linkedin && (
-                      <p className="text-sm text-red-500 mt-1">{errors.social_linkedin.message}</p>
+                      <p id="social_linkedin_error" className="text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4">⚠</span>
+                        {errors.social_linkedin.message}
+                      </p>
                     )}
                   </div>
 
-                  <div>
-                    <Label htmlFor="social_youtube" className="flex items-center gap-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="social_youtube" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                       <Youtube className="w-4 h-4 text-red-600" />
                       YouTube
                     </Label>
@@ -589,15 +721,19 @@ export default function SettingsPage() {
                       type="url"
                       {...register('social_youtube')}
                       placeholder="https://youtube.com/@tu-canal"
-                      className={errors.social_youtube ? 'border-red-500' : ''}
+                      className={`transition-colors ${errors.social_youtube ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
+                      aria-describedby={errors.social_youtube ? "social_youtube_error" : undefined}
                     />
                     {errors.social_youtube && (
-                      <p className="text-sm text-red-500 mt-1">{errors.social_youtube.message}</p>
+                      <p id="social_youtube_error" className="text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4">⚠</span>
+                        {errors.social_youtube.message}
+                      </p>
                     )}
                   </div>
 
-                  <div>
-                    <Label htmlFor="social_twitter" className="flex items-center gap-2">
+                  <div className="space-y-2 lg:col-span-2">
+                    <Label htmlFor="social_twitter" className="text-sm font-medium text-gray-700 flex items-center gap-2">
                       <Twitter className="w-4 h-4 text-blue-500" />
                       Twitter/X
                     </Label>
@@ -606,165 +742,211 @@ export default function SettingsPage() {
                       type="url"
                       {...register('social_twitter')}
                       placeholder="https://twitter.com/tu-perfil"
-                      className={errors.social_twitter ? 'border-red-500' : ''}
+                      className={`transition-colors ${errors.social_twitter ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
+                      aria-describedby={errors.social_twitter ? "social_twitter_error" : undefined}
                     />
                     {errors.social_twitter && (
-                      <p className="text-sm text-red-500 mt-1">{errors.social_twitter.message}</p>
+                      <p id="social_twitter_error" className="text-sm text-red-600 flex items-center gap-1">
+                        <span className="w-4 h-4">⚠</span>
+                        {errors.social_twitter.message}
+                      </p>
                     )}
                   </div>
                 </div>
 
-                <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-medium text-blue-900 mb-2">💡 Consejos para redes sociales:</h4>
-                  <ul className="text-sm text-blue-700 space-y-1">
-                    <li>• Usa URLs completas (incluyendo https://)</li>
-                    <li>• Los campos vacíos no se mostrarán en el sitio web</li>
-                    <li>• Verifica que los enlaces funcionen correctamente</li>
-                  </ul>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex gap-3">
+                    <div className="w-5 h-5 text-blue-600 mt-0.5">💡</div>
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-medium text-blue-900">Consejos para redes sociales</h4>
+                      <ul className="text-sm text-blue-800 space-y-1">
+                        <li>• Usa URLs completas (incluyendo https://)</li>
+                        <li>• Los campos vacíos no se mostrarán en el sitio web</li>
+                        <li>• Verifica que los enlaces funcionen correctamente</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           {/* Sección SEO */}
-          <TabsContent value="seo" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Search className="w-5 h-5 text-orange-500" />
-                  Configuración SEO
-                </CardTitle>
-                <CardDescription>
-                  Optimiza tu sitio web para motores de búsqueda como Google
-                </CardDescription>
+          <TabsContent value="seo" className="space-y-8">
+            <Card className="shadow-sm border-gray-200">
+              <CardHeader className="border-b border-gray-100 bg-gray-50/50">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    <Search className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <CardTitle className="text-xl font-semibold text-gray-900">
+                      Configuración SEO
+                    </CardTitle>
+                    <CardDescription className="text-sm text-gray-600">
+                      Optimiza tu sitio web para motores de búsqueda como Google
+                    </CardDescription>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="meta_title">Título SEO (Meta Title) *</Label>
+              <CardContent className="p-6 space-y-8">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="meta_title" className="text-sm font-medium text-gray-700">
+                      Título SEO (Meta Title) *
+                    </Label>
                     <Input
                       id="meta_title"
                       {...register('meta_title')}
                       placeholder="Inmobiliaria Marconi - Propiedades en venta y alquiler"
-                      className={errors.meta_title ? 'border-red-500' : ''}
+                      className={`transition-colors ${errors.meta_title ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
                       maxLength={60}
+                      aria-describedby={errors.meta_title ? "meta_title_error" : "meta_title_help"}
                     />
-                    <div className="flex justify-between items-center mt-1">
+                    <div className="flex justify-between items-center">
                       {errors.meta_title && (
-                        <p className="text-sm text-red-500">{errors.meta_title.message}</p>
+                        <p id="meta_title_error" className="text-sm text-red-600 flex items-center gap-1">
+                          <span className="w-4 h-4">⚠</span>
+                          {errors.meta_title.message}
+                        </p>
                       )}
-                      <p className={`text-sm ml-auto ${(metaTitle?.length || 0) > 60 ? 'text-red-500' : (metaTitle?.length || 0) > 50 ? 'text-yellow-500' : 'text-gray-500'}`}>
+                      <p id="meta_title_help" className={`text-xs ml-auto ${(metaTitle?.length || 0) > 60 ? 'text-red-500' : (metaTitle?.length || 0) > 50 ? 'text-amber-500' : 'text-gray-500'}`}>
                         {metaTitle?.length || 0}/60 caracteres
                       </p>
                     </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="meta_description">Descripción SEO (Meta Description) *</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="meta_description" className="text-sm font-medium text-gray-700">
+                      Descripción SEO (Meta Description) *
+                    </Label>
                     <Textarea
                       id="meta_description"
                       {...register('meta_description')}
                       placeholder="Encuentra tu propiedad ideal en Marconi Inmobiliaria. Casas, departamentos y terrenos en las mejores zonas. Asesoramiento profesional garantizado."
-                      className={errors.meta_description ? 'border-red-500' : ''}
+                      className={`transition-colors resize-none ${errors.meta_description ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-orange-500 focus:ring-orange-500'}`}
                       rows={3}
                       maxLength={160}
+                      aria-describedby={errors.meta_description ? "meta_description_error" : "meta_description_help"}
                     />
-                    <div className="flex justify-between items-center mt-1">
+                    <div className="flex justify-between items-center">
                       {errors.meta_description && (
-                        <p className="text-sm text-red-500">{errors.meta_description.message}</p>
+                        <p id="meta_description_error" className="text-sm text-red-600 flex items-center gap-1">
+                          <span className="w-4 h-4">⚠</span>
+                          {errors.meta_description.message}
+                        </p>
                       )}
-                      <p className={`text-sm ml-auto ${(metaDescription?.length || 0) > 160 ? 'text-red-500' : (metaDescription?.length || 0) > 140 ? 'text-yellow-500' : 'text-gray-500'}`}>
+                      <p id="meta_description_help" className={`text-xs ml-auto ${(metaDescription?.length || 0) > 160 ? 'text-red-500' : (metaDescription?.length || 0) > 140 ? 'text-amber-500' : 'text-gray-500'}`}>
                         {metaDescription?.length || 0}/160 caracteres
                       </p>
                     </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="meta_keywords">Palabras Clave (opcional)</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="meta_keywords" className="text-sm font-medium text-gray-700">
+                      Palabras Clave (opcional)
+                    </Label>
                     <Input
                       id="meta_keywords"
                       {...register('meta_keywords')}
                       placeholder="inmobiliaria, propiedades, casas, departamentos, alquiler, venta"
+                      className="border-gray-300 focus:border-orange-500 focus:ring-orange-500 transition-colors"
                     />
-                    <p className="text-sm text-gray-500 mt-1">
-                      Separa las palabras clave con comas
-                    </p>
+                    <p className="text-xs text-gray-500">Separa las palabras clave con comas.</p>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <h4 className="font-medium text-gray-900">Herramientas de Análisis</h4>
+                <div className="border-t border-gray-200 pt-6 space-y-6">
+                  <h4 className="text-lg font-medium text-gray-900">Herramientas de Análisis</h4>
 
-                  <div>
-                    <Label htmlFor="google_analytics_id">Google Analytics ID</Label>
-                    <Input
-                      id="google_analytics_id"
-                      {...register('google_analytics_id')}
-                      placeholder="G-XXXXXXXXXX"
-                    />
-                    <p className="text-sm text-gray-500 mt-1">
-                      Formato: G-XXXXXXXXXX (Google Analytics 4)
-                    </p>
-                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="google_analytics_id" className="text-sm font-medium text-gray-700">
+                        Google Analytics ID
+                      </Label>
+                      <Input
+                        id="google_analytics_id"
+                        {...register('google_analytics_id')}
+                        placeholder="G-XXXXXXXXXX"
+                        className="border-gray-300 focus:border-orange-500 focus:ring-orange-500 transition-colors"
+                      />
+                      <p className="text-xs text-gray-500">Formato: G-XXXXXXXXXX (Google Analytics 4)</p>
+                    </div>
 
-                  <div>
-                    <Label htmlFor="google_tag_manager_id">Google Tag Manager ID</Label>
-                    <Input
-                      id="google_tag_manager_id"
-                      {...register('google_tag_manager_id')}
-                      placeholder="GTM-XXXXXXX"
-                    />
-                    <p className="text-sm text-gray-500 mt-1">
-                      Formato: GTM-XXXXXXX
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 p-4 bg-green-50 rounded-lg">
-                  <h4 className="font-medium text-green-900 mb-2">🚀 Vista previa en Google:</h4>
-                  <div className="bg-white p-3 rounded border">
-                    <h3 className="text-blue-600 text-lg font-medium hover:underline cursor-pointer">
-                      {metaTitle || 'Inmobiliaria Marconi - Propiedades en venta y alquiler'}
-                    </h3>
-                    <p className="text-green-700 text-sm">marconi-inmobiliaria.com</p>
-                    <p className="text-gray-600 text-sm mt-1">
-                      {metaDescription || 'Encuentra tu propiedad ideal en Marconi Inmobiliaria. Casas, departamentos y terrenos en las mejores zonas. Asesoramiento profesional garantizado.'}
-                    </p>
+                    <div className="space-y-2">
+                      <Label htmlFor="google_tag_manager_id" className="text-sm font-medium text-gray-700">
+                        Google Tag Manager ID
+                      </Label>
+                      <Input
+                        id="google_tag_manager_id"
+                        {...register('google_tag_manager_id')}
+                        placeholder="GTM-XXXXXXX"
+                        className="border-gray-300 focus:border-orange-500 focus:ring-orange-500 transition-colors"
+                      />
+                      <p className="text-xs text-gray-500">Formato: GTM-XXXXXXX</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                  <h4 className="font-medium text-blue-900 mb-2">💡 Consejos para SEO:</h4>
-                  <ul className="text-sm text-blue-700 space-y-1">
-                    <li>• El título debe ser único y descriptivo (50-60 caracteres)</li>
-                    <li>• La descripción debe resumir tu negocio (140-160 caracteres)</li>
-                    <li>• Incluye palabras clave relevantes naturalmente</li>
-                    <li>• Los IDs de Analytics son opcionales pero recomendados</li>
-                  </ul>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-medium text-green-900 flex items-center gap-2">
+                      🚀 Vista previa en Google
+                    </h4>
+                    <div className="bg-white border border-green-200 rounded-md p-4 space-y-1">
+                      <h3 className="text-blue-600 text-lg font-medium hover:underline cursor-pointer line-clamp-2">
+                        {metaTitle || 'Inmobiliaria Marconi - Propiedades en venta y alquiler'}
+                      </h3>
+                      <p className="text-green-700 text-sm">marconi-inmobiliaria.com</p>
+                      <p className="text-gray-600 text-sm line-clamp-2">
+                        {metaDescription || 'Encuentra tu propiedad ideal en Marconi Inmobiliaria. Casas, departamentos y terrenos en las mejores zonas. Asesoramiento profesional garantizado.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex gap-3">
+                    <div className="w-5 h-5 text-blue-600 mt-0.5">💡</div>
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-medium text-blue-900">Consejos para SEO</h4>
+                      <ul className="text-sm text-blue-800 space-y-1">
+                        <li>• El título debe ser único y descriptivo (50-60 caracteres)</li>
+                        <li>• La descripción debe resumir tu negocio (140-160 caracteres)</li>
+                        <li>• Incluye palabras clave relevantes naturalmente</li>
+                        <li>• Los IDs de Analytics son opcionales pero recomendados</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
 
           {/* Sección Branding */}
-          <TabsContent value="branding" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Palette className="w-5 h-5 text-orange-500" />
-                  Identidad de Marca
-                </CardTitle>
-                <CardDescription>
-                  Configura los logos, colores y elementos visuales de tu inmobiliaria
-                </CardDescription>
+          <TabsContent value="branding" className="space-y-8">
+            <Card className="shadow-sm border-gray-200">
+              <CardHeader className="border-b border-gray-100 bg-gray-50/50">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    <Palette className="w-5 h-5 text-orange-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <CardTitle className="text-xl font-semibold text-gray-900">
+                      Identidad de Marca
+                    </CardTitle>
+                    <CardDescription className="text-sm text-gray-600">
+                      Configura los logos, colores y elementos visuales de tu inmobiliaria
+                    </CardDescription>
+                  </div>
+                </div>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="p-6 space-y-8">
                 {/* Upload de Logos */}
-                <div className="space-y-4">
-                  <h4 className="font-medium text-gray-900">Logos</h4>
+                <div className="space-y-6">
+                  <h4 className="text-lg font-medium text-gray-900">Logos</h4>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Logo Principal */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <LogoUpload
                       type="logo"
                       title="Logo Principal"
@@ -773,7 +955,6 @@ export default function SettingsPage() {
                       onUploadSuccess={loadSettings}
                     />
 
-                    {/* Logo Oscuro */}
                     <LogoUpload
                       type="logo_dark"
                       title="Logo para Fondo Oscuro"
@@ -782,7 +963,6 @@ export default function SettingsPage() {
                       onUploadSuccess={loadSettings}
                     />
 
-                    {/* Favicon */}
                     <LogoUpload
                       type="favicon"
                       title="Favicon"
@@ -794,80 +974,94 @@ export default function SettingsPage() {
                 </div>
 
                 {/* Colores de Marca */}
-                <div className="space-y-4">
-                  <h4 className="font-medium text-gray-900">Colores de Marca</h4>
+                <div className="border-t border-gray-200 pt-6 space-y-6">
+                  <h4 className="text-lg font-medium text-gray-900">Colores de Marca</h4>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="brand_primary_color">Color Primario</Label>
-                      <div className="flex gap-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                      <Label htmlFor="brand_primary_color" className="text-sm font-medium text-gray-700">
+                        Color Primario
+                      </Label>
+                      <div className="flex gap-3">
                         <Input
                           id="brand_primary_color"
                           type="color"
                           {...register('brand_primary_color')}
-                          className="w-16 h-10 p-1 border rounded cursor-pointer"
+                          className="w-16 h-12 p-1 border-2 border-gray-300 rounded-lg cursor-pointer"
                         />
                         <Input
                           type="text"
                           {...register('brand_primary_color')}
                           placeholder="#f97316"
-                          className="flex-1"
+                          className="flex-1 border-gray-300 focus:border-orange-500 focus:ring-orange-500 transition-colors"
                         />
                       </div>
+                      <p className="text-xs text-gray-500">Color principal usado en botones y elementos destacados.</p>
                     </div>
 
-                    <div>
-                      <Label htmlFor="brand_secondary_color">Color Secundario</Label>
-                      <div className="flex gap-2">
+                    <div className="space-y-3">
+                      <Label htmlFor="brand_secondary_color" className="text-sm font-medium text-gray-700">
+                        Color Secundario
+                      </Label>
+                      <div className="flex gap-3">
                         <Input
                           id="brand_secondary_color"
                           type="color"
                           {...register('brand_secondary_color')}
-                          className="w-16 h-10 p-1 border rounded cursor-pointer"
+                          className="w-16 h-12 p-1 border-2 border-gray-300 rounded-lg cursor-pointer"
                         />
                         <Input
                           type="text"
                           {...register('brand_secondary_color')}
                           placeholder="#1f2937"
-                          className="flex-1"
+                          className="flex-1 border-gray-300 focus:border-orange-500 focus:ring-orange-500 transition-colors"
                         />
                       </div>
+                      <p className="text-xs text-gray-500">Color secundario para textos y elementos de apoyo.</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 p-4 bg-purple-50 rounded-lg">
-                  <h4 className="font-medium text-purple-900 mb-2">🎨 Consejos de branding:</h4>
-                  <ul className="text-sm text-purple-700 space-y-1">
-                    <li>• Logo: preferiblemente PNG transparente, máximo 5MB</li>
-                    <li>• Favicon: 32x32 píxeles, formato ICO o PNG</li>
-                    <li>• Los colores se aplicarán en elementos del sitio web</li>
-                    <li>• Mantén consistencia visual en todos los elementos</li>
-                  </ul>
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <div className="flex gap-3">
+                    <div className="w-5 h-5 text-purple-600 mt-0.5">🎨</div>
+                    <div className="space-y-1">
+                      <h4 className="text-sm font-medium text-purple-900">Consejos de branding</h4>
+                      <ul className="text-sm text-purple-800 space-y-1">
+                        <li>• Logo: preferiblemente PNG transparente, máximo 5MB</li>
+                        <li>• Favicon: 32x32 píxeles, formato ICO o PNG</li>
+                        <li>• Los colores se aplicarán en elementos del sitio web</li>
+                        <li>• Mantén consistencia visual en todos los elementos</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
 
-        <div className="flex justify-end">
-          <Button
-            type="submit"
-            disabled={saving}
-            className="bg-orange-500 hover:bg-orange-600"
-          >
-            {saving ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Guardando...
-              </>
-            ) : (
-              <>
-                <Save className="w-4 h-4 mr-2" />
-                Guardar Configuraciones
-              </>
-            )}
-          </Button>
+        {/* Sticky Save Button */}
+        <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 -mx-4 sm:-mx-6 lg:-mx-8">
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              disabled={saving}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-2.5 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Guardando...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Guardar Configuraciones
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </form>
     </div>

@@ -24,7 +24,14 @@
       "Bash(grep:*)",
       "Read(//data/data/com.termux/files/home/**)",
       "Bash(pnpm run:*)",
-      "mcp__serena__search_for_pattern"
+      "mcp__serena__search_for_pattern",
+      "mcp__serena__read_memory",
+      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__serena__get_symbols_overview",
+      "mcp__serena__find_symbol",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "mcp__serena__replace_symbol_body"
     ],
     "deny": []
   }
