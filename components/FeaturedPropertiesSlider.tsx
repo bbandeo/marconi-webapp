@@ -195,18 +195,6 @@ export function FeaturedPropertiesSlider({ properties }: FeaturedPropertiesSlide
                         <span className="text-sm font-medium">{property.neighborhood}, Reconquista</span>
                       </div>
 
-                      {/* MINI MAPA */}
-                      <div className="mb-4">
-                        <PropertyMiniMap 
-                          property={{
-                            address: property.address,
-                            neighborhood: property.neighborhood,
-                            city: property.city,
-                            title: property.title
-                          }}
-                          className="h-24 w-full"
-                        />
-                      </div>
                       
                       {/* CARACTERÍSTICAS SI ESTÁN DISPONIBLES */}
                       {(property.bedrooms || property.bathrooms || property.area_m2) && (
