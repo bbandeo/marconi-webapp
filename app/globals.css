@@ -117,6 +117,44 @@
   .heading-secondary { @apply text-bone-white; } /* H2, H3 - Siempre blanco */
   .text-secondary { @apply text-subtle-gray; } /* Textos descriptivos */
   .text-meta { @apply text-support-gray; } /* Metadatos y etiquetas */
+
+  /* JERARQUÍA TIPOGRÁFICA PROFESIONAL - ESCALA ESTRICTA */
+
+  /* H1 - Hero Titles: 48px, Bold */
+  .hero-title {
+    @apply text-5xl md:text-6xl font-bold heading-primary leading-tight tracking-tight;
+    text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.8);
+  }
+
+  /* H2 - Section Titles: 36px, Bold */
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold heading-primary leading-tight;
+  }
+
+  /* H3 - Component Titles: 24px, Semibold */
+  .component-title {
+    @apply text-xl md:text-2xl font-semibold heading-primary leading-snug;
+  }
+
+  /* H4 - Subtitles: 20px, Medium */
+  .subtitle {
+    @apply text-lg md:text-xl font-medium heading-primary leading-relaxed;
+  }
+
+  /* Body Text: 16px, Regular */
+  .body-text {
+    @apply text-base leading-relaxed text-secondary;
+  }
+
+  /* Secondary Text: 14px, Regular */
+  .secondary-text {
+    @apply text-sm leading-relaxed text-meta;
+  }
+
+  /* ESPACIADO VERTICAL PREMIUM - GENEROSO Y BALANCEADO */
+  .section-spacing { @apply py-16 md:py-24; }
+  .component-spacing { @apply mb-8 md:mb-12; }
+  .element-spacing { @apply mb-4 md:mb-6; }
   
   /* Espaciado Premium */
   .section-premium { @apply py-premium-lg md:py-premium-xl; }

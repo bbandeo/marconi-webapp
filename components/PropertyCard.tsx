@@ -109,38 +109,38 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 </div>
               </div>
               <div className="text-right ml-4">
-                <div className="text-3xl font-bold heading-primary mb-1 flex items-baseline gap-2">
-                  <span className="text-lg font-medium text-meta">{property.currency}</span>
-                  <span className="font-black tracking-tight">${property.price.toLocaleString()}</span>
+                <div className="text-3xl font-bold heading-primary mb-1">
+                  <div className="text-lg font-medium text-meta mb-1">{property.currency}</div>
+                  <div className="font-black tracking-tight">${property.price.toLocaleString()}</div>
                 </div>
                 {property.operation === "rent" && (
-                  <div className="text-meta text-sm">por mes</div>
+                  <div className="secondary-text">por mes</div>
                 )}
               </div>
             </div>
 
-            {/* CARACTERÍSTICAS CONSOLIDADAS */}
-            <div className="mb-6">
+            {/* CARACTERÍSTICAS ESENCIALES - Simplificado */}
+            <div className="element-spacing">
               {(() => {
                 const hasCharacteristics = property.bedrooms || property.bathrooms || property.area_m2;
 
                 return hasCharacteristics && (
-                  <div className="flex items-center gap-6 text-premium-primary">
+                  <div className="flex items-center gap-4 text-premium-primary">
                     {property.area_m2 && (
-                      <div className="flex items-center bg-premium-card/60 px-4 py-2 rounded-lg border border-support-gray/20">
-                        <Square className="w-5 h-5 mr-2 text-support-gray" />
+                      <div className="flex items-center secondary-text">
+                        <Square className="w-4 h-4 mr-2 text-support-gray" />
                         <span className="font-medium">{property.area_m2}m²</span>
                       </div>
                     )}
                     {shouldShowRoomInfo && property.bedrooms && (
-                      <div className="flex items-center bg-premium-card/60 px-4 py-2 rounded-lg border border-support-gray/20">
-                        <Bed className="w-5 h-5 mr-2 text-support-gray" />
+                      <div className="flex items-center secondary-text">
+                        <Bed className="w-4 h-4 mr-2 text-support-gray" />
                         <span className="font-medium">{property.bedrooms} dorm.</span>
                       </div>
                     )}
                     {shouldShowRoomInfo && property.bathrooms && (
-                      <div className="flex items-center bg-premium-card/60 px-4 py-2 rounded-lg border border-support-gray/20">
-                        <Bath className="w-5 h-5 mr-2 text-support-gray" />
+                      <div className="flex items-center secondary-text">
+                        <Bath className="w-4 h-4 mr-2 text-support-gray" />
                         <span className="font-medium">{property.bathrooms} baños</span>
                       </div>
                     )}
@@ -149,26 +149,25 @@ export function PropertyCard({ property }: PropertyCardProps) {
               })()}
             </div>
 
-            {/* CARACTERÍSTICAS SECUNDARIAS COMO ETIQUETAS */}
+            {/* CARACTERÍSTICAS DESTACADAS - Solo las más importantes */}
             {property.features && property.features.length > 0 && (
-              <div className="mb-6">
-                <h4 className="text-premium-primary font-medium mb-3">Características destacadas:</h4>
+              <div className="element-spacing">
                 <div className="flex flex-wrap gap-2">
-                  {property.features.slice(0, 5).map((feature, i) => (
+                  {property.features.slice(0, 3).map((feature, i) => (
                     <Badge
                       key={i}
                       variant="secondary"
-                      className="bg-support-gray/10 text-secondary border border-support-gray/25 px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-support-gray/20 transition-colors"
+                      className="bg-support-gray/10 text-meta border border-support-gray/25 px-3 py-1 rounded-lg text-xs font-medium"
                     >
                       {feature}
                     </Badge>
                   ))}
-                  {property.features.length > 5 && (
+                  {property.features.length > 3 && (
                     <Badge
                       variant="outline"
-                      className="text-meta border-support-gray/30 px-3 py-1.5 rounded-xl text-sm"
+                      className="text-meta border-support-gray/30 px-3 py-1 rounded-lg text-xs"
                     >
-                      +{property.features.length - 5} más
+                      +{property.features.length - 3}
                     </Badge>
                   )}
                 </div>

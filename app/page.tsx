@@ -234,14 +234,14 @@ export default function HomePage() {
             priority
           />
           
-          {/* OVERLAY DINÁMICO AJUSTADO - NUEVAS OPACIDADES */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/80" />
-          
-          {/* EFECTO DIFUMINADO NARANJA AJUSTADO */}
-          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
-          
-          {/* Overlay radial ajustado */}
-          <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/0 to-black/25" />
+          {/* OVERLAY MEJORADO PARA LEGIBILIDAD */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/70" />
+
+          {/* EFECTO DIFUMINADO NARANJA SUTIL */}
+          <div className="absolute inset-x-0 bottom-0 h-32 md:h-48 bg-gradient-to-t from-orange-600/60 via-orange-500/30 to-transparent" />
+
+          {/* Overlay central para mejorar contraste del texto */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
         </motion.div>
 
         {/* CONTENIDO PRINCIPAL - LAYOUT UNIFICADO PARA TODOS LOS TAMAÑOS */}
@@ -303,49 +303,29 @@ export default function HomePage() {
       {/* Propiedades Destacadas - PREMIUM DESIGN */}
       <section
         id="propiedades"
-        className="section-premium relative overflow-hidden"
+        className="section-spacing relative overflow-hidden"
       >
-        {/* Fondo dinámico con degradado y profundidad */}
+        {/* Fondo simplificado y elegante */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800">
-          {/* Línea decorativa animada */}
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-0.5">
-            <div className="w-full h-full bg-gradient-to-r from-transparent via-orange-500/60 to-transparent animate-pulse" />
-          </div>
-          
           {/* Sombras suaves para profundidad */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10" />
         </div>
 
         <div className="container-premium relative z-10">
-          {/* Header Premium - ESPACIADO GENEROSO CON JERARQUÍA MEJORADA */}
-          <div className="text-center mb-premium-xl group">
-            {/* Título con jerarquía visual clara y microinteracciones */}
+          {/* Header Premium - JERARQUÍA TIPOGRÁFICA LIMPIA */}
+          <div className="text-center component-spacing group">
+            {/* Título aplicando la nueva jerarquía */}
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold heading-primary mb-8 cursor-pointer"
+              className="section-title"
             >
-              <span className="hover:text-gray-200 transition-colors duration-300">PROPIEDADES</span>
-              <br className="sm:hidden" />
-              <span className="sm:ml-4"> </span>
-              <motion.span
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl heading-primary font-extrabold relative inline-block transition-all duration-500"
-                whileHover={{ scale: 1.05 }}
-              >
-                DESTACADAS
-                {/* Subrayado animado con naranja SOLO en interacción */}
-                <motion.div
-                  className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full opacity-0 group-hover:opacity-100"
-                  initial={{ width: 0 }}
-                  whileHover={{ width: "100%" }}
-                  transition={{ duration: 0.3 }}
-                />
-              </motion.span>
+              PROPIEDADES DESTACADAS
             </motion.h2>
             
-            {/* Subtítulo más legible con tipografía y espaciado mejorado */}
+            {/* Subtítulo mejorado con nueva jerarquía */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -353,10 +333,9 @@ export default function HomePage() {
               viewport={{ once: true }}
               className="max-w-3xl mx-auto"
             >
-              <div className="inline-flex items-center px-6 py-3 bg-gray-800/50 backdrop-blur-sm rounded-full border border-gray-700/50 hover:border-orange-500/30 hover:bg-gray-700/50 transition-all duration-300 cursor-pointer group/subtitle">
-                <div className="w-2 h-2 bg-orange-500 rounded-full mr-4 group-hover/subtitle:bg-white transition-colors duration-300" />
-                <p className="text-lg font-light text-gray-300 group-hover/subtitle:text-white transition-colors duration-300">
-                  Hogares seleccionados con estándares de excelencia.
+              <div className="bg-gray-800/40 backdrop-blur-sm rounded-2xl px-8 py-4 border border-gray-700/30">
+                <p className="body-text text-center">
+                  Hogares seleccionados con estándares de excelencia para tu familia.
                 </p>
               </div>
             </motion.div>
@@ -409,8 +388,8 @@ export default function HomePage() {
       </section>
 
       {/* QUIÉNES SOMOS - Sección informativa con diseño consistente */}
-      <section className="py-20 bg-gray-900 relative overflow-hidden">
-        <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="section-spacing bg-gray-900 relative overflow-hidden">
+        <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* Columna de texto */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -419,10 +398,10 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="space-y-6"
           >
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-800/60 border border-gray-700/60 text-gray-200 text-sm">
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-800/60 border border-gray-700/60 secondary-text">
               Conocé nuestro equipo
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold heading-primary">
+            <h2 className="section-title">
               ¿Quiénes somos?
             </h2>
             <p className="text-lg text-secondary">
@@ -513,8 +492,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA SECTION - GRADIENTE DIAGONAL PREMIUM */}
-      <section className="py-20 bg-gradient-to-br from-orange-600 via-orange-500 to-red-600 relative overflow-hidden">
+      {/* CTA SECTION - DISEÑO PREMIUM SIMPLIFICADO */}
+      <section className="section-spacing bg-gradient-to-br from-orange-600 via-orange-500 to-red-600 relative overflow-hidden">
         {/* Patrón de textura sutil */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -562,24 +541,22 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="max-w-4xl mx-auto"
           >
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
-              className="text-5xl md:text-6xl font-black text-white mb-8 tracking-tight"
-              style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
+              className="section-title text-center mb-element-spacing"
             >
-              COMENZÁ TU BÚSQUEDA
-              <span className="block text-4xl md:text-5xl font-bold mt-2">HOY MISMO</span>
+              COMENZÁ TU BÚSQUEDA HOY MISMO
             </motion.h2>
             
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
               viewport={{ once: true }}
-              className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto font-medium leading-relaxed"
+              className="subtitle text-center text-white mb-component-spacing max-w-3xl mx-auto"
             >
               Acompañamiento profesional premium para encontrar la propiedad perfecta que transforme tu vida
             </motion.p>
