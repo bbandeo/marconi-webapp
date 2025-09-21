@@ -25,25 +25,25 @@ export default function Header({ showMobileSearch = true }: HeaderProps) {
 
   const getLinkClassName = (path: string) => {
     if (isActivePage(path)) {
-      return "accent-premium border-b-2 border-vibrant-orange pb-1 font-medium transition-colors";
+      return "interactive-element border-b-2 border-vibrant-orange pb-1 font-medium";
     }
-    return "text-bone-white/80 hover:text-bone-white transition-colors";
+    return "text-bone-white/80 hover:text-vibrant-orange transition-colors";
   };
 
-  // Special case for contacto page - uses vibrant orange
+  // Special case for contacto page - uses vibrant orange ONLY when active
   const getContactLinkClassName = () => {
     if (isActivePage("/contacto")) {
-      return "accent-premium font-semibold";
+      return "interactive-element font-semibold";
     }
-    return "text-bone-white/80 hover:text-bone-white transition-colors";
+    return "text-bone-white/80 hover:text-vibrant-orange transition-colors";
   };
 
-  // Special case for agentes page - uses vibrant orange
+  // Special case for agentes page - uses vibrant orange ONLY when active
   const getAgentesLinkClassName = () => {
     if (isActivePage("/agentes")) {
-      return "accent-premium font-semibold";
+      return "interactive-element font-semibold";
     }
-    return "text-bone-white/80 hover:text-bone-white transition-colors";
+    return "text-bone-white/80 hover:text-vibrant-orange transition-colors";
   };
 
   // Scroll progress tracking

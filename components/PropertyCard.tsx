@@ -99,22 +99,22 @@ export function PropertyCard({ property }: PropertyCardProps) {
             <div className="flex items-start justify-between mb-4">
               <div className="flex-1">
                 <Link href={`/propiedades/${property.id}`}>
-                  <h3 className="font-bold text-premium-primary text-2xl mb-2 hover:text-vibrant-orange transition-colors cursor-pointer line-clamp-2">
+                  <h3 className="font-bold heading-primary text-2xl mb-2 hover:text-vibrant-orange transition-colors cursor-pointer line-clamp-2">
                     {property.title}
                   </h3>
                 </Link>
-                <div className="flex items-center text-vibrant-orange font-medium mb-1">
-                  <MapPin className="w-4 h-4 mr-2" />
+                <div className="flex items-center text-secondary font-medium mb-1">
+                  <MapPin className="w-4 h-4 mr-2 text-vibrant-orange" />
                   <span>{property.neighborhood}, Reconquista</span>
                 </div>
               </div>
               <div className="text-right ml-4">
-                <div className="text-3xl font-bold text-premium-primary mb-1 flex items-baseline gap-2">
-                  <span className="text-lg font-medium text-premium-secondary">{property.currency}</span>
+                <div className="text-3xl font-bold heading-primary mb-1 flex items-baseline gap-2">
+                  <span className="text-lg font-medium text-meta">{property.currency}</span>
                   <span className="font-black tracking-tight">${property.price.toLocaleString()}</span>
                 </div>
                 {property.operation === "rent" && (
-                  <div className="text-premium-secondary text-sm">por mes</div>
+                  <div className="text-meta text-sm">por mes</div>
                 )}
               </div>
             </div>
@@ -127,20 +127,20 @@ export function PropertyCard({ property }: PropertyCardProps) {
                 return hasCharacteristics && (
                   <div className="flex items-center gap-6 text-premium-primary">
                     {property.area_m2 && (
-                      <div className="flex items-center bg-premium-card/60 px-4 py-2 rounded-lg border border-vibrant-orange/20">
-                        <Square className="w-5 h-5 mr-2 text-vibrant-orange" />
+                      <div className="flex items-center bg-premium-card/60 px-4 py-2 rounded-lg border border-support-gray/20">
+                        <Square className="w-5 h-5 mr-2 text-support-gray" />
                         <span className="font-medium">{property.area_m2}m²</span>
                       </div>
                     )}
                     {shouldShowRoomInfo && property.bedrooms && (
-                      <div className="flex items-center bg-premium-card/60 px-4 py-2 rounded-lg border border-vibrant-orange/20">
-                        <Bed className="w-5 h-5 mr-2 text-vibrant-orange" />
+                      <div className="flex items-center bg-premium-card/60 px-4 py-2 rounded-lg border border-support-gray/20">
+                        <Bed className="w-5 h-5 mr-2 text-support-gray" />
                         <span className="font-medium">{property.bedrooms} dorm.</span>
                       </div>
                     )}
                     {shouldShowRoomInfo && property.bathrooms && (
-                      <div className="flex items-center bg-premium-card/60 px-4 py-2 rounded-lg border border-vibrant-orange/20">
-                        <Bath className="w-5 h-5 mr-2 text-vibrant-orange" />
+                      <div className="flex items-center bg-premium-card/60 px-4 py-2 rounded-lg border border-support-gray/20">
+                        <Bath className="w-5 h-5 mr-2 text-support-gray" />
                         <span className="font-medium">{property.bathrooms} baños</span>
                       </div>
                     )}
@@ -158,7 +158,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
                     <Badge
                       key={i}
                       variant="secondary"
-                      className="bg-vibrant-orange/10 text-vibrant-orange border border-vibrant-orange/25 px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-vibrant-orange/20 transition-colors"
+                      className="bg-support-gray/10 text-secondary border border-support-gray/25 px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-support-gray/20 transition-colors"
                     >
                       {feature}
                     </Badge>
@@ -166,7 +166,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
                   {property.features.length > 5 && (
                     <Badge
                       variant="outline"
-                      className="text-premium-secondary border-premium-secondary/30 px-3 py-1.5 rounded-xl text-sm"
+                      className="text-meta border-support-gray/30 px-3 py-1.5 rounded-xl text-sm"
                     >
                       +{property.features.length - 5} más
                     </Badge>

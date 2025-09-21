@@ -320,22 +320,22 @@ export default function HomePage() {
           {/* Header Premium - ESPACIADO GENEROSO CON JERARQUÍA MEJORADA */}
           <div className="text-center mb-premium-xl group">
             {/* Título con jerarquía visual clara y microinteracciones */}
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 cursor-pointer"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold heading-primary mb-8 cursor-pointer"
             >
               <span className="hover:text-gray-200 transition-colors duration-300">PROPIEDADES</span>
               <br className="sm:hidden" />
               <span className="sm:ml-4"> </span>
-              <motion.span 
-                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl bg-gradient-to-r from-orange-500 via-orange-600 to-red-500 bg-clip-text text-transparent font-extrabold relative inline-block group-hover:from-orange-400 group-hover:via-orange-500 group-hover:to-red-400 transition-all duration-500"
+              <motion.span
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl heading-primary font-extrabold relative inline-block transition-all duration-500"
                 whileHover={{ scale: 1.05 }}
               >
                 DESTACADAS
-                {/* Subrayado animado */}
+                {/* Subrayado animado con naranja SOLO en interacción */}
                 <motion.div
                   className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full opacity-0 group-hover:opacity-100"
                   initial={{ width: 0 }}
@@ -398,7 +398,7 @@ export default function HomePage() {
                       </motion.div>
                     </Button>
                   </Link>
-                  <p className="text-gray-300 mt-4 text-lg font-medium">
+                  <p className="text-secondary mt-4 text-lg font-medium">
                     Encontrá la propiedad perfecta para vos.
                   </p>
                 </motion.div>
@@ -422,14 +422,14 @@ export default function HomePage() {
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-800/60 border border-gray-700/60 text-gray-200 text-sm">
               Conocé nuestro equipo
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white">
-              ¿Quiénes <span className="text-orange-500">somos?</span>
+            <h2 className="text-4xl md:text-5xl font-bold heading-primary">
+              ¿Quiénes somos?
             </h2>
-            <p className="text-lg text-gray-300">
+            <p className="text-lg text-secondary">
               Somos <span className="font-semibold text-white">Marconi Inmobiliaria</span>, una empresa local que entiende tus
               necesidades. Conocemos Reconquista como la palma de nuestra mano y te acompañamos en cada paso.
             </p>
-            <p className="text-lg text-gray-300">
+            <p className="text-lg text-secondary">
               Con un enfoque joven y dinámico, nos especializamos en encontrar la propiedad perfecta para cada cliente,
               desde hogares familiares hasta inversiones estratégicas.
             </p>
