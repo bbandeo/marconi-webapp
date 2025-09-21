@@ -46,6 +46,17 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
+docs/
+  analytics-api-reference.md
+  analytics-gdpr-compliance.md
+  analytics-integration-guide.md
+  analytics-system-architecture.md
+  LEAD_TRACKING_CHANGELOG.md
+  lead-tracking-api-reference.md
+  lead-tracking-implementation-guide.md
+  lead-tracking-troubleshooting.md
+  mejoras-ui-premium.md
+  session-issues-troubleshooting.md
 ACCESSIBILITY_ANALYSIS_HERO_LOGO_REMOVAL.md
 ANALYTICS.md
 API_DESIGN_REPORT.md
@@ -53,20 +64,11 @@ api-guidelines.md
 CLAUDE.md
 competitor-analysis.md
 components.json
-docs/analytics-api-reference.md
-docs/analytics-gdpr-compliance.md
-docs/analytics-integration-guide.md
-docs/analytics-system-architecture.md
-docs/LEAD_TRACKING_CHANGELOG.md
-docs/lead-tracking-api-reference.md
-docs/lead-tracking-implementation-guide.md
-docs/lead-tracking-troubleshooting.md
-docs/mejoras-ui-premium.md
-docs/session-issues-troubleshooting.md
 final-action-plan.md
 HERO_LOGO_REMOVAL_TECHNICAL_ANALYSIS.md
 hero-logo-removal-ux-analysis.md
 package.json
+pendientes.md
 performance-considerations.md
 PLAN_ACCION_REESTRUCTURACION_HERO.md
 react-frontend-analysis.md
@@ -130,1802 +132,6 @@ This section contains the contents of the repository's files.
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
-</file>
-
-<file path="ACCESSIBILITY_ANALYSIS_HERO_LOGO_REMOVAL.md">
-# Accessibility Analysis: Hero Logo Removal Impact Assessment
-
-## Executive Summary
-
-This document analyzes the accessibility implications of removing the Marconi Inmobiliaria logo from the hero section (lines 284-299 in `app/page.tsx`) and provides comprehensive recommendations to maintain WCAG 2.1 AA compliance while potentially improving the overall user experience.
-
-## Current Accessibility State Analysis
-
-### Logo Element Assessment (Current Implementation)
-```typescript
-// Lines 284-299 in app/page.tsx
-<motion.div className="mb-6 sm:mb-8">
-  <div className="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl px-8 sm:px-10 lg:px-20 py-6 sm:py-7 lg:py-12 border border-white/20 shadow-2xl shadow-black/30">
-    <Image
-      src="/assets/logos/marconi_header_orangewhite.png"
-      alt="Marconi Inmobiliaria"
-      width={900}
-      height={270}
-      className="h-20 sm:h-24 lg:h-36 w-auto opacity-95"
-    />
-  </div>
-</motion.div>
-```
-
-### Current Accessibility Features
-✅ **Proper Alt Text**: Logo has descriptive alt text "Marconi Inmobiliaria"
-✅ **Semantic HTML**: Uses Next.js Image component with optimization
-✅ **Responsive Design**: Responsive sizing (h-20 sm:h-24 lg:h-36)
-✅ **Focus Management**: Within tab order but non-interactive
-✅ **High Contrast**: White logo on dark overlay background
-✅ **Header Logo Redundancy**: Brand identification also available in header (lines 81-90 in Header.tsx)
-
-## WCAG 2.1 AA Compliance Analysis
-
-### Success Criteria Impact Assessment
-
-#### 1.1.1 Non-text Content (Level A)
-**Current Status**: ✅ PASS
-**Impact of Removal**: ⚠️ NEUTRAL
-- Logo removal eliminates one source of brand identification
-- Header logo maintains compliance
-- **Recommendation**: No additional action required
-
-#### 1.3.1 Info and Relationships (Level A)
-**Current Status**: ✅ PASS
-**Impact of Removal**: ✅ IMPROVE
-- Simplifies content hierarchy
-- Reduces redundant brand information
-- **Recommendation**: Consider adding landmark regions for better structure
-
-#### 1.4.3 Contrast (Minimum) (Level AA)
-**Current Status**: ✅ PASS
-**Impact of Removal**: ✅ IMPROVE
-- Eliminates potential contrast issues with logo transparency (opacity-95)
-- **Color Contrast Analysis**:
-  - Text white (#FFFFFF) on dark overlay: **21:1 ratio** (WCAG AAA)
-  - Orange button (#F37321) on dark background: **4.8:1 ratio** (WCAG AA)
-  - Header logo maintains brand presence with **15.2:1 contrast ratio**
-
-#### 1.4.11 Non-text Contrast (Level AA)
-**Current Status**: ✅ PASS
-**Impact of Removal**: ✅ IMPROVE
-- Removes semi-transparent elements that could affect contrast
-- **Recommendation**: Maintain button contrast ratios
-
-#### 2.1.1 Keyboard (Level A)
-**Current Status**: ✅ PASS
-**Impact of Removal**: ✅ IMPROVE
-- Simplifies tab order by removing non-interactive visual element
-- **Recommendation**: Verify button remains easily focusable
-
-#### 2.4.4 Link Purpose (In Context) (Level A)
-**Current Status**: ✅ PASS
-**Impact of Removal**: ⚠️ MONITOR
-- Header navigation provides clear brand context
-- **Recommendation**: Ensure header brand link is prominent
-
-#### 3.2.4 Consistent Identification (Level AA)
-**Current Status**: ✅ PASS
-**Impact of Removal**: ✅ MAINTAIN
-- Header logo provides consistent brand identification across pages
-- **Recommendation**: No action required
-
-## Screen Reader Experience Analysis
-
-### Current Experience
-1. Screen reader announces: "Marconi Inmobiliaria" (logo alt text)
-2. Continues to heading: "Viví la experiencia de encontrar tu lugar en el mundo"
-3. Proceeds to CTA button: "EXPLORAR PROPIEDADES"
-
-### Post-Removal Experience
-1. **Improved Flow**: Direct progression from heading to CTA
-2. **Reduced Redundancy**: Eliminates duplicate brand announcement
-3. **Better Focus**: Clearer content hierarchy
-
-### Screen Reader Testing Recommendations
-```bash
-# Test with multiple screen readers
-- NVDA (Windows)
-- JAWS (Windows)
-- VoiceOver (macOS/iOS)
-- TalkBack (Android)
-
-# Key testing scenarios
-1. Navigate hero section with screen reader
-2. Verify heading hierarchy makes sense
-3. Test CTA button discoverability
-4. Confirm brand context from header
-```
-
-## Keyboard Navigation Analysis
-
-### Current Tab Order
-1. Header navigation links
-2. Mobile menu button (mobile only)
-3. **Hero logo** (non-interactive, but in DOM)
-4. CTA button "EXPLORAR PROPIEDADES"
-5. Page content sections
-
-### Improved Tab Order (Post-Removal)
-1. Header navigation links
-2. Mobile menu button (mobile only)
-3. **CTA button "EXPLORAR PROPIEDADES"** (improved discoverability)
-4. Page content sections
-
-### Focus Management Improvements
-- **Faster Navigation**: Reduces visual elements in tab sequence
-- **Clearer Purpose**: Users reach interactive elements sooner
-- **Better UX**: Aligns with user expectations for hero sections
-
-## Alternative Brand Identification Strategies
-
-### 1. Enhanced Header Presence
-```typescript
-// Strengthen header logo visibility
-<Image
-  src="/assets/logos/marconi_header_orangewhite.png"
-  alt="Marconi Inmobiliaria - Inicio"
-  width={140}
-  height={45}
-  className="h-10 md:h-14 w-auto" // Increased from h-8 md:h-12
-  priority
-/>
-```
-
-### 2. Accessible Landmark Enhancement
-```typescript
-// Add semantic landmarks
-<main role="main" aria-label="Página principal de Marconi Inmobiliaria">
-  <section
-    className="relative min-h-screen overflow-hidden"
-    aria-label="Sección principal"
-  >
-    {/* Hero content */}
-  </section>
-</main>
-```
-
-### 3. Brand-Integrated Heading
-```typescript
-// Option: Integrate brand into heading text
-<h1 className="sr-only">
-  Marconi Inmobiliaria - Viví la experiencia de encontrar tu lugar en el mundo
-</h1>
-```
-
-## Recommended Accessibility Improvements
-
-### 1. ARIA Landmark Implementation
-```typescript
-<main role="main" aria-labelledby="hero-heading">
-  <section
-    aria-label="Sección de bienvenida"
-    className="relative min-h-screen"
-  >
-    <h1 id="hero-heading" className="sr-only">
-      Marconi Inmobiliaria - Encontrá tu hogar ideal
-    </h1>
-    {/* Visual heading as decorative */}
-    <div aria-hidden="true">
-      <Image
-        src="/assets/impact_text/vivilaexperiencia.PNG"
-        alt=""
-        // ... props
-      />
-    </div>
-
-    {/* Enhanced CTA */}
-    <Link href="/propiedades" aria-describedby="cta-description">
-      <Button>
-        <Search aria-hidden="true" />
-        EXPLORAR PROPIEDADES
-      </Button>
-    </Link>
-    <p id="cta-description" className="sr-only">
-      Navegar al catálogo completo de propiedades disponibles
-    </p>
-  </section>
-</main>
-```
-
-### 2. Enhanced Skip Links
-```typescript
-// Add skip navigation for better accessibility
-<a
-  href="#main-content"
-  className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-vibrant-orange text-white px-4 py-2 rounded z-50"
->
-  Saltar al contenido principal
-</a>
-```
-
-### 3. Improved Focus Indicators
-```typescript
-// Enhanced button focus states
-className="focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-vibrant-orange focus-visible:ring-offset-2 focus-visible:ring-offset-night-blue"
-```
-
-## Mobile Accessibility Considerations
-
-### Touch Target Requirements
-- **Current CTA**: Meets 44x44px minimum (className includes py-5 lg:py-6)
-- **Recommendation**: Maintain or increase touch target size
-
-### Mobile Screen Reader Testing
-```typescript
-// Ensure proper mobile navigation
-<Button
-  size="lg"
-  aria-label="Explorar propiedades disponibles en Marconi Inmobiliaria"
-  className="min-w-[320px] min-h-[44px]" // Ensures touch target
->
-  {/* Content */}
-</Button>
-```
-
-### Mobile Zoom Considerations
-- **200% Zoom Test**: Verify layout doesn't break
-- **Horizontal Scroll**: Ensure no horizontal scroll at 200% zoom
-- **Text Reflow**: Confirm text reflows properly
-
-## Implementation Accessibility Checklist
-
-### Pre-Implementation
-- [ ] Document current screen reader experience
-- [ ] Test keyboard navigation flow
-- [ ] Verify color contrast ratios
-- [ ] Check mobile touch targets
-
-### During Implementation
-- [ ] Remove logo element (lines 284-299)
-- [ ] Add semantic landmarks
-- [ ] Implement enhanced skip links
-- [ ] Update focus management
-- [ ] Add ARIA labels where needed
-
-### Post-Implementation Testing
-- [ ] Screen reader testing (NVDA, JAWS, VoiceOver)
-- [ ] Keyboard-only navigation testing
-- [ ] Mobile accessibility testing
-- [ ] Color contrast verification
-- [ ] 200% zoom testing
-- [ ] User testing with disabilities (recommended)
-
-## Automated Testing Integration
-
-### Suggested Tools
-```bash
-# Install accessibility testing tools
-npm install --save-dev @axe-core/react axe-playwright
-
-# Test commands
-npm run test:a11y  # Custom accessibility test suite
-npx playwright test --grep="accessibility"
-```
-
-### Lighthouse Accessibility Score
-- **Current Baseline**: Establish current score
-- **Target**: Maintain or improve score post-removal
-- **Key Metrics**: Ensure no regression in accessibility audit
-
-## WCAG 2.1 AA Compliance Verification
-
-### Success Criteria Checklist
-- ✅ **1.1.1** Non-text Content: Alt text maintained in header
-- ✅ **1.3.1** Info and Relationships: Improved hierarchy
-- ✅ **1.4.3** Contrast (Minimum): Enhanced contrast ratios
-- ✅ **1.4.11** Non-text Contrast: Simplified visual elements
-- ✅ **2.1.1** Keyboard: Improved navigation flow
-- ✅ **2.4.1** Bypass Blocks: Enhanced with skip links
-- ✅ **2.4.4** Link Purpose: Clear button context
-- ✅ **3.2.4** Consistent Identification: Header brand consistency
-
-## Risk Assessment & Mitigation
-
-### Low Risk Items
-- **Brand Recognition**: Header logo maintains brand presence
-- **SEO Impact**: Minimal impact on search rankings
-- **Visual Hierarchy**: Improved focus on primary content
-
-### Mitigation Strategies
-1. **Monitor Analytics**: Track user engagement with CTA post-removal
-2. **A/B Testing**: Consider testing logo vs. no-logo variants
-3. **User Feedback**: Collect accessibility user feedback
-4. **Performance Monitoring**: Ensure no Lighthouse score regression
-
-## Conclusion
-
-**Recommendation: PROCEED with logo removal**
-
-The accessibility analysis indicates that removing the hero logo will **improve** rather than harm WCAG 2.1 AA compliance by:
-
-1. ✅ **Simplifying content hierarchy**
-2. ✅ **Reducing redundant brand information**
-3. ✅ **Improving keyboard navigation flow**
-4. ✅ **Eliminating potential contrast issues**
-5. ✅ **Enhancing screen reader experience**
-
-The header logo provides sufficient brand identification, and the proposed enhancements will further strengthen accessibility compliance.
-
-## Next Steps
-
-1. **Implement removal** with suggested accessibility enhancements
-2. **Conduct thorough testing** using the provided checklist
-3. **Monitor performance** and user feedback post-deployment
-4. **Document learnings** for future accessibility improvements
-
----
-
-**Generated on**: 2025-09-20
-**Document Version**: 1.0
-**WCAG Guidelines**: 2.1 Level AA
-**Technology Stack**: Next.js 15, React 19, TypeScript, Tailwind CSS, shadcn/ui
-</file>
-
-<file path="ANALYTICS.md">
-# MARCONI INMOBILIARIA - ANALYTICS SYSTEM DOCUMENTATION
-
-## Overview
-
-This comprehensive analytics system provides GDPR-compliant tracking for Marconi Inmobiliaria's real estate platform. The system tracks property views, user interactions, lead generation, and campaign performance while maintaining user privacy through IP hashing and opt-out capabilities.
-
-## 🚀 Quick Start
-
-### 1. Database Setup
-
-Execute the migration script to create all analytics tables:
-
-```bash
-# Connect to your Supabase database and run:
-psql -f scripts/analytics-schema-migration.sql
-```
-
-This creates:
-- ✅ 6 core analytics tables
-- ✅ 5 aggregation tables for performance
-- ✅ 12 lead sources with Spanish names
-- ✅ 7 RPC functions for common operations
-- ✅ GDPR compliance features (IP hashing, opt-out)
-- ✅ Automatic data retention (24 months)
-- ✅ 2-hour debounce for duplicate views
-
-### 2. Frontend Integration
-
-Add analytics tracking to your React components:
-
-```tsx
-import { trackPropertyView, trackContactClick, getAnalyticsClient } from '@/lib/analytics-client'
-
-// In a property detail page
-useEffect(() => {
-  trackPropertyView(property.id, {
-    pageUrl: window.location.href,
-    referrerUrl: document.referrer
-  })
-}, [property.id])
-
-// Track user interactions
-const handleContactClick = () => {
-  trackContactClick(property.id)
-  // Your existing contact logic...
-}
-
-const handleWhatsAppClick = () => {
-  trackWhatsAppClick(property.id)
-  // Your existing WhatsApp logic...
-}
-```
-
-### 3. Lead Attribution
-
-Track leads with automatic source attribution:
-
-```tsx
-import { trackLead } from '@/lib/analytics-client'
-
-// After creating a lead
-const leadId = await LeadsService.createLead(leadData)
-await trackLead(leadId, 'formulario_web', property.id)
-```
-
-## 📊 Analytics Features
-
-### Privacy & GDPR Compliance
-- **IP Hashing**: All IPs are SHA-256 hashed before storage
-- **Anonymous Sessions**: No personal data stored in analytics
-- **Opt-out Support**: Users can opt out with `/api/analytics/gdpr/opt-out`
-- **Data Retention**: Automatic cleanup after 24 months
-- **RLS Policies**: Row-level security for data access
-
-### Property Tracking
-- **Unique Views**: 2-hour debounce window prevents duplicate counting
-- **Engagement Metrics**: Time on page, scroll depth, interaction tracking
-- **Contact Attribution**: Links property views to lead generation
-- **Performance Insights**: Conversion rates, top properties, neighborhood analysis
-
-### Lead Attribution
-- **12 Lead Sources**: WhatsApp, web form, phone, email, social media, etc.
-- **UTM Campaign Tracking**: Full attribution for marketing campaigns  
-- **Conversion Funnel**: Track user journey from view to lead
-- **Time to Conversion**: Measure decision-making speed
-
-### Device & Browser Analytics
-- **Device Detection**: Desktop, tablet, mobile, bot classification
-- **Browser Analytics**: Chrome, Firefox, Safari, Edge tracking
-- **Geographic Data**: Country-level analytics (IP-based)
-- **Performance by Device**: Conversion rates by device type
-
-## 🛠 API Endpoints
-
-### Session Management
-```bash
-# Create or get session
-POST /api/analytics/session
-{
-  "country_code": "AR",
-  "device_type": "desktop",
-  "utm_source": "google",
-  "utm_campaign": "summer_properties"
-}
-
-# Update session activity
-PUT /api/analytics/session?session_id=uuid
-```
-
-### Property Views
-```bash
-# Track property view
-POST /api/analytics/property-view
-{
-  "session_id": "uuid",
-  "property_id": 123,
-  "time_on_page": 45,
-  "scroll_depth": 85,
-  "contact_button_clicked": true
-}
-
-# Track view with auto-session creation
-PUT /api/analytics/property-view
-{
-  "property_id": 123,
-  "device_type": "mobile",
-  "utm_source": "facebook"
-}
-```
-
-### Lead Generation
-```bash
-# Track lead with source attribution
-PUT /api/analytics/lead-generation
-{
-  "lead_id": 456,
-  "source_code": "whatsapp",
-  "session_id": "uuid",
-  "property_id": 123
-}
-```
-
-### Dashboard Analytics
-```bash
-# Get comprehensive dashboard data
-GET /api/analytics/dashboard?start_date=2024-01-01&end_date=2024-01-31
-
-# Advanced analytics with filters
-POST /api/analytics/dashboard
-{
-  "start_date": "2024-01-01",
-  "end_date": "2024-01-31",
-  "property_ids": [123, 456],
-  "metrics": ["overview", "campaigns", "devices"]
-}
-```
-
-### Property Metrics
-```bash
-# Get detailed property analytics
-GET /api/analytics/property-metrics/123?period=30d
-```
-
-### GDPR Compliance
-```bash
-# User opt-out
-POST /api/analytics/gdpr/opt-out
-{
-  "session_id": "uuid",
-  "reason": "privacy_concerns"
-}
-
-# Check opt-out status
-GET /api/analytics/gdpr/opt-out?session_id=uuid
-```
-
-## 📈 Dashboard Integration
-
-### Key Metrics Available
-
-**Traffic Metrics:**
-- Unique sessions and page views
-- Traffic sources and campaigns
-- Device and browser breakdown
-- Geographic distribution
-
-**Property Performance:**
-- Most viewed properties
-- Engagement rates by property
-- Conversion rates by neighborhood
-- Time on page and scroll depth
-
-**Lead Analytics:**
-- Lead sources performance
-- Conversion funnel analysis
-- Time to conversion metrics
-- Lead quality by source
-
-**Campaign Attribution:**
-- UTM campaign performance
-- ROI and ROAS tracking
-- Traffic source analysis
-- A/B testing support
-
-### Sample Dashboard Queries
-
-```sql
--- Top 10 properties by conversion rate (last 30 days)
-SELECT * FROM get_top_properties(10, 'conversion_rate', 30);
-
--- Property performance metrics
-SELECT * FROM get_property_metrics(123, CURRENT_DATE - 30, CURRENT_DATE);
-
--- Daily traffic summary
-SELECT 
-  date,
-  SUM(unique_views) as total_unique_views,
-  SUM(leads_generated) as total_leads,
-  AVG(conversion_rate) as avg_conversion_rate
-FROM daily_property_analytics 
-WHERE date BETWEEN CURRENT_DATE - 30 AND CURRENT_DATE
-GROUP BY date 
-ORDER BY date DESC;
-```
-
-## 🔧 Configuration Options
-
-### Environment Variables
-```bash
-# Required for analytics
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_key
-```
-
-### Client Configuration
-```tsx
-import { getAnalyticsClient } from '@/lib/analytics-client'
-
-const analytics = getAnalyticsClient({
-  enableConsoleLogging: process.env.NODE_ENV === 'development',
-  enableLocalStorage: true,
-  apiBaseUrl: '/api/analytics'
-})
-```
-
-### Lead Source Mapping
-The system includes 12 predefined lead sources:
-
-| Source Code | Display Name | Description |
-|-------------|--------------|-------------|
-| `whatsapp` | WhatsApp | Contact via WhatsApp Business |
-| `formulario_web` | Formulario Web | Website contact forms |
-| `telefono` | Teléfono | Direct phone calls |
-| `email` | Email | Email inquiries |
-| `instagram` | Instagram | Instagram contacts |
-| `facebook` | Facebook | Facebook contacts |
-| `google_ads` | Google Ads | Google Ads campaigns |
-| `referidos` | Referidos | Referrals from existing clients |
-| `walk_in` | Visita Directa | Direct office visits |
-| `mercado_libre` | MercadoLibre | MercadoLibre listings |
-| `zonaprop` | ZonaProp | ZonaProp listings |
-| `argenprop` | ArgenProp | ArgenProp listings |
-
-## 🛡️ Privacy & Security
-
-### Data Protection
-- **No Personal Data**: Analytics stores no names, emails, or personal information
-- **IP Hashing**: All IP addresses are irreversibly hashed with SHA-256
-- **Session Anonymity**: Sessions are identified only by random UUIDs
-- **Automatic Cleanup**: Data older than 24 months is automatically purged
-
-### GDPR Compliance
-- **Opt-out Capability**: Users can opt out anytime via API or client method
-- **Data Portability**: Analytics data can be exported for users
-- **Right to Erasure**: User data can be completely removed
-- **Lawful Basis**: Processing based on legitimate business interest
-
-### Security Features
-- **Row Level Security**: Supabase RLS policies protect data access
-- **Admin-only Access**: Sensitive analytics require authentication
-- **API Rate Limiting**: Built-in protection against abuse
-- **Input Validation**: All analytics inputs are validated and sanitized
-
-## 🚀 Performance Optimization
-
-### Pre-aggregated Tables
-The system includes daily, weekly, and monthly aggregation tables for fast dashboard queries:
-- `daily_property_analytics`
-- `weekly_property_analytics` 
-- `monthly_property_analytics`
-- `lead_funnel_analytics`
-- `campaign_performance_analytics`
-
-### Optimized Indexes
-Strategic indexes on high-traffic queries:
-- Session ID and timestamp lookups
-- Property ID and date range queries
-- UTM parameter filtering
-- Lead source attribution
-
-### Batching & Caching
-- **Interaction Batching**: Client batches non-critical interactions
-- **Session Persistence**: Sessions cached in localStorage for performance
-- **Query Optimization**: Efficient SQL with proper JOINs and CTEs
-
-## 🔍 Monitoring & Maintenance
-
-### Health Checks
-Monitor system health with built-in queries:
-
-```sql
--- Check data volume and system health
-SELECT 
-  'Sessions (24h)' as metric,
-  COUNT(*) as value
-FROM analytics_sessions 
-WHERE first_seen >= CURRENT_TIMESTAMP - INTERVAL '24 hours';
-```
-
-### Maintenance Tasks
-Regular maintenance procedures:
-
-```sql
--- Clean up old data (run monthly)
-SELECT anonymize_old_analytics_data(24); -- 24 months retention
-
--- Update aggregation tables (run daily)
--- This would typically be automated via cron job
-```
-
-### Performance Monitoring
-Key metrics to monitor:
-- Average query response time
-- Database size growth
-- Session creation rate
-- Error rates in API endpoints
-
-## 📚 Advanced Usage
-
-### Custom Events
-Track custom interactions:
-
-```tsx
-import { getAnalyticsClient } from '@/lib/analytics-client'
-
-const analytics = getAnalyticsClient()
-
-// Track custom events
-analytics.trackInteraction('video_play', 'property_video', {
-  video_id: 'intro_video',
-  property_id: 123
-})
-
-analytics.trackInteraction('form_start', 'contact_form')
-analytics.trackInteraction('search', 'property_search', {
-  query: 'departamento belgrano',
-  filters: { bedrooms: 2, price_max: 150000 }
-})
-```
-
-### Funnel Analysis
-Build conversion funnels:
-
-```sql
--- Custom conversion funnel
-WITH funnel AS (
-  SELECT 
-    session_id,
-    MAX(CASE WHEN event_type = 'property_view' THEN 1 ELSE 0 END) as viewed_property,
-    MAX(CASE WHEN event_type = 'contact_click' THEN 1 ELSE 0 END) as clicked_contact,
-    MAX(CASE WHEN event_type = 'form_submit' THEN 1 ELSE 0 END) as submitted_form
-  FROM user_interaction_events
-  WHERE timestamp >= CURRENT_DATE - INTERVAL '30 days'
-  GROUP BY session_id
-)
-SELECT 
-  COUNT(*) as total_sessions,
-  SUM(viewed_property) as viewed_property,
-  SUM(clicked_contact) as clicked_contact, 
-  SUM(submitted_form) as submitted_form
-FROM funnel;
-```
-
-### Campaign Attribution
-Advanced UTM tracking:
-
-```tsx
-// Automatic UTM extraction from URL
-const analytics = getAnalyticsClient()
-
-// UTM parameters are automatically captured during session creation
-// Access them via the analytics dashboard or custom queries
-```
-
-## 🎯 Best Practices
-
-### Implementation Guidelines
-1. **Initialize Early**: Set up analytics client in your app's root component
-2. **Batch Interactions**: Use interaction batching for high-frequency events
-3. **Error Handling**: Always wrap analytics calls in try-catch blocks
-4. **Performance**: Don't block user interactions for analytics calls
-5. **Privacy First**: Always respect user opt-out preferences
-
-### Code Examples
-
-```tsx
-// Property page with comprehensive tracking
-import { useEffect } from 'react'
-import { trackPropertyView, trackContactClick } from '@/lib/analytics-client'
-
-export default function PropertyPage({ property }) {
-  useEffect(() => {
-    // Track property view on page load
-    trackPropertyView(property.id, {
-      pageUrl: window.location.href,
-      referrerUrl: document.referrer
-    })
-
-    // Track scroll depth periodically
-    const trackScrollDepth = () => {
-      const scrolled = window.scrollY
-      const total = document.documentElement.scrollHeight - window.innerHeight
-      const scrollDepth = Math.round((scrolled / total) * 100)
-      
-      if (scrollDepth > 75) {
-        // User is highly engaged
-        trackPropertyView(property.id, { scrollDepth })
-      }
-    }
-
-    window.addEventListener('scroll', trackScrollDepth)
-    return () => window.removeEventListener('scroll', trackScrollDepth)
-  }, [property.id])
-
-  const handleContactClick = async () => {
-    // Track the interaction
-    trackContactClick(property.id)
-    
-    // Your business logic
-    const leadData = {
-      name: form.name,
-      email: form.email,
-      message: form.message,
-      property_id: property.id,
-      lead_source: 'formulario_web'
-    }
-    
-    const lead = await LeadsService.createLead(leadData)
-    
-    // Track lead generation
-    await trackLead(lead.id, 'formulario_web', property.id)
-  }
-
-  return (
-    <div>
-      {/* Your property UI */}
-      <button onClick={handleContactClick}>
-        Contactar
-      </button>
-    </div>
-  )
-}
-```
-
-## 📞 Support & Troubleshooting
-
-### Common Issues
-
-**Issue: Analytics not tracking**
-- ✅ Check if user has opted out
-- ✅ Verify API endpoints are accessible
-- ✅ Check browser console for errors
-- ✅ Confirm Supabase connection
-
-**Issue: Duplicate views not debouncing**
-- ✅ Verify session persistence in localStorage
-- ✅ Check if `is_duplicate_view` function is working
-- ✅ Review debounce window configuration (2 hours default)
-
-**Issue: Poor dashboard performance**
-- ✅ Check if aggregation tables are populated
-- ✅ Review query execution plans
-- ✅ Consider adding custom indexes
-- ✅ Implement query result caching
-
-### Debug Mode
-
-Enable debug logging for troubleshooting:
-
-```tsx
-import { getAnalyticsClient } from '@/lib/analytics-client'
-
-const analytics = getAnalyticsClient({
-  enableConsoleLogging: true // Shows detailed logs in console
-})
-```
-
----
-
-## 📄 File Structure
-
-```
-marconi-webapp/
-├── scripts/
-│   ├── analytics-schema-migration.sql     # Database schema creation
-│   └── analytics-sample-queries.sql       # Example queries for reports
-├── types/
-│   └── analytics.ts                       # TypeScript type definitions
-├── services/
-│   └── analytics.ts                       # Server-side analytics service
-├── lib/
-│   └── analytics-client.ts                # Client-side analytics utilities
-├── app/api/analytics/
-│   ├── session/route.ts                   # Session management API
-│   ├── property-view/route.ts             # Property view tracking API
-│   ├── lead-generation/route.ts           # Lead attribution API
-│   ├── dashboard/route.ts                 # Dashboard analytics API
-│   ├── property-metrics/[id]/route.ts     # Individual property metrics
-│   └── gdpr/opt-out/route.ts             # GDPR compliance API
-└── ANALYTICS.md                           # This documentation file
-```
-
-This analytics system is production-ready and provides comprehensive insights while maintaining the highest standards of user privacy and GDPR compliance. All components are designed to integrate seamlessly with your existing Marconi Inmobiliaria codebase.
-</file>
-
-<file path="API_DESIGN_REPORT.md">
-# API Design Report
-
-## Spec Files
-- `openapi.yaml` ➜ 8 resources, 15 operations
-- `api-guidelines.md` ➜ Comprehensive integration patterns and best practices
-
-## Core Decisions
-
-### 1. URI Design & Versioning
-- **Flat URI structure**: `/api/[service]/[resource]` pattern
-- **No versioning initially**: Direct `/api/` namespace for simplicity
-- **Future versioning strategy**: URL versioning (`/api/v1/`, `/api/v2/`)
-
-### 2. HTTP Method Semantics
-- **GET**: Read operations (dashboard, geocoding)
-- **POST**: Create operations (sessions, interactions, lead events)
-- **PUT**: Upsert operations and batch processing
-- **RESTful exceptions**: Some PUT endpoints handle creation + updates for simplified client integration
-
-### 3. Authentication & Security
-- **Current state**: Public endpoints (no auth required)
-- **GDPR compliance**: Built-in IP hashing, opt-out support
-- **Future auth**: JWT Bearer tokens + API keys for server-to-server
-
-### 4. Response Format
-- **Standard envelope**: `{ success, error?, message?, data? }`
-- **Error format**: Follows RFC 7807 problem details pattern
-- **Consistent typing**: All responses include success boolean
-
-### 5. Rate Limiting Strategy
-- **Geocoding**: 1 req/sec with 24-hour caching
-- **Analytics**: 1000 req/min (~16 req/sec)
-- **Implementation**: Application-level with exponential backoff
-
-### 6. Data Processing Patterns
-- **Session deduplication**: 4-hour windows based on IP hash + User Agent
-- **View debouncing**: 2-hour property view deduplication
-- **Batch processing**: Support for up to 100 interactions per batch
-- **Automatic fallbacks**: Geocoding returns fallback coordinates on errors
-
-## Technical Architecture
-
-### Backend Integration
-- **Next.js 15 App Router**: API routes with TypeScript
-- **Supabase PostgreSQL**: ACID transactions, prepared statements
-- **Service layer**: Centralized business logic in `AnalyticsService`
-- **Type safety**: Comprehensive TypeScript schemas
-
-### Performance Optimizations
-- **In-memory caching**: Geocoding addresses cached for 24 hours
-- **Database functions**: Complex logic pushed to PostgreSQL (debouncing, aggregations)
-- **Batching support**: Reduces API calls for high-frequency events
-- **Automatic cleanup**: Cache eviction prevents memory leaks
-
-### Error Handling Philosophy
-- **Graceful degradation**: Never break client applications
-- **Detailed validation**: Field-specific error messages
-- **Fallback responses**: Geocoding always returns valid coordinates
-- **Robust session handling**: Multiple fallback levels for session creation
-
-## Implemented Endpoints
-
-### 🆕 Newly Created/Fixed Endpoints
-
-1. **Geocoding Proxy API** (`/api/geocode`)
-   - **Problem solved**: CORS policy errors from direct OpenStreetMap calls
-   - **Features**: Rate limiting, caching, Argentina filtering, fallback coordinates
-   - **Response time**: <100ms (cached), <2s (external API)
-
-2. **Analytics Session API** (`/api/analytics/session`)
-   - **Problem solved**: 500 errors during session creation
-   - **Features**: Multiple fallback levels, GDPR-compliant IP hashing, deduplication
-   - **Robustness**: Handles database failures gracefully
-
-3. **Analytics Interaction API** (`/api/analytics/interaction`)
-   - **Problem solved**: Missing endpoint for UX tracking
-   - **Features**: Single and batch operations, 11 interaction types, flexible event data
-   - **Performance**: Batch processing for high-frequency events
-
-### 🔧 Enhanced Existing Endpoints
-
-4. **Property View Tracking** (`/api/analytics/property-view`)
-   - **Enhanced**: Better error handling, automatic session creation (PUT endpoint)
-   - **Features**: 2-hour debouncing, comprehensive interaction tracking
-
-5. **Lead Generation Attribution** (`/api/analytics/lead-generation`)
-   - **Enhanced**: Source code lookup, improved validation
-   - **Features**: Multi-touch attribution, UTM preservation
-
-6. **Dashboard Analytics** (`/api/analytics/dashboard`)
-   - **Enhanced**: Advanced filtering, metric-specific queries
-   - **Features**: Date ranges, property filtering, campaign analysis
-
-## Integration Ecosystem
-
-### Client-Side Patterns
-- **Session management**: Automatic creation with fallback handling
-- **Batch processing**: Queue interactions for optimal network usage
-- **Error resilience**: Retry logic with exponential backoff
-- **Privacy-first**: No PII collection, automatic IP hashing
-
-### Database Schema Integration
-- **Session tracking**: `analytics_sessions` with IP hashing
-- **Event recording**: `analytics_property_views`, `analytics_user_interactions`
-- **Lead attribution**: `analytics_lead_generation` with source linking
-- **Aggregations**: Pre-computed metrics for dashboard performance
-
-## Open Questions & Future Considerations
-
-### 1. Authentication Implementation Timeline
-- **Question**: When to implement JWT authentication for admin endpoints?
-- **Impact**: Currently all endpoints are public, may need protection
-- **Recommendation**: Implement when admin dashboard goes live
-
-### 2. Real-time Analytics Support
-- **Question**: Should we add WebSocket support for live dashboard updates?
-- **Trade-offs**: Increased complexity vs. real-time insights
-- **Recommendation**: Evaluate based on admin user feedback
-
-### 3. Data Retention & GDPR
-- **Question**: Automatic data purging after 25 months?
-- **Compliance**: GDPR requires data retention limits
-- **Implementation**: Background job for expired data cleanup
-
-### 4. Multi-region Support
-- **Question**: Geographic distribution of analytics data?
-- **Performance**: Reduce latency for international users
-- **Complexity**: Data synchronization and consistency challenges
-
-### 5. Advanced Attribution Modeling
-- **Question**: Multi-touch attribution vs. last-touch attribution?
-- **Value**: Better marketing campaign ROI analysis
-- **Complexity**: Significant algorithm development required
-
-## Next Steps (for implementers)
-
-### Immediate Actions
-1. **Deploy OpenAPI spec** to API documentation platform (Swagger UI/Redoc)
-2. **Implement monitoring** for all endpoint response times and error rates
-3. **Add health check endpoints** for production monitoring
-4. **Set up alerts** for rate limit violations and 5xx errors
-
-### Short-term Enhancements (1-2 months)
-1. **Authentication layer** for admin endpoints
-2. **Redis caching** to replace in-memory geocoding cache
-3. **Data export APIs** for GDPR compliance
-4. **Advanced dashboard filtering** based on user feedback
-
-### Long-term Strategic Goals (3-6 months)
-1. **Real-time dashboard** with WebSocket connections
-2. **Multi-touch attribution** modeling
-3. **API versioning** strategy implementation
-4. **Performance optimization** based on production metrics
-
-## Success Metrics
-
-### API Performance
-- **Target latency**: P95 < 500ms for all endpoints
-- **Availability**: 99.9% uptime SLA
-- **Error rate**: <1% 5xx responses
-
-### Business Impact
-- **Analytics adoption**: Track API usage growth
-- **Data quality**: Monitor session completion rates
-- **User experience**: Measure property view accuracy
-
-### Technical Debt
-- **Code coverage**: >90% test coverage for new endpoints
-- **Documentation**: All endpoints documented with examples
-- **Monitoring**: Full observability pipeline in place
-
----
-
-**Architecture**: RESTful API with GDPR compliance, intelligent caching, and graceful degradation patterns.
-
-**Integration**: Drop-in analytics tracking for real estate platforms with minimal client-side complexity.
-
-**Scalability**: Designed for high-volume property view tracking with efficient batch processing.
-</file>
-
-<file path="api-guidelines.md">
-# Marconi Inmobiliaria API Guidelines
-
-## Overview
-
-This document provides comprehensive guidelines for using the Marconi Inmobiliaria Analytics & Geocoding API. These endpoints were designed to provide real estate analytics tracking, GDPR-compliant user session management, and geocoding services for the Marconi Inmobiliaria platform.
-
-## Base URLs
-
-- **Production**: `https://marconi-inmobiliaria.vercel.app/api`
-- **Development**: `http://localhost:3000/api`
-
-## Authentication & Authorization
-
-Currently, all endpoints are publicly accessible. Authentication may be required for admin-only endpoints in future versions.
-
-### Future Security Implementation
-
-```http
-Authorization: Bearer <JWT_TOKEN>
-X-API-Key: <API_KEY>
-```
-
-## Core Principles
-
-### 1. Consistent Response Format
-
-All API responses follow a standard envelope structure:
-
-```json
-{
-  "success": boolean,
-  "error": string | null,
-  "message": string | null,
-  "data": object | null
-}
-```
-
-### 2. Error Handling
-
-#### Standard Error Codes
-- `400` - Bad Request (validation errors, missing parameters)
-- `401` - Unauthorized (future implementation)
-- `403` - Forbidden (GDPR opt-out violations)
-- `429` - Too Many Requests (rate limiting)
-- `500` - Internal Server Error
-
-#### Error Response Example
-
-```json
-{
-  "success": false,
-  "error": "Property ID is required and must be a positive integer",
-  "field": "property_id"
-}
-```
-
-### 3. GDPR Compliance
-
-All analytics endpoints implement GDPR compliance through:
-- **IP Address Hashing**: Client IPs are automatically hashed using SHA-256 with salt
-- **Opt-out Support**: Users can opt out via `/analytics/gdpr/opt-out`
-- **Session Deduplication**: Prevents tracking the same user multiple times
-- **Data Minimization**: Only essential tracking data is collected
-
-## API Endpoints Reference
-
-### 1. Geocoding API
-
-#### `GET /geocode`
-
-Converts addresses to coordinates with intelligent caching and fallback.
-
-**Features:**
-- 24-hour in-memory caching
-- Rate limiting (1 request/second)
-- Argentina-specific filtering
-- Automatic fallback to Reconquista coordinates
-
-**Request:**
-```http
-GET /geocode?address=San%20Martin%20123,%20Reconquista,%20Santa%20Fe
-```
-
-**Response:**
-```json
-{
-  "lat": -29.15,
-  "lng": -59.65,
-  "display_name": "San Martin 123, Reconquista, Santa Fe, Argentina"
-}
-```
-
-**Implementation Notes:**
-- Uses OpenStreetMap Nominatim as backend service
-- Implements automatic cleanup of expired cache entries (>1000 entries)
-- Always returns valid coordinates (fallback prevents null responses)
-
-### 2. Analytics Session Management
-
-#### `POST /analytics/session`
-
-Creates or retrieves analytics sessions with GDPR compliance.
-
-**Session Deduplication Logic:**
-- Sessions are deduplicated based on IP hash + User Agent
-- 4-hour window for session reuse
-- IP addresses are hashed immediately upon receipt
-
-**Request:**
-```json
-{
-  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-  "device_type": "desktop",
-  "browser": "Chrome",
-  "os": "Windows 10",
-  "country_code": "AR",
-  "utm_source": "google",
-  "utm_medium": "cpc",
-  "utm_campaign": "property_search_2024"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "session_id": "550e8400-e29b-41d4-a716-446655440000"
-}
-```
-
-#### `PUT /analytics/session?session_id={uuid}`
-
-Updates last seen timestamp for session heartbeat tracking.
-
-### 3. Property View Tracking
-
-#### `POST /analytics/property-view`
-
-Records property view events with automatic debouncing.
-
-**Debouncing Logic:**
-- Prevents duplicate views for the same property/session within 2 hours
-- Uses PostgreSQL function `should_record_property_view()`
-- Maintains view accuracy while preventing spam
-
-**Request:**
-```json
-{
-  "session_id": "550e8400-e29b-41d4-a716-446655440000",
-  "property_id": 123,
-  "time_on_page": 45,
-  "scroll_depth": 85.5,
-  "contact_button_clicked": true,
-  "whatsapp_clicked": false,
-  "phone_clicked": false,
-  "email_clicked": false,
-  "images_viewed": 3,
-  "page_url": "https://marconi-inmobiliaria.vercel.app/propiedades/123",
-  "referrer_url": "https://google.com/search?q=casas+reconquista"
-}
-```
-
-#### `PUT /analytics/property-view`
-
-Combined endpoint that handles both session creation and property view tracking in a single request. Ideal for simplified client-side integration.
-
-### 4. User Interaction Tracking
-
-#### `POST /analytics/interaction`
-
-Records individual user interaction events for UX analysis.
-
-**Supported Event Types:**
-- `click` - General click events
-- `scroll` - Scroll milestone tracking
-- `form_field_focus` - Form field interactions
-- `form_submit` - Form submission attempts
-- `contact_click` - Contact button interactions
-- `phone_click` - Phone number clicks
-- `whatsapp_click` - WhatsApp button clicks
-- `email_click` - Email link clicks
-- `image_view` - Image gallery interactions
-- `gallery_interaction` - Photo gallery navigation
-
-**Request:**
-```json
-{
-  "session_id": "550e8400-e29b-41d4-a716-446655440000",
-  "property_id": 123,
-  "event_type": "contact_click",
-  "event_target": "#contact-form-button",
-  "page_url": "https://marconi-inmobiliaria.vercel.app/propiedades/123",
-  "event_data": {
-    "contact_method": "whatsapp",
-    "button_position": "top"
-  }
-}
-```
-
-#### `PUT /analytics/interaction`
-
-Batch endpoint for recording multiple interactions (max 100 per request).
-
-**Request:**
-```json
-{
-  "interactions": [
-    {
-      "session_id": "550e8400-e29b-41d4-a716-446655440000",
-      "event_type": "scroll",
-      "page_url": "https://marconi-inmobiliaria.vercel.app/propiedades/123",
-      "event_data": { "scroll_percentage": 25 }
-    },
-    {
-      "session_id": "550e8400-e29b-41d4-a716-446655440000",
-      "event_type": "image_view",
-      "page_url": "https://marconi-inmobiliaria.vercel.app/propiedades/123",
-      "event_data": { "image_index": 2, "image_url": "..." }
-    }
-  ]
-}
-```
-
-### 5. Lead Generation Attribution
-
-#### `POST /analytics/lead-generation`
-
-Records lead generation events with full attribution tracking.
-
-**Attribution Features:**
-- Session to lead correlation
-- UTM parameter preservation
-- Time-to-conversion tracking
-- Multi-touch attribution support
-
-**Request:**
-```json
-{
-  "lead_id": 456,
-  "session_id": "550e8400-e29b-41d4-a716-446655440000",
-  "property_id": 123,
-  "lead_source_id": 1,
-  "form_type": "contact",
-  "time_to_conversion": 15,
-  "session_pages_viewed": 3,
-  "properties_viewed": 2,
-  "utm_source": "google",
-  "utm_medium": "cpc",
-  "utm_campaign": "property_search_2024"
-}
-```
-
-#### `PUT /analytics/lead-generation`
-
-Simplified endpoint using source codes for automatic lead source lookup.
-
-**Available Source Codes:**
-- `formulario_web` - Web contact forms
-- `whatsapp` - WhatsApp inquiries
-- `telefono` - Phone call inquiries
-- `email` - Email inquiries
-- `facebook` - Facebook leads
-- `instagram` - Instagram leads
-- `google_ads` - Google Ads campaigns
-- `facebook_ads` - Facebook advertising
-- `referido` - Referral leads
-- `walk_in` - Walk-in leads
-- `marketplace` - Real estate marketplace leads
-- `otros` - Other sources
-
-### 6. Dashboard Analytics
-
-#### `GET /analytics/dashboard`
-
-Retrieves comprehensive analytics data with flexible filtering.
-
-**Available Filters:**
-- `start_date` / `end_date` - Date range filtering
-- `property_ids` - Filter by specific properties
-- `lead_source_ids` - Filter by lead sources
-- `utm_source` / `utm_campaign` - Marketing attribution
-- `device_type` - Device-based filtering
-- `country_code` - Geographic filtering
-
-**Example Request:**
-```http
-GET /analytics/dashboard?start_date=2024-01-01&end_date=2024-01-31&device_type=mobile&utm_source=google
-```
-
-#### `POST /analytics/dashboard`
-
-Advanced analytics endpoint for retrieving specific metric sets.
-
-**Available Metrics:**
-- `overview` - General dashboard statistics
-- `properties` - Property performance metrics
-- `campaigns` - Marketing campaign performance
-- `sources` - Lead source analysis
-- `devices` - Device type breakdown
-- `all` - Complete analytics suite
-
-**Request:**
-```json
-{
-  "start_date": "2024-01-01",
-  "end_date": "2024-01-31",
-  "property_ids": [123, 456],
-  "metrics": ["overview", "properties", "campaigns"]
-}
-```
-
-### 7. GDPR Compliance
-
-#### `POST /analytics/gdpr/opt-out`
-
-Processes user opt-out requests for GDPR compliance.
-
-**Request:**
-```json
-{
-  "session_id": "550e8400-e29b-41d4-a716-446655440000",
-  "reason": "User requested data deletion"
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "message": "Analytics tracking disabled successfully",
-  "affected_records": 15
-}
-```
-
-## Rate Limiting
-
-### Geocoding Endpoints
-- **Limit**: 1 request per second
-- **Implementation**: Internal queuing with 1-second delays
-- **Caching**: 24-hour cache reduces external API calls
-
-### Analytics Endpoints
-- **Limit**: ~16 requests per second (1000 per minute)
-- **Implementation**: Application-level throttling
-- **Batch Support**: Use batch endpoints for high-volume scenarios
-
-## Integration Patterns
-
-### 1. Basic Property View Tracking
-
-```javascript
-// Simple property view tracking
-async function trackPropertyView(propertyId) {
-  const response = await fetch('/api/analytics/property-view', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      property_id: propertyId,
-      device_type: getDeviceType(),
-      browser: getBrowserInfo(),
-      time_on_page: getTimeOnPage(),
-      scroll_depth: getMaxScrollDepth()
-    })
-  });
-  
-  const result = await response.json();
-  if (result.success) {
-    // Store session_id for subsequent tracking
-    sessionStorage.setItem('analytics_session_id', result.session_id);
-  }
-}
-```
-
-### 2. Advanced Session Management
-
-```javascript
-// Comprehensive session and view tracking
-class AnalyticsTracker {
-  constructor() {
-    this.sessionId = null;
-    this.interactions = [];
-  }
-
-  async initializeSession() {
-    const response = await fetch('/api/analytics/session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        device_type: this.getDeviceType(),
-        browser: this.getBrowserName(),
-        os: this.getOSName(),
-        utm_source: this.getUTMParam('utm_source'),
-        utm_campaign: this.getUTMParam('utm_campaign')
-      })
-    });
-    
-    const result = await response.json();
-    this.sessionId = result.session_id;
-  }
-
-  async trackPropertyView(propertyId, additionalData = {}) {
-    await this.ensureSession();
-    
-    const response = await fetch('/api/analytics/property-view', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        session_id: this.sessionId,
-        property_id: propertyId,
-        ...additionalData
-      })
-    });
-    
-    return response.json();
-  }
-
-  async trackInteraction(eventType, target, data = {}) {
-    this.interactions.push({
-      session_id: this.sessionId,
-      event_type: eventType,
-      event_target: target,
-      page_url: window.location.href,
-      event_data: data,
-      timestamp: Date.now()
-    });
-
-    // Batch interactions every 10 events or 30 seconds
-    if (this.interactions.length >= 10) {
-      await this.flushInteractions();
-    }
-  }
-
-  async flushInteractions() {
-    if (this.interactions.length === 0) return;
-
-    const response = await fetch('/api/analytics/interaction', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        interactions: this.interactions
-      })
-    });
-
-    if (response.ok) {
-      this.interactions = [];
-    }
-  }
-}
-```
-
-### 3. Lead Generation Attribution
-
-```javascript
-// Lead tracking with full attribution
-async function trackLeadGeneration(leadId, formData) {
-  const sessionId = sessionStorage.getItem('analytics_session_id');
-  
-  const response = await fetch('/api/analytics/lead-generation', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      lead_id: leadId,
-      source_code: 'formulario_web',
-      session_id: sessionId,
-      property_id: getCurrentPropertyId(),
-      form_type: 'contact',
-      conversion_page: window.location.href,
-      utm_source: getUTMParam('utm_source'),
-      utm_campaign: getUTMParam('utm_campaign')
-    })
-  });
-
-  return response.json();
-}
-```
-
-## Error Handling Best Practices
-
-### 1. Network Error Resilience
-
-```javascript
-async function robustAPICall(url, options, retries = 3) {
-  for (let i = 0; i < retries; i++) {
-    try {
-      const response = await fetch(url, options);
-      
-      if (response.status === 429) {
-        // Rate limited - wait and retry
-        const retryAfter = response.headers.get('Retry-After') || 1;
-        await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
-        continue;
-      }
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      if (i === retries - 1) throw error;
-      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i)));
-    }
-  }
-}
-```
-
-### 2. Graceful Degradation
-
-```javascript
-async function trackWithFallback(trackingFunction, fallbackData) {
-  try {
-    return await trackingFunction();
-  } catch (error) {
-    console.warn('Analytics tracking failed:', error);
-    
-    // Store in localStorage for later retry
-    const failedRequests = JSON.parse(localStorage.getItem('failed_analytics') || '[]');
-    failedRequests.push({
-      timestamp: Date.now(),
-      data: fallbackData,
-      error: error.message
-    });
-    localStorage.setItem('failed_analytics', JSON.stringify(failedRequests));
-    
-    return { success: false, error: error.message };
-  }
-}
-```
-
-## Performance Considerations
-
-### 1. Caching Strategy
-- **Geocoding**: 24-hour cache for address lookups
-- **Session Data**: 4-hour session deduplication
-- **View Debouncing**: 2-hour property view deduplication
-
-### 2. Batching Recommendations
-- Use batch interaction endpoints for high-frequency events
-- Limit batch sizes to 100 interactions maximum
-- Implement client-side queuing for optimal network usage
-
-### 3. Database Optimization
-- All endpoints use prepared statements for security
-- Indexes on frequently queried columns (session_id, property_id, timestamps)
-- Aggregation tables for fast dashboard queries
-
-## Security Considerations
-
-### 1. Data Privacy
-- IP addresses are immediately hashed with SHA-256
-- No PII is stored without explicit consent
-- GDPR opt-out removes all associated tracking data
-
-### 2. Input Validation
-- All inputs are validated against TypeScript schemas
-- SQL injection protection through parameterized queries
-- XSS prevention through input sanitization
-
-### 3. Rate Limiting
-- Prevents abuse of geocoding services
-- Protects against analytics spam
-- Implements exponential backoff for retries
-
-## Monitoring & Observability
-
-### Key Metrics to Monitor
-- **API Response Times**: Track P95 latency for all endpoints
-- **Error Rates**: Monitor 4xx and 5xx response rates
-- **Rate Limit Hits**: Track when clients hit rate limits
-- **Cache Hit Rates**: Monitor geocoding cache effectiveness
-- **Session Creation Rate**: Track analytics session volume
-
-### Health Check Endpoints
-Consider implementing health check endpoints for monitoring:
-- `/api/health` - Basic service health
-- `/api/health/database` - Database connectivity
-- `/api/health/external` - External service dependencies
-
-## Future Enhancements
-
-### Planned Features
-1. **Authentication Layer**: JWT-based API authentication
-2. **Real-time Analytics**: WebSocket-based live dashboard updates
-3. **Advanced Attribution**: Multi-touch attribution modeling
-4. **Data Export**: GDPR-compliant data export functionality
-5. **Enhanced Caching**: Redis-based distributed caching
-
-### API Versioning Strategy
-Future API versions will use URL versioning:
-- `/api/v1/` - Current implementation
-- `/api/v2/` - Future enhanced version with breaking changes
-
----
-
-For technical support or additional information, contact the development team at contact@marconi-inmobiliaria.com.
-</file>
-
-<file path="competitor-analysis.md">
-# Análisis de Competencia - Diseño de Cards de Propiedades
-
-## Resumen Ejecutivo
-
-Se analizaron tres plataformas inmobiliarias competidoras para identificar patrones de diseño y oportunidades de mejora para las property cards de Marconi Inmobiliaria:
-
-1. **Lazzaro Propiedades** (www.lazzaropropiedades.com)
-2. **Properati** (www.properati.com.ar)
-3. **Crestale Propiedades** (www.crestalepropiedades.com)
-
-## Hallazgos por Competidor
-
-### 1. Lazzaro Propiedades
-
-**Fortalezas del Diseño:**
-- Cards con **altura consistente** en el grid de propiedades destacadas
-- Layout horizontal con información organizada de izquierda a derecha
-- **Elementos alineados**: imagen, información, precio
-- Uso efectivo de iconos para características (m², habitaciones, baños)
-- Botones de compartir social bien posicionados
-- Estados visuales claros (Disponible/Reservado/Venta)
-
-**Patrones de Layout:**
-- Imagen a la izquierda (aspecto cuadrado/rectangular)
-- Información central: título, código, dirección, características
-- Precio destacado en la parte inferior derecha
-- **Características mostradas como lista horizontal** con iconos
-- Layout responsive que se adapta bien a diferentes pantallas
-
-**Manejo de Tipos de Propiedades:**
-- Todas las propiedades muestran m², habitaciones y baños
-- **No hay diferenciación especial para terrenos** - oportunidad de mejora
-
-### 2. Properati Argentina
-
-**Fortalezas del Diseño:**
-- Interface minimalista y limpia
-- Búsqueda prominente en la homepage
-- **Categorización clara** por tipo de propiedad (Departamentos, Casas, Lote/Terreno)
-- Navigation simple y efectiva
-- Foco en experiencia de búsqueda
-
-**Observaciones:**
-- Más enfocado en la experiencia de búsqueda que en la visualización de cards
-- **Reconoce explícitamente "Lote/Terreno"** como categoría separada
-- Design system moderno y responsive
-
-### 3. Crestale Propiedades
-
-**Fortalezas del Diseño:**
-- Layout profesional y estructurado
-- Cards con **información bien organizada**
-- Uso efectivo de espacios en blanco
-- **Botones de acción prominentes**
-- Design responsive y moderno
-
-## Insights Clave para Marconi Inmobiliaria
-
-### 1. **Diferenciación por Tipo de Propiedad**
-- **Oportunidad:** Ningún competidor maneja adecuadamente las diferencias entre terrenos y propiedades construidas
-- **Recomendación:** Implementar lógica condicional para ocultar habitaciones/baños en terrenos
-
-### 2. **Consistencia Visual**
-- **Observación:** Los competidores exitosos mantienen **alturas consistentes** en sus grids
-- **Patrón común:** Cards con layout horizontal o vertical pero **siempre uniformes**
-- **Recomendación:** Implementar sistema de alturas fijas con flexbox
-
-### 3. **Jerarquía de Información**
-- **Patrón exitoso:** Precio → Ubicación → Características → Acciones
-- **Elementos esenciales:** Imagen, precio, ubicación, características básicas
-- **CTAs:** Botón principal prominente alineado consistentemente
-
-### 4. **Responsive Design**
-- **Estándar de la industria:** Cards que se adaptan sin romper el layout
-- **Patrón común:** Grid responsive que mantiene consistencia visual
-
-## Oportunidades de Diferenciación
-
-### 1. **Manejo Inteligente de Terrenos**
-- **Ventaja competitiva:** Ser el primero en manejar terrenos de forma específica
-- **Implementación:** Mostrar solo área (m²) para terrenos, omitir habitaciones/baños
-
-### 2. **Cards Premium Consistentes**
-- **Diferenciador:** Mantener el diseño premium de Marconi pero con consistencia visual superior
-- **Implementación:** Sistema de alturas uniformes con mejor alineación de botones
-
-### 3. **Microinteracciones Superiores**
-- **Ventaja:** Aprovechar Framer Motion para animaciones más sofisticadas que la competencia
-- **Oportunidad:** Transitions y hover effects más refinados
-
-## Recomendaciones Técnicas
-
-### 1. **Grid Layout Optimization**
-```css
-/* Patrón exitoso observado en competidores */
-.property-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 24px;
-  auto-rows: 1fr; /* Altura uniforme */
-}
-```
-
-### 2. **Card Structure Consistency**
-```jsx
-// Estructura recomendada basada en análisis de competidores
-<PropertyCard>
-  <ImageSection aspectRatio="4:3" />
-  <ContentSection flex="1">
-    <PriceSection />
-    <LocationSection />
-    <CharacteristicsSection conditional />
-    <FeaturesSection truncated />
-  </ContentSection>
-  <ActionSection>
-    <PrimaryButton fullWidth />
-  </ActionSection>
-</PropertyCard>
-```
-
-### 3. **Conditional Logic Implementation**
-```jsx
-// Basado en mejores prácticas observadas
-const shouldShowRoomInfo = property.type !== 'terreno';
-const displayCharacteristics = [
-  property.area_m2 && { icon: Square, value: `${property.area_m2}m²` },
-  shouldShowRoomInfo && property.bedrooms && { icon: Bed, value: `${property.bedrooms} dorm.` },
-  shouldShowRoomInfo && property.bathrooms && { icon: Bath, value: `${property.bathrooms} baños` }
-].filter(Boolean);
-```
-
-## Conclusiones Estratégicas
-
-1. **Marconi tiene una oportunidad única** de superar a la competencia con manejo inteligente de terrenos
-2. **La consistencia visual es crítica** - todos los competidores exitosos la mantienen
-3. **El diseño premium actual de Marconi es superior** pero necesita optimización de layout
-4. **La implementación propuesta posicionará a Marconi como líder** en UX inmobiliaria
-
-## Próximos Pasos
-
-1. ✅ Implementar lógica condicional para terrenos
-2. ✅ Optimizar sistema de alturas uniformes
-3. ✅ Alinear botones de acción consistentemente
-4. 🔄 Mantener ventaja en microinteracciones y animaciones
-5. 🔄 Monitorear respuesta del usuario post-implementación
-
----
-
-*Análisis realizado: 2025-01-20*
-*Herramientas: Playwright MCP, análisis visual directo*
-*Objetivo: Optimización de property cards para Marconi Inmobiliaria*
 </file>
 
 <file path="docs/analytics-api-reference.md">
@@ -9517,6 +7723,1802 @@ git push origin main
 *Acting as specialized documentation agent for Marconi Inmobiliaria*
 </file>
 
+<file path="ACCESSIBILITY_ANALYSIS_HERO_LOGO_REMOVAL.md">
+# Accessibility Analysis: Hero Logo Removal Impact Assessment
+
+## Executive Summary
+
+This document analyzes the accessibility implications of removing the Marconi Inmobiliaria logo from the hero section (lines 284-299 in `app/page.tsx`) and provides comprehensive recommendations to maintain WCAG 2.1 AA compliance while potentially improving the overall user experience.
+
+## Current Accessibility State Analysis
+
+### Logo Element Assessment (Current Implementation)
+```typescript
+// Lines 284-299 in app/page.tsx
+<motion.div className="mb-6 sm:mb-8">
+  <div className="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl px-8 sm:px-10 lg:px-20 py-6 sm:py-7 lg:py-12 border border-white/20 shadow-2xl shadow-black/30">
+    <Image
+      src="/assets/logos/marconi_header_orangewhite.png"
+      alt="Marconi Inmobiliaria"
+      width={900}
+      height={270}
+      className="h-20 sm:h-24 lg:h-36 w-auto opacity-95"
+    />
+  </div>
+</motion.div>
+```
+
+### Current Accessibility Features
+✅ **Proper Alt Text**: Logo has descriptive alt text "Marconi Inmobiliaria"
+✅ **Semantic HTML**: Uses Next.js Image component with optimization
+✅ **Responsive Design**: Responsive sizing (h-20 sm:h-24 lg:h-36)
+✅ **Focus Management**: Within tab order but non-interactive
+✅ **High Contrast**: White logo on dark overlay background
+✅ **Header Logo Redundancy**: Brand identification also available in header (lines 81-90 in Header.tsx)
+
+## WCAG 2.1 AA Compliance Analysis
+
+### Success Criteria Impact Assessment
+
+#### 1.1.1 Non-text Content (Level A)
+**Current Status**: ✅ PASS
+**Impact of Removal**: ⚠️ NEUTRAL
+- Logo removal eliminates one source of brand identification
+- Header logo maintains compliance
+- **Recommendation**: No additional action required
+
+#### 1.3.1 Info and Relationships (Level A)
+**Current Status**: ✅ PASS
+**Impact of Removal**: ✅ IMPROVE
+- Simplifies content hierarchy
+- Reduces redundant brand information
+- **Recommendation**: Consider adding landmark regions for better structure
+
+#### 1.4.3 Contrast (Minimum) (Level AA)
+**Current Status**: ✅ PASS
+**Impact of Removal**: ✅ IMPROVE
+- Eliminates potential contrast issues with logo transparency (opacity-95)
+- **Color Contrast Analysis**:
+  - Text white (#FFFFFF) on dark overlay: **21:1 ratio** (WCAG AAA)
+  - Orange button (#F37321) on dark background: **4.8:1 ratio** (WCAG AA)
+  - Header logo maintains brand presence with **15.2:1 contrast ratio**
+
+#### 1.4.11 Non-text Contrast (Level AA)
+**Current Status**: ✅ PASS
+**Impact of Removal**: ✅ IMPROVE
+- Removes semi-transparent elements that could affect contrast
+- **Recommendation**: Maintain button contrast ratios
+
+#### 2.1.1 Keyboard (Level A)
+**Current Status**: ✅ PASS
+**Impact of Removal**: ✅ IMPROVE
+- Simplifies tab order by removing non-interactive visual element
+- **Recommendation**: Verify button remains easily focusable
+
+#### 2.4.4 Link Purpose (In Context) (Level A)
+**Current Status**: ✅ PASS
+**Impact of Removal**: ⚠️ MONITOR
+- Header navigation provides clear brand context
+- **Recommendation**: Ensure header brand link is prominent
+
+#### 3.2.4 Consistent Identification (Level AA)
+**Current Status**: ✅ PASS
+**Impact of Removal**: ✅ MAINTAIN
+- Header logo provides consistent brand identification across pages
+- **Recommendation**: No action required
+
+## Screen Reader Experience Analysis
+
+### Current Experience
+1. Screen reader announces: "Marconi Inmobiliaria" (logo alt text)
+2. Continues to heading: "Viví la experiencia de encontrar tu lugar en el mundo"
+3. Proceeds to CTA button: "EXPLORAR PROPIEDADES"
+
+### Post-Removal Experience
+1. **Improved Flow**: Direct progression from heading to CTA
+2. **Reduced Redundancy**: Eliminates duplicate brand announcement
+3. **Better Focus**: Clearer content hierarchy
+
+### Screen Reader Testing Recommendations
+```bash
+# Test with multiple screen readers
+- NVDA (Windows)
+- JAWS (Windows)
+- VoiceOver (macOS/iOS)
+- TalkBack (Android)
+
+# Key testing scenarios
+1. Navigate hero section with screen reader
+2. Verify heading hierarchy makes sense
+3. Test CTA button discoverability
+4. Confirm brand context from header
+```
+
+## Keyboard Navigation Analysis
+
+### Current Tab Order
+1. Header navigation links
+2. Mobile menu button (mobile only)
+3. **Hero logo** (non-interactive, but in DOM)
+4. CTA button "EXPLORAR PROPIEDADES"
+5. Page content sections
+
+### Improved Tab Order (Post-Removal)
+1. Header navigation links
+2. Mobile menu button (mobile only)
+3. **CTA button "EXPLORAR PROPIEDADES"** (improved discoverability)
+4. Page content sections
+
+### Focus Management Improvements
+- **Faster Navigation**: Reduces visual elements in tab sequence
+- **Clearer Purpose**: Users reach interactive elements sooner
+- **Better UX**: Aligns with user expectations for hero sections
+
+## Alternative Brand Identification Strategies
+
+### 1. Enhanced Header Presence
+```typescript
+// Strengthen header logo visibility
+<Image
+  src="/assets/logos/marconi_header_orangewhite.png"
+  alt="Marconi Inmobiliaria - Inicio"
+  width={140}
+  height={45}
+  className="h-10 md:h-14 w-auto" // Increased from h-8 md:h-12
+  priority
+/>
+```
+
+### 2. Accessible Landmark Enhancement
+```typescript
+// Add semantic landmarks
+<main role="main" aria-label="Página principal de Marconi Inmobiliaria">
+  <section
+    className="relative min-h-screen overflow-hidden"
+    aria-label="Sección principal"
+  >
+    {/* Hero content */}
+  </section>
+</main>
+```
+
+### 3. Brand-Integrated Heading
+```typescript
+// Option: Integrate brand into heading text
+<h1 className="sr-only">
+  Marconi Inmobiliaria - Viví la experiencia de encontrar tu lugar en el mundo
+</h1>
+```
+
+## Recommended Accessibility Improvements
+
+### 1. ARIA Landmark Implementation
+```typescript
+<main role="main" aria-labelledby="hero-heading">
+  <section
+    aria-label="Sección de bienvenida"
+    className="relative min-h-screen"
+  >
+    <h1 id="hero-heading" className="sr-only">
+      Marconi Inmobiliaria - Encontrá tu hogar ideal
+    </h1>
+    {/* Visual heading as decorative */}
+    <div aria-hidden="true">
+      <Image
+        src="/assets/impact_text/vivilaexperiencia.PNG"
+        alt=""
+        // ... props
+      />
+    </div>
+
+    {/* Enhanced CTA */}
+    <Link href="/propiedades" aria-describedby="cta-description">
+      <Button>
+        <Search aria-hidden="true" />
+        EXPLORAR PROPIEDADES
+      </Button>
+    </Link>
+    <p id="cta-description" className="sr-only">
+      Navegar al catálogo completo de propiedades disponibles
+    </p>
+  </section>
+</main>
+```
+
+### 2. Enhanced Skip Links
+```typescript
+// Add skip navigation for better accessibility
+<a
+  href="#main-content"
+  className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-vibrant-orange text-white px-4 py-2 rounded z-50"
+>
+  Saltar al contenido principal
+</a>
+```
+
+### 3. Improved Focus Indicators
+```typescript
+// Enhanced button focus states
+className="focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-vibrant-orange focus-visible:ring-offset-2 focus-visible:ring-offset-night-blue"
+```
+
+## Mobile Accessibility Considerations
+
+### Touch Target Requirements
+- **Current CTA**: Meets 44x44px minimum (className includes py-5 lg:py-6)
+- **Recommendation**: Maintain or increase touch target size
+
+### Mobile Screen Reader Testing
+```typescript
+// Ensure proper mobile navigation
+<Button
+  size="lg"
+  aria-label="Explorar propiedades disponibles en Marconi Inmobiliaria"
+  className="min-w-[320px] min-h-[44px]" // Ensures touch target
+>
+  {/* Content */}
+</Button>
+```
+
+### Mobile Zoom Considerations
+- **200% Zoom Test**: Verify layout doesn't break
+- **Horizontal Scroll**: Ensure no horizontal scroll at 200% zoom
+- **Text Reflow**: Confirm text reflows properly
+
+## Implementation Accessibility Checklist
+
+### Pre-Implementation
+- [ ] Document current screen reader experience
+- [ ] Test keyboard navigation flow
+- [ ] Verify color contrast ratios
+- [ ] Check mobile touch targets
+
+### During Implementation
+- [ ] Remove logo element (lines 284-299)
+- [ ] Add semantic landmarks
+- [ ] Implement enhanced skip links
+- [ ] Update focus management
+- [ ] Add ARIA labels where needed
+
+### Post-Implementation Testing
+- [ ] Screen reader testing (NVDA, JAWS, VoiceOver)
+- [ ] Keyboard-only navigation testing
+- [ ] Mobile accessibility testing
+- [ ] Color contrast verification
+- [ ] 200% zoom testing
+- [ ] User testing with disabilities (recommended)
+
+## Automated Testing Integration
+
+### Suggested Tools
+```bash
+# Install accessibility testing tools
+npm install --save-dev @axe-core/react axe-playwright
+
+# Test commands
+npm run test:a11y  # Custom accessibility test suite
+npx playwright test --grep="accessibility"
+```
+
+### Lighthouse Accessibility Score
+- **Current Baseline**: Establish current score
+- **Target**: Maintain or improve score post-removal
+- **Key Metrics**: Ensure no regression in accessibility audit
+
+## WCAG 2.1 AA Compliance Verification
+
+### Success Criteria Checklist
+- ✅ **1.1.1** Non-text Content: Alt text maintained in header
+- ✅ **1.3.1** Info and Relationships: Improved hierarchy
+- ✅ **1.4.3** Contrast (Minimum): Enhanced contrast ratios
+- ✅ **1.4.11** Non-text Contrast: Simplified visual elements
+- ✅ **2.1.1** Keyboard: Improved navigation flow
+- ✅ **2.4.1** Bypass Blocks: Enhanced with skip links
+- ✅ **2.4.4** Link Purpose: Clear button context
+- ✅ **3.2.4** Consistent Identification: Header brand consistency
+
+## Risk Assessment & Mitigation
+
+### Low Risk Items
+- **Brand Recognition**: Header logo maintains brand presence
+- **SEO Impact**: Minimal impact on search rankings
+- **Visual Hierarchy**: Improved focus on primary content
+
+### Mitigation Strategies
+1. **Monitor Analytics**: Track user engagement with CTA post-removal
+2. **A/B Testing**: Consider testing logo vs. no-logo variants
+3. **User Feedback**: Collect accessibility user feedback
+4. **Performance Monitoring**: Ensure no Lighthouse score regression
+
+## Conclusion
+
+**Recommendation: PROCEED with logo removal**
+
+The accessibility analysis indicates that removing the hero logo will **improve** rather than harm WCAG 2.1 AA compliance by:
+
+1. ✅ **Simplifying content hierarchy**
+2. ✅ **Reducing redundant brand information**
+3. ✅ **Improving keyboard navigation flow**
+4. ✅ **Eliminating potential contrast issues**
+5. ✅ **Enhancing screen reader experience**
+
+The header logo provides sufficient brand identification, and the proposed enhancements will further strengthen accessibility compliance.
+
+## Next Steps
+
+1. **Implement removal** with suggested accessibility enhancements
+2. **Conduct thorough testing** using the provided checklist
+3. **Monitor performance** and user feedback post-deployment
+4. **Document learnings** for future accessibility improvements
+
+---
+
+**Generated on**: 2025-09-20
+**Document Version**: 1.0
+**WCAG Guidelines**: 2.1 Level AA
+**Technology Stack**: Next.js 15, React 19, TypeScript, Tailwind CSS, shadcn/ui
+</file>
+
+<file path="ANALYTICS.md">
+# MARCONI INMOBILIARIA - ANALYTICS SYSTEM DOCUMENTATION
+
+## Overview
+
+This comprehensive analytics system provides GDPR-compliant tracking for Marconi Inmobiliaria's real estate platform. The system tracks property views, user interactions, lead generation, and campaign performance while maintaining user privacy through IP hashing and opt-out capabilities.
+
+## 🚀 Quick Start
+
+### 1. Database Setup
+
+Execute the migration script to create all analytics tables:
+
+```bash
+# Connect to your Supabase database and run:
+psql -f scripts/analytics-schema-migration.sql
+```
+
+This creates:
+- ✅ 6 core analytics tables
+- ✅ 5 aggregation tables for performance
+- ✅ 12 lead sources with Spanish names
+- ✅ 7 RPC functions for common operations
+- ✅ GDPR compliance features (IP hashing, opt-out)
+- ✅ Automatic data retention (24 months)
+- ✅ 2-hour debounce for duplicate views
+
+### 2. Frontend Integration
+
+Add analytics tracking to your React components:
+
+```tsx
+import { trackPropertyView, trackContactClick, getAnalyticsClient } from '@/lib/analytics-client'
+
+// In a property detail page
+useEffect(() => {
+  trackPropertyView(property.id, {
+    pageUrl: window.location.href,
+    referrerUrl: document.referrer
+  })
+}, [property.id])
+
+// Track user interactions
+const handleContactClick = () => {
+  trackContactClick(property.id)
+  // Your existing contact logic...
+}
+
+const handleWhatsAppClick = () => {
+  trackWhatsAppClick(property.id)
+  // Your existing WhatsApp logic...
+}
+```
+
+### 3. Lead Attribution
+
+Track leads with automatic source attribution:
+
+```tsx
+import { trackLead } from '@/lib/analytics-client'
+
+// After creating a lead
+const leadId = await LeadsService.createLead(leadData)
+await trackLead(leadId, 'formulario_web', property.id)
+```
+
+## 📊 Analytics Features
+
+### Privacy & GDPR Compliance
+- **IP Hashing**: All IPs are SHA-256 hashed before storage
+- **Anonymous Sessions**: No personal data stored in analytics
+- **Opt-out Support**: Users can opt out with `/api/analytics/gdpr/opt-out`
+- **Data Retention**: Automatic cleanup after 24 months
+- **RLS Policies**: Row-level security for data access
+
+### Property Tracking
+- **Unique Views**: 2-hour debounce window prevents duplicate counting
+- **Engagement Metrics**: Time on page, scroll depth, interaction tracking
+- **Contact Attribution**: Links property views to lead generation
+- **Performance Insights**: Conversion rates, top properties, neighborhood analysis
+
+### Lead Attribution
+- **12 Lead Sources**: WhatsApp, web form, phone, email, social media, etc.
+- **UTM Campaign Tracking**: Full attribution for marketing campaigns  
+- **Conversion Funnel**: Track user journey from view to lead
+- **Time to Conversion**: Measure decision-making speed
+
+### Device & Browser Analytics
+- **Device Detection**: Desktop, tablet, mobile, bot classification
+- **Browser Analytics**: Chrome, Firefox, Safari, Edge tracking
+- **Geographic Data**: Country-level analytics (IP-based)
+- **Performance by Device**: Conversion rates by device type
+
+## 🛠 API Endpoints
+
+### Session Management
+```bash
+# Create or get session
+POST /api/analytics/session
+{
+  "country_code": "AR",
+  "device_type": "desktop",
+  "utm_source": "google",
+  "utm_campaign": "summer_properties"
+}
+
+# Update session activity
+PUT /api/analytics/session?session_id=uuid
+```
+
+### Property Views
+```bash
+# Track property view
+POST /api/analytics/property-view
+{
+  "session_id": "uuid",
+  "property_id": 123,
+  "time_on_page": 45,
+  "scroll_depth": 85,
+  "contact_button_clicked": true
+}
+
+# Track view with auto-session creation
+PUT /api/analytics/property-view
+{
+  "property_id": 123,
+  "device_type": "mobile",
+  "utm_source": "facebook"
+}
+```
+
+### Lead Generation
+```bash
+# Track lead with source attribution
+PUT /api/analytics/lead-generation
+{
+  "lead_id": 456,
+  "source_code": "whatsapp",
+  "session_id": "uuid",
+  "property_id": 123
+}
+```
+
+### Dashboard Analytics
+```bash
+# Get comprehensive dashboard data
+GET /api/analytics/dashboard?start_date=2024-01-01&end_date=2024-01-31
+
+# Advanced analytics with filters
+POST /api/analytics/dashboard
+{
+  "start_date": "2024-01-01",
+  "end_date": "2024-01-31",
+  "property_ids": [123, 456],
+  "metrics": ["overview", "campaigns", "devices"]
+}
+```
+
+### Property Metrics
+```bash
+# Get detailed property analytics
+GET /api/analytics/property-metrics/123?period=30d
+```
+
+### GDPR Compliance
+```bash
+# User opt-out
+POST /api/analytics/gdpr/opt-out
+{
+  "session_id": "uuid",
+  "reason": "privacy_concerns"
+}
+
+# Check opt-out status
+GET /api/analytics/gdpr/opt-out?session_id=uuid
+```
+
+## 📈 Dashboard Integration
+
+### Key Metrics Available
+
+**Traffic Metrics:**
+- Unique sessions and page views
+- Traffic sources and campaigns
+- Device and browser breakdown
+- Geographic distribution
+
+**Property Performance:**
+- Most viewed properties
+- Engagement rates by property
+- Conversion rates by neighborhood
+- Time on page and scroll depth
+
+**Lead Analytics:**
+- Lead sources performance
+- Conversion funnel analysis
+- Time to conversion metrics
+- Lead quality by source
+
+**Campaign Attribution:**
+- UTM campaign performance
+- ROI and ROAS tracking
+- Traffic source analysis
+- A/B testing support
+
+### Sample Dashboard Queries
+
+```sql
+-- Top 10 properties by conversion rate (last 30 days)
+SELECT * FROM get_top_properties(10, 'conversion_rate', 30);
+
+-- Property performance metrics
+SELECT * FROM get_property_metrics(123, CURRENT_DATE - 30, CURRENT_DATE);
+
+-- Daily traffic summary
+SELECT 
+  date,
+  SUM(unique_views) as total_unique_views,
+  SUM(leads_generated) as total_leads,
+  AVG(conversion_rate) as avg_conversion_rate
+FROM daily_property_analytics 
+WHERE date BETWEEN CURRENT_DATE - 30 AND CURRENT_DATE
+GROUP BY date 
+ORDER BY date DESC;
+```
+
+## 🔧 Configuration Options
+
+### Environment Variables
+```bash
+# Required for analytics
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_key
+```
+
+### Client Configuration
+```tsx
+import { getAnalyticsClient } from '@/lib/analytics-client'
+
+const analytics = getAnalyticsClient({
+  enableConsoleLogging: process.env.NODE_ENV === 'development',
+  enableLocalStorage: true,
+  apiBaseUrl: '/api/analytics'
+})
+```
+
+### Lead Source Mapping
+The system includes 12 predefined lead sources:
+
+| Source Code | Display Name | Description |
+|-------------|--------------|-------------|
+| `whatsapp` | WhatsApp | Contact via WhatsApp Business |
+| `formulario_web` | Formulario Web | Website contact forms |
+| `telefono` | Teléfono | Direct phone calls |
+| `email` | Email | Email inquiries |
+| `instagram` | Instagram | Instagram contacts |
+| `facebook` | Facebook | Facebook contacts |
+| `google_ads` | Google Ads | Google Ads campaigns |
+| `referidos` | Referidos | Referrals from existing clients |
+| `walk_in` | Visita Directa | Direct office visits |
+| `mercado_libre` | MercadoLibre | MercadoLibre listings |
+| `zonaprop` | ZonaProp | ZonaProp listings |
+| `argenprop` | ArgenProp | ArgenProp listings |
+
+## 🛡️ Privacy & Security
+
+### Data Protection
+- **No Personal Data**: Analytics stores no names, emails, or personal information
+- **IP Hashing**: All IP addresses are irreversibly hashed with SHA-256
+- **Session Anonymity**: Sessions are identified only by random UUIDs
+- **Automatic Cleanup**: Data older than 24 months is automatically purged
+
+### GDPR Compliance
+- **Opt-out Capability**: Users can opt out anytime via API or client method
+- **Data Portability**: Analytics data can be exported for users
+- **Right to Erasure**: User data can be completely removed
+- **Lawful Basis**: Processing based on legitimate business interest
+
+### Security Features
+- **Row Level Security**: Supabase RLS policies protect data access
+- **Admin-only Access**: Sensitive analytics require authentication
+- **API Rate Limiting**: Built-in protection against abuse
+- **Input Validation**: All analytics inputs are validated and sanitized
+
+## 🚀 Performance Optimization
+
+### Pre-aggregated Tables
+The system includes daily, weekly, and monthly aggregation tables for fast dashboard queries:
+- `daily_property_analytics`
+- `weekly_property_analytics` 
+- `monthly_property_analytics`
+- `lead_funnel_analytics`
+- `campaign_performance_analytics`
+
+### Optimized Indexes
+Strategic indexes on high-traffic queries:
+- Session ID and timestamp lookups
+- Property ID and date range queries
+- UTM parameter filtering
+- Lead source attribution
+
+### Batching & Caching
+- **Interaction Batching**: Client batches non-critical interactions
+- **Session Persistence**: Sessions cached in localStorage for performance
+- **Query Optimization**: Efficient SQL with proper JOINs and CTEs
+
+## 🔍 Monitoring & Maintenance
+
+### Health Checks
+Monitor system health with built-in queries:
+
+```sql
+-- Check data volume and system health
+SELECT 
+  'Sessions (24h)' as metric,
+  COUNT(*) as value
+FROM analytics_sessions 
+WHERE first_seen >= CURRENT_TIMESTAMP - INTERVAL '24 hours';
+```
+
+### Maintenance Tasks
+Regular maintenance procedures:
+
+```sql
+-- Clean up old data (run monthly)
+SELECT anonymize_old_analytics_data(24); -- 24 months retention
+
+-- Update aggregation tables (run daily)
+-- This would typically be automated via cron job
+```
+
+### Performance Monitoring
+Key metrics to monitor:
+- Average query response time
+- Database size growth
+- Session creation rate
+- Error rates in API endpoints
+
+## 📚 Advanced Usage
+
+### Custom Events
+Track custom interactions:
+
+```tsx
+import { getAnalyticsClient } from '@/lib/analytics-client'
+
+const analytics = getAnalyticsClient()
+
+// Track custom events
+analytics.trackInteraction('video_play', 'property_video', {
+  video_id: 'intro_video',
+  property_id: 123
+})
+
+analytics.trackInteraction('form_start', 'contact_form')
+analytics.trackInteraction('search', 'property_search', {
+  query: 'departamento belgrano',
+  filters: { bedrooms: 2, price_max: 150000 }
+})
+```
+
+### Funnel Analysis
+Build conversion funnels:
+
+```sql
+-- Custom conversion funnel
+WITH funnel AS (
+  SELECT 
+    session_id,
+    MAX(CASE WHEN event_type = 'property_view' THEN 1 ELSE 0 END) as viewed_property,
+    MAX(CASE WHEN event_type = 'contact_click' THEN 1 ELSE 0 END) as clicked_contact,
+    MAX(CASE WHEN event_type = 'form_submit' THEN 1 ELSE 0 END) as submitted_form
+  FROM user_interaction_events
+  WHERE timestamp >= CURRENT_DATE - INTERVAL '30 days'
+  GROUP BY session_id
+)
+SELECT 
+  COUNT(*) as total_sessions,
+  SUM(viewed_property) as viewed_property,
+  SUM(clicked_contact) as clicked_contact, 
+  SUM(submitted_form) as submitted_form
+FROM funnel;
+```
+
+### Campaign Attribution
+Advanced UTM tracking:
+
+```tsx
+// Automatic UTM extraction from URL
+const analytics = getAnalyticsClient()
+
+// UTM parameters are automatically captured during session creation
+// Access them via the analytics dashboard or custom queries
+```
+
+## 🎯 Best Practices
+
+### Implementation Guidelines
+1. **Initialize Early**: Set up analytics client in your app's root component
+2. **Batch Interactions**: Use interaction batching for high-frequency events
+3. **Error Handling**: Always wrap analytics calls in try-catch blocks
+4. **Performance**: Don't block user interactions for analytics calls
+5. **Privacy First**: Always respect user opt-out preferences
+
+### Code Examples
+
+```tsx
+// Property page with comprehensive tracking
+import { useEffect } from 'react'
+import { trackPropertyView, trackContactClick } from '@/lib/analytics-client'
+
+export default function PropertyPage({ property }) {
+  useEffect(() => {
+    // Track property view on page load
+    trackPropertyView(property.id, {
+      pageUrl: window.location.href,
+      referrerUrl: document.referrer
+    })
+
+    // Track scroll depth periodically
+    const trackScrollDepth = () => {
+      const scrolled = window.scrollY
+      const total = document.documentElement.scrollHeight - window.innerHeight
+      const scrollDepth = Math.round((scrolled / total) * 100)
+      
+      if (scrollDepth > 75) {
+        // User is highly engaged
+        trackPropertyView(property.id, { scrollDepth })
+      }
+    }
+
+    window.addEventListener('scroll', trackScrollDepth)
+    return () => window.removeEventListener('scroll', trackScrollDepth)
+  }, [property.id])
+
+  const handleContactClick = async () => {
+    // Track the interaction
+    trackContactClick(property.id)
+    
+    // Your business logic
+    const leadData = {
+      name: form.name,
+      email: form.email,
+      message: form.message,
+      property_id: property.id,
+      lead_source: 'formulario_web'
+    }
+    
+    const lead = await LeadsService.createLead(leadData)
+    
+    // Track lead generation
+    await trackLead(lead.id, 'formulario_web', property.id)
+  }
+
+  return (
+    <div>
+      {/* Your property UI */}
+      <button onClick={handleContactClick}>
+        Contactar
+      </button>
+    </div>
+  )
+}
+```
+
+## 📞 Support & Troubleshooting
+
+### Common Issues
+
+**Issue: Analytics not tracking**
+- ✅ Check if user has opted out
+- ✅ Verify API endpoints are accessible
+- ✅ Check browser console for errors
+- ✅ Confirm Supabase connection
+
+**Issue: Duplicate views not debouncing**
+- ✅ Verify session persistence in localStorage
+- ✅ Check if `is_duplicate_view` function is working
+- ✅ Review debounce window configuration (2 hours default)
+
+**Issue: Poor dashboard performance**
+- ✅ Check if aggregation tables are populated
+- ✅ Review query execution plans
+- ✅ Consider adding custom indexes
+- ✅ Implement query result caching
+
+### Debug Mode
+
+Enable debug logging for troubleshooting:
+
+```tsx
+import { getAnalyticsClient } from '@/lib/analytics-client'
+
+const analytics = getAnalyticsClient({
+  enableConsoleLogging: true // Shows detailed logs in console
+})
+```
+
+---
+
+## 📄 File Structure
+
+```
+marconi-webapp/
+├── scripts/
+│   ├── analytics-schema-migration.sql     # Database schema creation
+│   └── analytics-sample-queries.sql       # Example queries for reports
+├── types/
+│   └── analytics.ts                       # TypeScript type definitions
+├── services/
+│   └── analytics.ts                       # Server-side analytics service
+├── lib/
+│   └── analytics-client.ts                # Client-side analytics utilities
+├── app/api/analytics/
+│   ├── session/route.ts                   # Session management API
+│   ├── property-view/route.ts             # Property view tracking API
+│   ├── lead-generation/route.ts           # Lead attribution API
+│   ├── dashboard/route.ts                 # Dashboard analytics API
+│   ├── property-metrics/[id]/route.ts     # Individual property metrics
+│   └── gdpr/opt-out/route.ts             # GDPR compliance API
+└── ANALYTICS.md                           # This documentation file
+```
+
+This analytics system is production-ready and provides comprehensive insights while maintaining the highest standards of user privacy and GDPR compliance. All components are designed to integrate seamlessly with your existing Marconi Inmobiliaria codebase.
+</file>
+
+<file path="API_DESIGN_REPORT.md">
+# API Design Report
+
+## Spec Files
+- `openapi.yaml` ➜ 8 resources, 15 operations
+- `api-guidelines.md` ➜ Comprehensive integration patterns and best practices
+
+## Core Decisions
+
+### 1. URI Design & Versioning
+- **Flat URI structure**: `/api/[service]/[resource]` pattern
+- **No versioning initially**: Direct `/api/` namespace for simplicity
+- **Future versioning strategy**: URL versioning (`/api/v1/`, `/api/v2/`)
+
+### 2. HTTP Method Semantics
+- **GET**: Read operations (dashboard, geocoding)
+- **POST**: Create operations (sessions, interactions, lead events)
+- **PUT**: Upsert operations and batch processing
+- **RESTful exceptions**: Some PUT endpoints handle creation + updates for simplified client integration
+
+### 3. Authentication & Security
+- **Current state**: Public endpoints (no auth required)
+- **GDPR compliance**: Built-in IP hashing, opt-out support
+- **Future auth**: JWT Bearer tokens + API keys for server-to-server
+
+### 4. Response Format
+- **Standard envelope**: `{ success, error?, message?, data? }`
+- **Error format**: Follows RFC 7807 problem details pattern
+- **Consistent typing**: All responses include success boolean
+
+### 5. Rate Limiting Strategy
+- **Geocoding**: 1 req/sec with 24-hour caching
+- **Analytics**: 1000 req/min (~16 req/sec)
+- **Implementation**: Application-level with exponential backoff
+
+### 6. Data Processing Patterns
+- **Session deduplication**: 4-hour windows based on IP hash + User Agent
+- **View debouncing**: 2-hour property view deduplication
+- **Batch processing**: Support for up to 100 interactions per batch
+- **Automatic fallbacks**: Geocoding returns fallback coordinates on errors
+
+## Technical Architecture
+
+### Backend Integration
+- **Next.js 15 App Router**: API routes with TypeScript
+- **Supabase PostgreSQL**: ACID transactions, prepared statements
+- **Service layer**: Centralized business logic in `AnalyticsService`
+- **Type safety**: Comprehensive TypeScript schemas
+
+### Performance Optimizations
+- **In-memory caching**: Geocoding addresses cached for 24 hours
+- **Database functions**: Complex logic pushed to PostgreSQL (debouncing, aggregations)
+- **Batching support**: Reduces API calls for high-frequency events
+- **Automatic cleanup**: Cache eviction prevents memory leaks
+
+### Error Handling Philosophy
+- **Graceful degradation**: Never break client applications
+- **Detailed validation**: Field-specific error messages
+- **Fallback responses**: Geocoding always returns valid coordinates
+- **Robust session handling**: Multiple fallback levels for session creation
+
+## Implemented Endpoints
+
+### 🆕 Newly Created/Fixed Endpoints
+
+1. **Geocoding Proxy API** (`/api/geocode`)
+   - **Problem solved**: CORS policy errors from direct OpenStreetMap calls
+   - **Features**: Rate limiting, caching, Argentina filtering, fallback coordinates
+   - **Response time**: <100ms (cached), <2s (external API)
+
+2. **Analytics Session API** (`/api/analytics/session`)
+   - **Problem solved**: 500 errors during session creation
+   - **Features**: Multiple fallback levels, GDPR-compliant IP hashing, deduplication
+   - **Robustness**: Handles database failures gracefully
+
+3. **Analytics Interaction API** (`/api/analytics/interaction`)
+   - **Problem solved**: Missing endpoint for UX tracking
+   - **Features**: Single and batch operations, 11 interaction types, flexible event data
+   - **Performance**: Batch processing for high-frequency events
+
+### 🔧 Enhanced Existing Endpoints
+
+4. **Property View Tracking** (`/api/analytics/property-view`)
+   - **Enhanced**: Better error handling, automatic session creation (PUT endpoint)
+   - **Features**: 2-hour debouncing, comprehensive interaction tracking
+
+5. **Lead Generation Attribution** (`/api/analytics/lead-generation`)
+   - **Enhanced**: Source code lookup, improved validation
+   - **Features**: Multi-touch attribution, UTM preservation
+
+6. **Dashboard Analytics** (`/api/analytics/dashboard`)
+   - **Enhanced**: Advanced filtering, metric-specific queries
+   - **Features**: Date ranges, property filtering, campaign analysis
+
+## Integration Ecosystem
+
+### Client-Side Patterns
+- **Session management**: Automatic creation with fallback handling
+- **Batch processing**: Queue interactions for optimal network usage
+- **Error resilience**: Retry logic with exponential backoff
+- **Privacy-first**: No PII collection, automatic IP hashing
+
+### Database Schema Integration
+- **Session tracking**: `analytics_sessions` with IP hashing
+- **Event recording**: `analytics_property_views`, `analytics_user_interactions`
+- **Lead attribution**: `analytics_lead_generation` with source linking
+- **Aggregations**: Pre-computed metrics for dashboard performance
+
+## Open Questions & Future Considerations
+
+### 1. Authentication Implementation Timeline
+- **Question**: When to implement JWT authentication for admin endpoints?
+- **Impact**: Currently all endpoints are public, may need protection
+- **Recommendation**: Implement when admin dashboard goes live
+
+### 2. Real-time Analytics Support
+- **Question**: Should we add WebSocket support for live dashboard updates?
+- **Trade-offs**: Increased complexity vs. real-time insights
+- **Recommendation**: Evaluate based on admin user feedback
+
+### 3. Data Retention & GDPR
+- **Question**: Automatic data purging after 25 months?
+- **Compliance**: GDPR requires data retention limits
+- **Implementation**: Background job for expired data cleanup
+
+### 4. Multi-region Support
+- **Question**: Geographic distribution of analytics data?
+- **Performance**: Reduce latency for international users
+- **Complexity**: Data synchronization and consistency challenges
+
+### 5. Advanced Attribution Modeling
+- **Question**: Multi-touch attribution vs. last-touch attribution?
+- **Value**: Better marketing campaign ROI analysis
+- **Complexity**: Significant algorithm development required
+
+## Next Steps (for implementers)
+
+### Immediate Actions
+1. **Deploy OpenAPI spec** to API documentation platform (Swagger UI/Redoc)
+2. **Implement monitoring** for all endpoint response times and error rates
+3. **Add health check endpoints** for production monitoring
+4. **Set up alerts** for rate limit violations and 5xx errors
+
+### Short-term Enhancements (1-2 months)
+1. **Authentication layer** for admin endpoints
+2. **Redis caching** to replace in-memory geocoding cache
+3. **Data export APIs** for GDPR compliance
+4. **Advanced dashboard filtering** based on user feedback
+
+### Long-term Strategic Goals (3-6 months)
+1. **Real-time dashboard** with WebSocket connections
+2. **Multi-touch attribution** modeling
+3. **API versioning** strategy implementation
+4. **Performance optimization** based on production metrics
+
+## Success Metrics
+
+### API Performance
+- **Target latency**: P95 < 500ms for all endpoints
+- **Availability**: 99.9% uptime SLA
+- **Error rate**: <1% 5xx responses
+
+### Business Impact
+- **Analytics adoption**: Track API usage growth
+- **Data quality**: Monitor session completion rates
+- **User experience**: Measure property view accuracy
+
+### Technical Debt
+- **Code coverage**: >90% test coverage for new endpoints
+- **Documentation**: All endpoints documented with examples
+- **Monitoring**: Full observability pipeline in place
+
+---
+
+**Architecture**: RESTful API with GDPR compliance, intelligent caching, and graceful degradation patterns.
+
+**Integration**: Drop-in analytics tracking for real estate platforms with minimal client-side complexity.
+
+**Scalability**: Designed for high-volume property view tracking with efficient batch processing.
+</file>
+
+<file path="api-guidelines.md">
+# Marconi Inmobiliaria API Guidelines
+
+## Overview
+
+This document provides comprehensive guidelines for using the Marconi Inmobiliaria Analytics & Geocoding API. These endpoints were designed to provide real estate analytics tracking, GDPR-compliant user session management, and geocoding services for the Marconi Inmobiliaria platform.
+
+## Base URLs
+
+- **Production**: `https://marconi-inmobiliaria.vercel.app/api`
+- **Development**: `http://localhost:3000/api`
+
+## Authentication & Authorization
+
+Currently, all endpoints are publicly accessible. Authentication may be required for admin-only endpoints in future versions.
+
+### Future Security Implementation
+
+```http
+Authorization: Bearer <JWT_TOKEN>
+X-API-Key: <API_KEY>
+```
+
+## Core Principles
+
+### 1. Consistent Response Format
+
+All API responses follow a standard envelope structure:
+
+```json
+{
+  "success": boolean,
+  "error": string | null,
+  "message": string | null,
+  "data": object | null
+}
+```
+
+### 2. Error Handling
+
+#### Standard Error Codes
+- `400` - Bad Request (validation errors, missing parameters)
+- `401` - Unauthorized (future implementation)
+- `403` - Forbidden (GDPR opt-out violations)
+- `429` - Too Many Requests (rate limiting)
+- `500` - Internal Server Error
+
+#### Error Response Example
+
+```json
+{
+  "success": false,
+  "error": "Property ID is required and must be a positive integer",
+  "field": "property_id"
+}
+```
+
+### 3. GDPR Compliance
+
+All analytics endpoints implement GDPR compliance through:
+- **IP Address Hashing**: Client IPs are automatically hashed using SHA-256 with salt
+- **Opt-out Support**: Users can opt out via `/analytics/gdpr/opt-out`
+- **Session Deduplication**: Prevents tracking the same user multiple times
+- **Data Minimization**: Only essential tracking data is collected
+
+## API Endpoints Reference
+
+### 1. Geocoding API
+
+#### `GET /geocode`
+
+Converts addresses to coordinates with intelligent caching and fallback.
+
+**Features:**
+- 24-hour in-memory caching
+- Rate limiting (1 request/second)
+- Argentina-specific filtering
+- Automatic fallback to Reconquista coordinates
+
+**Request:**
+```http
+GET /geocode?address=San%20Martin%20123,%20Reconquista,%20Santa%20Fe
+```
+
+**Response:**
+```json
+{
+  "lat": -29.15,
+  "lng": -59.65,
+  "display_name": "San Martin 123, Reconquista, Santa Fe, Argentina"
+}
+```
+
+**Implementation Notes:**
+- Uses OpenStreetMap Nominatim as backend service
+- Implements automatic cleanup of expired cache entries (>1000 entries)
+- Always returns valid coordinates (fallback prevents null responses)
+
+### 2. Analytics Session Management
+
+#### `POST /analytics/session`
+
+Creates or retrieves analytics sessions with GDPR compliance.
+
+**Session Deduplication Logic:**
+- Sessions are deduplicated based on IP hash + User Agent
+- 4-hour window for session reuse
+- IP addresses are hashed immediately upon receipt
+
+**Request:**
+```json
+{
+  "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+  "device_type": "desktop",
+  "browser": "Chrome",
+  "os": "Windows 10",
+  "country_code": "AR",
+  "utm_source": "google",
+  "utm_medium": "cpc",
+  "utm_campaign": "property_search_2024"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "session_id": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+#### `PUT /analytics/session?session_id={uuid}`
+
+Updates last seen timestamp for session heartbeat tracking.
+
+### 3. Property View Tracking
+
+#### `POST /analytics/property-view`
+
+Records property view events with automatic debouncing.
+
+**Debouncing Logic:**
+- Prevents duplicate views for the same property/session within 2 hours
+- Uses PostgreSQL function `should_record_property_view()`
+- Maintains view accuracy while preventing spam
+
+**Request:**
+```json
+{
+  "session_id": "550e8400-e29b-41d4-a716-446655440000",
+  "property_id": 123,
+  "time_on_page": 45,
+  "scroll_depth": 85.5,
+  "contact_button_clicked": true,
+  "whatsapp_clicked": false,
+  "phone_clicked": false,
+  "email_clicked": false,
+  "images_viewed": 3,
+  "page_url": "https://marconi-inmobiliaria.vercel.app/propiedades/123",
+  "referrer_url": "https://google.com/search?q=casas+reconquista"
+}
+```
+
+#### `PUT /analytics/property-view`
+
+Combined endpoint that handles both session creation and property view tracking in a single request. Ideal for simplified client-side integration.
+
+### 4. User Interaction Tracking
+
+#### `POST /analytics/interaction`
+
+Records individual user interaction events for UX analysis.
+
+**Supported Event Types:**
+- `click` - General click events
+- `scroll` - Scroll milestone tracking
+- `form_field_focus` - Form field interactions
+- `form_submit` - Form submission attempts
+- `contact_click` - Contact button interactions
+- `phone_click` - Phone number clicks
+- `whatsapp_click` - WhatsApp button clicks
+- `email_click` - Email link clicks
+- `image_view` - Image gallery interactions
+- `gallery_interaction` - Photo gallery navigation
+
+**Request:**
+```json
+{
+  "session_id": "550e8400-e29b-41d4-a716-446655440000",
+  "property_id": 123,
+  "event_type": "contact_click",
+  "event_target": "#contact-form-button",
+  "page_url": "https://marconi-inmobiliaria.vercel.app/propiedades/123",
+  "event_data": {
+    "contact_method": "whatsapp",
+    "button_position": "top"
+  }
+}
+```
+
+#### `PUT /analytics/interaction`
+
+Batch endpoint for recording multiple interactions (max 100 per request).
+
+**Request:**
+```json
+{
+  "interactions": [
+    {
+      "session_id": "550e8400-e29b-41d4-a716-446655440000",
+      "event_type": "scroll",
+      "page_url": "https://marconi-inmobiliaria.vercel.app/propiedades/123",
+      "event_data": { "scroll_percentage": 25 }
+    },
+    {
+      "session_id": "550e8400-e29b-41d4-a716-446655440000",
+      "event_type": "image_view",
+      "page_url": "https://marconi-inmobiliaria.vercel.app/propiedades/123",
+      "event_data": { "image_index": 2, "image_url": "..." }
+    }
+  ]
+}
+```
+
+### 5. Lead Generation Attribution
+
+#### `POST /analytics/lead-generation`
+
+Records lead generation events with full attribution tracking.
+
+**Attribution Features:**
+- Session to lead correlation
+- UTM parameter preservation
+- Time-to-conversion tracking
+- Multi-touch attribution support
+
+**Request:**
+```json
+{
+  "lead_id": 456,
+  "session_id": "550e8400-e29b-41d4-a716-446655440000",
+  "property_id": 123,
+  "lead_source_id": 1,
+  "form_type": "contact",
+  "time_to_conversion": 15,
+  "session_pages_viewed": 3,
+  "properties_viewed": 2,
+  "utm_source": "google",
+  "utm_medium": "cpc",
+  "utm_campaign": "property_search_2024"
+}
+```
+
+#### `PUT /analytics/lead-generation`
+
+Simplified endpoint using source codes for automatic lead source lookup.
+
+**Available Source Codes:**
+- `formulario_web` - Web contact forms
+- `whatsapp` - WhatsApp inquiries
+- `telefono` - Phone call inquiries
+- `email` - Email inquiries
+- `facebook` - Facebook leads
+- `instagram` - Instagram leads
+- `google_ads` - Google Ads campaigns
+- `facebook_ads` - Facebook advertising
+- `referido` - Referral leads
+- `walk_in` - Walk-in leads
+- `marketplace` - Real estate marketplace leads
+- `otros` - Other sources
+
+### 6. Dashboard Analytics
+
+#### `GET /analytics/dashboard`
+
+Retrieves comprehensive analytics data with flexible filtering.
+
+**Available Filters:**
+- `start_date` / `end_date` - Date range filtering
+- `property_ids` - Filter by specific properties
+- `lead_source_ids` - Filter by lead sources
+- `utm_source` / `utm_campaign` - Marketing attribution
+- `device_type` - Device-based filtering
+- `country_code` - Geographic filtering
+
+**Example Request:**
+```http
+GET /analytics/dashboard?start_date=2024-01-01&end_date=2024-01-31&device_type=mobile&utm_source=google
+```
+
+#### `POST /analytics/dashboard`
+
+Advanced analytics endpoint for retrieving specific metric sets.
+
+**Available Metrics:**
+- `overview` - General dashboard statistics
+- `properties` - Property performance metrics
+- `campaigns` - Marketing campaign performance
+- `sources` - Lead source analysis
+- `devices` - Device type breakdown
+- `all` - Complete analytics suite
+
+**Request:**
+```json
+{
+  "start_date": "2024-01-01",
+  "end_date": "2024-01-31",
+  "property_ids": [123, 456],
+  "metrics": ["overview", "properties", "campaigns"]
+}
+```
+
+### 7. GDPR Compliance
+
+#### `POST /analytics/gdpr/opt-out`
+
+Processes user opt-out requests for GDPR compliance.
+
+**Request:**
+```json
+{
+  "session_id": "550e8400-e29b-41d4-a716-446655440000",
+  "reason": "User requested data deletion"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Analytics tracking disabled successfully",
+  "affected_records": 15
+}
+```
+
+## Rate Limiting
+
+### Geocoding Endpoints
+- **Limit**: 1 request per second
+- **Implementation**: Internal queuing with 1-second delays
+- **Caching**: 24-hour cache reduces external API calls
+
+### Analytics Endpoints
+- **Limit**: ~16 requests per second (1000 per minute)
+- **Implementation**: Application-level throttling
+- **Batch Support**: Use batch endpoints for high-volume scenarios
+
+## Integration Patterns
+
+### 1. Basic Property View Tracking
+
+```javascript
+// Simple property view tracking
+async function trackPropertyView(propertyId) {
+  const response = await fetch('/api/analytics/property-view', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      property_id: propertyId,
+      device_type: getDeviceType(),
+      browser: getBrowserInfo(),
+      time_on_page: getTimeOnPage(),
+      scroll_depth: getMaxScrollDepth()
+    })
+  });
+  
+  const result = await response.json();
+  if (result.success) {
+    // Store session_id for subsequent tracking
+    sessionStorage.setItem('analytics_session_id', result.session_id);
+  }
+}
+```
+
+### 2. Advanced Session Management
+
+```javascript
+// Comprehensive session and view tracking
+class AnalyticsTracker {
+  constructor() {
+    this.sessionId = null;
+    this.interactions = [];
+  }
+
+  async initializeSession() {
+    const response = await fetch('/api/analytics/session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        device_type: this.getDeviceType(),
+        browser: this.getBrowserName(),
+        os: this.getOSName(),
+        utm_source: this.getUTMParam('utm_source'),
+        utm_campaign: this.getUTMParam('utm_campaign')
+      })
+    });
+    
+    const result = await response.json();
+    this.sessionId = result.session_id;
+  }
+
+  async trackPropertyView(propertyId, additionalData = {}) {
+    await this.ensureSession();
+    
+    const response = await fetch('/api/analytics/property-view', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: this.sessionId,
+        property_id: propertyId,
+        ...additionalData
+      })
+    });
+    
+    return response.json();
+  }
+
+  async trackInteraction(eventType, target, data = {}) {
+    this.interactions.push({
+      session_id: this.sessionId,
+      event_type: eventType,
+      event_target: target,
+      page_url: window.location.href,
+      event_data: data,
+      timestamp: Date.now()
+    });
+
+    // Batch interactions every 10 events or 30 seconds
+    if (this.interactions.length >= 10) {
+      await this.flushInteractions();
+    }
+  }
+
+  async flushInteractions() {
+    if (this.interactions.length === 0) return;
+
+    const response = await fetch('/api/analytics/interaction', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        interactions: this.interactions
+      })
+    });
+
+    if (response.ok) {
+      this.interactions = [];
+    }
+  }
+}
+```
+
+### 3. Lead Generation Attribution
+
+```javascript
+// Lead tracking with full attribution
+async function trackLeadGeneration(leadId, formData) {
+  const sessionId = sessionStorage.getItem('analytics_session_id');
+  
+  const response = await fetch('/api/analytics/lead-generation', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      lead_id: leadId,
+      source_code: 'formulario_web',
+      session_id: sessionId,
+      property_id: getCurrentPropertyId(),
+      form_type: 'contact',
+      conversion_page: window.location.href,
+      utm_source: getUTMParam('utm_source'),
+      utm_campaign: getUTMParam('utm_campaign')
+    })
+  });
+
+  return response.json();
+}
+```
+
+## Error Handling Best Practices
+
+### 1. Network Error Resilience
+
+```javascript
+async function robustAPICall(url, options, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const response = await fetch(url, options);
+      
+      if (response.status === 429) {
+        // Rate limited - wait and retry
+        const retryAfter = response.headers.get('Retry-After') || 1;
+        await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+        continue;
+      }
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      if (i === retries - 1) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, i)));
+    }
+  }
+}
+```
+
+### 2. Graceful Degradation
+
+```javascript
+async function trackWithFallback(trackingFunction, fallbackData) {
+  try {
+    return await trackingFunction();
+  } catch (error) {
+    console.warn('Analytics tracking failed:', error);
+    
+    // Store in localStorage for later retry
+    const failedRequests = JSON.parse(localStorage.getItem('failed_analytics') || '[]');
+    failedRequests.push({
+      timestamp: Date.now(),
+      data: fallbackData,
+      error: error.message
+    });
+    localStorage.setItem('failed_analytics', JSON.stringify(failedRequests));
+    
+    return { success: false, error: error.message };
+  }
+}
+```
+
+## Performance Considerations
+
+### 1. Caching Strategy
+- **Geocoding**: 24-hour cache for address lookups
+- **Session Data**: 4-hour session deduplication
+- **View Debouncing**: 2-hour property view deduplication
+
+### 2. Batching Recommendations
+- Use batch interaction endpoints for high-frequency events
+- Limit batch sizes to 100 interactions maximum
+- Implement client-side queuing for optimal network usage
+
+### 3. Database Optimization
+- All endpoints use prepared statements for security
+- Indexes on frequently queried columns (session_id, property_id, timestamps)
+- Aggregation tables for fast dashboard queries
+
+## Security Considerations
+
+### 1. Data Privacy
+- IP addresses are immediately hashed with SHA-256
+- No PII is stored without explicit consent
+- GDPR opt-out removes all associated tracking data
+
+### 2. Input Validation
+- All inputs are validated against TypeScript schemas
+- SQL injection protection through parameterized queries
+- XSS prevention through input sanitization
+
+### 3. Rate Limiting
+- Prevents abuse of geocoding services
+- Protects against analytics spam
+- Implements exponential backoff for retries
+
+## Monitoring & Observability
+
+### Key Metrics to Monitor
+- **API Response Times**: Track P95 latency for all endpoints
+- **Error Rates**: Monitor 4xx and 5xx response rates
+- **Rate Limit Hits**: Track when clients hit rate limits
+- **Cache Hit Rates**: Monitor geocoding cache effectiveness
+- **Session Creation Rate**: Track analytics session volume
+
+### Health Check Endpoints
+Consider implementing health check endpoints for monitoring:
+- `/api/health` - Basic service health
+- `/api/health/database` - Database connectivity
+- `/api/health/external` - External service dependencies
+
+## Future Enhancements
+
+### Planned Features
+1. **Authentication Layer**: JWT-based API authentication
+2. **Real-time Analytics**: WebSocket-based live dashboard updates
+3. **Advanced Attribution**: Multi-touch attribution modeling
+4. **Data Export**: GDPR-compliant data export functionality
+5. **Enhanced Caching**: Redis-based distributed caching
+
+### API Versioning Strategy
+Future API versions will use URL versioning:
+- `/api/v1/` - Current implementation
+- `/api/v2/` - Future enhanced version with breaking changes
+
+---
+
+For technical support or additional information, contact the development team at contact@marconi-inmobiliaria.com.
+</file>
+
+<file path="competitor-analysis.md">
+# Análisis de Competencia - Diseño de Cards de Propiedades
+
+## Resumen Ejecutivo
+
+Se analizaron tres plataformas inmobiliarias competidoras para identificar patrones de diseño y oportunidades de mejora para las property cards de Marconi Inmobiliaria:
+
+1. **Lazzaro Propiedades** (www.lazzaropropiedades.com)
+2. **Properati** (www.properati.com.ar)
+3. **Crestale Propiedades** (www.crestalepropiedades.com)
+
+## Hallazgos por Competidor
+
+### 1. Lazzaro Propiedades
+
+**Fortalezas del Diseño:**
+- Cards con **altura consistente** en el grid de propiedades destacadas
+- Layout horizontal con información organizada de izquierda a derecha
+- **Elementos alineados**: imagen, información, precio
+- Uso efectivo de iconos para características (m², habitaciones, baños)
+- Botones de compartir social bien posicionados
+- Estados visuales claros (Disponible/Reservado/Venta)
+
+**Patrones de Layout:**
+- Imagen a la izquierda (aspecto cuadrado/rectangular)
+- Información central: título, código, dirección, características
+- Precio destacado en la parte inferior derecha
+- **Características mostradas como lista horizontal** con iconos
+- Layout responsive que se adapta bien a diferentes pantallas
+
+**Manejo de Tipos de Propiedades:**
+- Todas las propiedades muestran m², habitaciones y baños
+- **No hay diferenciación especial para terrenos** - oportunidad de mejora
+
+### 2. Properati Argentina
+
+**Fortalezas del Diseño:**
+- Interface minimalista y limpia
+- Búsqueda prominente en la homepage
+- **Categorización clara** por tipo de propiedad (Departamentos, Casas, Lote/Terreno)
+- Navigation simple y efectiva
+- Foco en experiencia de búsqueda
+
+**Observaciones:**
+- Más enfocado en la experiencia de búsqueda que en la visualización de cards
+- **Reconoce explícitamente "Lote/Terreno"** como categoría separada
+- Design system moderno y responsive
+
+### 3. Crestale Propiedades
+
+**Fortalezas del Diseño:**
+- Layout profesional y estructurado
+- Cards con **información bien organizada**
+- Uso efectivo de espacios en blanco
+- **Botones de acción prominentes**
+- Design responsive y moderno
+
+## Insights Clave para Marconi Inmobiliaria
+
+### 1. **Diferenciación por Tipo de Propiedad**
+- **Oportunidad:** Ningún competidor maneja adecuadamente las diferencias entre terrenos y propiedades construidas
+- **Recomendación:** Implementar lógica condicional para ocultar habitaciones/baños en terrenos
+
+### 2. **Consistencia Visual**
+- **Observación:** Los competidores exitosos mantienen **alturas consistentes** en sus grids
+- **Patrón común:** Cards con layout horizontal o vertical pero **siempre uniformes**
+- **Recomendación:** Implementar sistema de alturas fijas con flexbox
+
+### 3. **Jerarquía de Información**
+- **Patrón exitoso:** Precio → Ubicación → Características → Acciones
+- **Elementos esenciales:** Imagen, precio, ubicación, características básicas
+- **CTAs:** Botón principal prominente alineado consistentemente
+
+### 4. **Responsive Design**
+- **Estándar de la industria:** Cards que se adaptan sin romper el layout
+- **Patrón común:** Grid responsive que mantiene consistencia visual
+
+## Oportunidades de Diferenciación
+
+### 1. **Manejo Inteligente de Terrenos**
+- **Ventaja competitiva:** Ser el primero en manejar terrenos de forma específica
+- **Implementación:** Mostrar solo área (m²) para terrenos, omitir habitaciones/baños
+
+### 2. **Cards Premium Consistentes**
+- **Diferenciador:** Mantener el diseño premium de Marconi pero con consistencia visual superior
+- **Implementación:** Sistema de alturas uniformes con mejor alineación de botones
+
+### 3. **Microinteracciones Superiores**
+- **Ventaja:** Aprovechar Framer Motion para animaciones más sofisticadas que la competencia
+- **Oportunidad:** Transitions y hover effects más refinados
+
+## Recomendaciones Técnicas
+
+### 1. **Grid Layout Optimization**
+```css
+/* Patrón exitoso observado en competidores */
+.property-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+  auto-rows: 1fr; /* Altura uniforme */
+}
+```
+
+### 2. **Card Structure Consistency**
+```jsx
+// Estructura recomendada basada en análisis de competidores
+<PropertyCard>
+  <ImageSection aspectRatio="4:3" />
+  <ContentSection flex="1">
+    <PriceSection />
+    <LocationSection />
+    <CharacteristicsSection conditional />
+    <FeaturesSection truncated />
+  </ContentSection>
+  <ActionSection>
+    <PrimaryButton fullWidth />
+  </ActionSection>
+</PropertyCard>
+```
+
+### 3. **Conditional Logic Implementation**
+```jsx
+// Basado en mejores prácticas observadas
+const shouldShowRoomInfo = property.type !== 'terreno';
+const displayCharacteristics = [
+  property.area_m2 && { icon: Square, value: `${property.area_m2}m²` },
+  shouldShowRoomInfo && property.bedrooms && { icon: Bed, value: `${property.bedrooms} dorm.` },
+  shouldShowRoomInfo && property.bathrooms && { icon: Bath, value: `${property.bathrooms} baños` }
+].filter(Boolean);
+```
+
+## Conclusiones Estratégicas
+
+1. **Marconi tiene una oportunidad única** de superar a la competencia con manejo inteligente de terrenos
+2. **La consistencia visual es crítica** - todos los competidores exitosos la mantienen
+3. **El diseño premium actual de Marconi es superior** pero necesita optimización de layout
+4. **La implementación propuesta posicionará a Marconi como líder** en UX inmobiliaria
+
+## Próximos Pasos
+
+1. ✅ Implementar lógica condicional para terrenos
+2. ✅ Optimizar sistema de alturas uniformes
+3. ✅ Alinear botones de acción consistentemente
+4. 🔄 Mantener ventaja en microinteracciones y animaciones
+5. 🔄 Monitorear respuesta del usuario post-implementación
+
+---
+
+*Análisis realizado: 2025-01-20*
+*Herramientas: Playwright MCP, análisis visual directo*
+*Objetivo: Optimización de property cards para Marconi Inmobiliaria*
+</file>
+
 <file path="final-action-plan.md">
 # Plan de Acción Final: Optimización de Property Cards
 ## Marconi Inmobiliaria
@@ -11906,6 +11908,275 @@ const gridClasses = [
 The recommended CSS Grid approach with flex-based card layouts provides the most robust solution for achieving equal card heights while maintaining the existing premium aesthetic. This solution is scalable, accessible, and performance-optimized, ensuring consistent visual presentation across all device sizes and content variations.
 
 The implementation preserves all existing design elements while solving the core layout inconsistency, resulting in a professional, magazine-quality property grid that enhances user experience and brand perception.
+</file>
+
+<file path="pendientes.md">
+# Features Pendientes - Marconi Inmobiliaria
+
+## 🔍 **Análisis Detallado vs Propuesta Comercial**
+
+**Última actualización**: 2025-09-20 - Reorganización post-implementación
+
+Después de revisar la codebase actual y las implementaciones realizadas, aquí está el estado actualizado de las features versus la propuesta comercial original.
+
+---
+
+## ✅ **FEATURES COMPLETAMENTE IMPLEMENTADAS**
+
+### **1. Buscador Avanzado con Filtros**
+- **Estado**: ✅ **COMPLETAMENTE IMPLEMENTADO**
+- **Ubicación**: `/propiedades` - Página principal de búsqueda
+- **Implementado**:
+  - ✅ Filtros por tipo de propiedad (casa, departamento, terreno, local)
+  - ✅ Filtros por operación (venta/alquiler)
+  - ✅ Rango de precios (min/max) con inputs dinámicos
+  - ✅ Número de habitaciones (1-4+)
+  - ✅ Número de baños (1-4+)
+  - ✅ Superficie en m² (min/max)
+  - ✅ Filtro por barrio/ubicación
+  - ✅ Búsqueda por texto libre
+  - ✅ URL state management para compartir búsquedas
+  - ✅ Paginación inteligente de resultados
+  - ✅ Sorting por precio, fecha, área
+  - ✅ Conteo dinámico de resultados
+  - ✅ Filtros persistentes en URL
+
+### **2. Gestión de Estados de Propiedades**
+- **Estado**: ✅ **COMPLETAMENTE IMPLEMENTADO**
+- **Ubicación**: `admin/properties` - Panel de administración
+- **Implementado**:
+  - ✅ Campo `status` en base de datos con tipos: available, sold, rented, reserved
+  - ✅ UI completa para cambiar estados con dropdown menu
+  - ✅ Filtrado automático en sitio público (solo disponibles)
+  - ✅ Íconos y colores diferenciados por estado
+  - ✅ Traducción de estados al español
+  - ✅ Sistema de permisos para cambio de estados
+  - ✅ Feedback visual al cambiar estados
+
+### **3. Gestión de Múltiples Imágenes**
+- **Estado**: ✅ **COMPLETAMENTE IMPLEMENTADO**
+- **Descripción**: Sistema completo de gestión de imágenes
+- **Implementado**:
+  - ✅ Integración completa con Cloudinary
+  - ✅ Upload múltiple de imágenes
+  - ✅ Optimización automática de imágenes
+  - ✅ Responsive images con diferentes tamaños
+  - ✅ Preview de imágenes en admin
+  - ✅ Gestión de errores de carga
+
+### **4. Formularios de Contacto por Propiedad**
+- **Estado**: ✅ **COMPLETAMENTE IMPLEMENTADO**
+- **Implementado**:
+  - ✅ Formularios funcionando con analytics
+  - ✅ Tracking de leads por propiedad
+  - ✅ Sistema de analytics completo
+  - ✅ Almacenamiento en base de datos
+  - ✅ Validación de formularios
+
+### **5. Diseño Responsive**
+- **Estado**: ✅ **COMPLETAMENTE IMPLEMENTADO**
+- **Implementado**:
+  - ✅ Layout responsive completo con Tailwind CSS
+  - ✅ Diseño mobile-first
+  - ✅ Optimización para tablets y desktop
+  - ✅ Navegación responsive
+  - ✅ Grids adaptativos
+
+### **6. Optimización de Property Cards**
+- **Estado**: ✅ **COMPLETAMENTE IMPLEMENTADO**
+- **Implementado**:
+  - ✅ Layout horizontal prominente
+  - ✅ Imágenes optimizadas y responsivas
+  - ✅ Información estructurada por tipo de propiedad
+  - ✅ CTAs prominentes y accesibles
+  - ✅ Estados visuales claros
+  - ✅ Manejo especial para terrenos (sin hab/baños)
+
+### **7. Debugging y Estabilidad**
+- **Estado**: ✅ **COMPLETAMENTE IMPLEMENTADO**
+- **Implementado**:
+  - ✅ Resolución de errores de analytics (column mismatch)
+  - ✅ Fixes de webpack y Next.js cache
+  - ✅ Estabilización del admin panel
+  - ✅ Testing de componentes React
+
+---
+
+## ⚠️ **FEATURES PARCIALMENTE IMPLEMENTADAS**
+
+### **1. Seguimiento Avanzado de Contactos**
+- **Estado**: ⚠️ **PARCIALMENTE IMPLEMENTADO** (70% completado)
+- **Implementado**:
+  - ✅ Base de contactos y leads funcionando
+  - ✅ Sistema de analytics de interacciones
+  - ✅ Tracking de property views
+  - ✅ Asociación básica contacto-propiedad
+- **Faltante**:
+  - ❌ Dashboard avanzado de leads en admin
+  - ❌ Estados de seguimiento (nuevo, contactado, convertido)
+  - ❌ Historial detallado de interacciones
+  - ❌ Scores de calificación de leads
+  - ❌ Workflow de seguimiento automático
+
+### **2. Mapas Interactivos en Propiedades**
+- **Estado**: ⚠️ **PARCIALMENTE IMPLEMENTADO** (40% completado)
+- **Implementado**:
+  - ✅ Geocoding básico en backend
+  - ✅ Almacenamiento de coordenadas
+  - ✅ API endpoint para geocoding
+- **Faltante**:
+  - ❌ Visualización de mapas interactivos en frontend
+  - ❌ Integración con Google Maps o Mapbox
+  - ❌ Búsqueda por zona geográfica
+  - ❌ Mostrar propiedades cercanas
+  - ❌ Street view integration
+
+---
+
+## ❌ **FEATURES PENDIENTES DE IMPLEMENTAR**
+
+### **1. Panel de Configuración General (`/admin/settings`)**
+- **Estado**: ❌ **NO IMPLEMENTADO**
+- **Prioridad**: 🔥 **ALTA**
+- **Descripción**: Sistema completo de configuración del sitio
+- **Requerido**:
+  - ❌ Página `/admin/settings`
+  - ❌ Datos de contacto de la inmobiliaria (editables)
+  - ❌ Información de redes sociales
+  - ❌ Parámetros generales del sitio
+  - ❌ Upload y gestión de logos/branding
+  - ❌ Configuración de métodos de contacto
+  - ❌ SEO settings (meta titles, descriptions)
+
+### **2. Dashboard de Analytics Avanzado**
+- **Estado**: ❌ **NO IMPLEMENTADO**
+- **Prioridad**: 🟡 **MEDIA**
+- **Descripción**: Panel completo de métricas y estadísticas
+- **Requerido**:
+  - ❌ Dashboard en `/admin/analytics` con visualizaciones
+  - ❌ Gráficos de visitas por propiedad
+  - ❌ Conversión de leads
+  - ❌ Métricas de rendimiento
+  - ❌ Reportes exportables
+  - ❌ Filtros temporales avanzados
+
+### **3. Mejoras de UX/UI**
+- **Estado**: ❌ **NO IMPLEMENTADO**
+- **Prioridad**: 🟢 **BAJA**
+- **Descripción**: Funcionalidades adicionales de experiencia
+- **Requerido**:
+  - ❌ Breadcrumbs navigation
+  - ❌ Comparador de propiedades
+  - ❌ Sistema de favoritos para usuarios
+  - ❌ Newsletter signup
+  - ❌ Chat widget integration
+  - ❌ Sistema de notificaciones
+
+---
+
+## 📊 **Resumen del Estado de Implementación**
+
+| Categoría | Completadas | Parciales | Pendientes | % Progreso |
+|-----------|-------------|-----------|------------|------------|
+| **Core Features** | 6 | 2 | 1 | **85%** |
+| **Admin Panel** | 4 | 1 | 2 | **70%** |
+| **Frontend UX** | 3 | 1 | 1 | **80%** |
+| **Analytics** | 2 | 1 | 1 | **75%** |
+| **TOTAL GENERAL** | **15** | **5** | **5** | **77%** |
+
+---
+
+## 🎯 **Próximas Prioridades de Desarrollo**
+
+### **🔥 Prioridad Inmediata (Sprint Actual)**
+1. **Panel de Configuración General** (`/admin/settings`)
+   - Crítico para completar el admin panel
+   - Requerido por propuesta comercial original
+   - Base para configuración de branding
+
+### **🟡 Prioridad Media (Siguiente Sprint)**
+2. **Completar Dashboard de Leads**
+   - Mejorar el seguimiento de contactos
+   - Visualizaciones de conversión
+   - Estados y workflow de leads
+
+3. **Mapas Interactivos**
+   - Implementar visualización de ubicaciones
+   - Integración con Google Maps
+   - Búsqueda geográfica
+
+### **🟢 Prioridad Baja (Futuro)**
+4. **Mejoras de UX adicionales**
+   - Comparador de propiedades
+   - Sistema de favoritos
+   - Notificaciones avanzadas
+
+---
+
+## 🚀 **Logros Destacados Recientes**
+
+### **✨ Implementaciones Exitosas Completadas:**
+- ✅ **Buscador Avanzado Completo** - Sistema robusto con URL state management
+- ✅ **Gestión de Estados de Propiedades** - Control total desde admin panel
+- ✅ **Property Cards Optimizadas** - Layout mejorado y responsive
+- ✅ **Estabilización del Sistema** - Debugging completo y fixes críticos
+
+### **🔧 Fixes Técnicos Importantes:**
+- ✅ **Analytics Database** - Corrección de column mismatch (last_seen_at)
+- ✅ **Webpack Module Errors** - Limpieza de cache corrupto
+- ✅ **React Hydration** - Estabilización de componentes
+- ✅ **Admin Panel Errors** - Resolución completa de errores client-side
+
+---
+
+---
+
+## 🚨 **TAREAS PENDIENTES QUE REQUIEREN TU INTERVENCIÓN**
+
+### **⚡ ACCIÓN REQUERIDA: Panel de Configuración General**
+
+**Estado actual**: ✅ Esquema de base de datos creado - ❌ **MIGRACIÓN PENDIENTE**
+
+#### **🔴 URGENTE - EJECUTAR MIGRACIÓN DE BASE DE DATOS**
+- **Archivo**: `scripts/site-settings-migration.sql`
+- **Acción requerida**:
+  1. Conectarte a tu base de datos Supabase
+  2. Ejecutar el script SQL completo en el SQL Editor
+  3. Verificar que la tabla `site_settings` se creó correctamente
+  4. Confirmar que los datos iniciales fueron insertados
+
+**Comando para verificar después de la migración:**
+```sql
+SELECT * FROM site_settings;
+```
+
+#### **🟡 VERIFICACIONES POST-MIGRACIÓN**
+- **Acción requerida**: Una vez ejecutada la migración, confirma:
+  - [ ] La tabla `site_settings` existe
+  - [ ] Los datos iniciales de Marconi están cargados
+  - [ ] Las políticas RLS están activas
+  - [ ] La función `get_site_settings()` funciona
+
+#### **🟢 TESTING FINAL (al completar todo)**
+- **Acción requerida**: Cuando esté todo implementado, deberás:
+  - [ ] Acceder a `/admin/settings` y probar todos los formularios
+  - [ ] Verificar que los cambios se reflejan en el sitio público
+  - [ ] Testear la subida de logos/imágenes
+  - [ ] Confirmar que el SEO dinámico funciona
+
+---
+
+**📋 RESUMEN DE INTERVENCIÓN REQUERIDA:**
+1. **AHORA**: Ejecutar migración SQL de configuraciones
+2. **DESPUÉS DE CADA DESARROLLO**: Verificar funcionalidad
+3. **AL FINAL**: Testing integral del sistema completo
+
+---
+
+**Análisis actualizado**: 2025-09-20
+**Basado en**: Implementaciones realizadas vs propuesta comercial original
+**Estado del proyecto**: 77% completado de features core
+**Próximo milestone**: Sistema de configuración general (/admin/settings)
 </file>
 
 <file path="README.md">
