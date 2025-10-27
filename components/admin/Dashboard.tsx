@@ -16,7 +16,10 @@ import {
   Target,
   Clock,
   BarChart3,
+  Activity,
+  ArrowRight
 } from "lucide-react"
+import Link from "next/link"
 import { useContacts } from "@/hooks/useContacts"
 import { useContactMetrics } from "@/hooks/useContactMetrics"
 
@@ -180,6 +183,29 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Quick Access to Analytics */}
+      <Card className="bg-gradient-to-r from-blue-900 to-purple-900 border-blue-700">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-2">Analytics y Métricas Detalladas</h3>
+              <p className="text-blue-200 mb-4">
+                Ver análisis completo de tráfico, conversiones y rendimiento de propiedades
+              </p>
+              <Button asChild className="bg-white text-blue-900 hover:bg-blue-50">
+                <Link href="/admin/analytics">
+                  Ver Analytics Completo
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+              </Button>
+            </div>
+            <div className="hidden md:block">
+              <Activity className="w-16 h-16 text-blue-300" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Charts and Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

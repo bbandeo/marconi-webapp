@@ -2,6 +2,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,9 +12,12 @@ import { Search, Filter, MapPin, Bed, Bath, Square, Heart, Eye, ChevronLeft, Che
 import Image from "next/image"
 import Link from "next/link"
 import Header from "@/components/Header"
+import Footer from "@/components/Footer"
+import PropertyCard from "@/components/PropertyCard"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
 import { PropertyService } from "@/services/properties"
 import type { Property as PropertyType } from "@/lib/supabase"
+import { useAnalytics } from "@/hooks/useAnalytics"
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -23,20 +27,30 @@ interface Property extends PropertyType {
 const ITEMS_PER_PAGE = 12
 
 export default function PropiedadesPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [properties, setProperties] = useState<Property[]>([])
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
+  const [uniqueNeighborhoods, setUniqueNeighborhoods] = useState<string[]>([])
 
-  // Filters
-  const [searchTerm, setSearchTerm] = useState("")
-  const [operationFilter, setOperationFilter] = useState("all")
-  const [typeFilter, setTypeFilter] = useState("all")
-  const [minPrice, setMinPrice] = useState("")
-  const [maxPrice, setMaxPrice] = useState("")
-  const [bedroomsFilter, setBedroomsFilter] = useState("all")
-  const [bathroomsFilter, setBathroomsFilter] = useState("all")
-  const [sortBy, setSortBy] = useState("newest")
+  // Analytics tracking
+  const analytics = useAnalytics({ enableAutoTracking: true })
+
+  // Filters - Initialize from URL params
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "")
+  const [operationFilter, setOperationFilter] = useState(searchParams.get("operation") || "all")
+  const [typeFilter, setTypeFilter] = useState(searchParams.get("type") || "all")
+  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "")
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "")
+  const [minArea, setMinArea] = useState(searchParams.get("minArea") || "")
+  const [maxArea, setMaxArea] = useState(searchParams.get("maxArea") || "")
+  const [bedroomsFilter, setBedroomsFilter] = useState(searchParams.get("bedrooms") || "all")
+  const [bathroomsFilter, setBathroomsFilter] = useState(searchParams.get("bathrooms") || "all")
+  const [neighborhoodFilter, setNeighborhoodFilter] = useState(searchParams.get("neighborhood") || "all")
+  const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "newest")
 
   // Fetch properties from Supabase
   useEffect(() => {
@@ -46,7 +60,8 @@ export default function PropiedadesPage() {
         const result = await PropertyService.getProperties({
           limit: 100, // Get all properties
           sort_by: "created_at",
-          sort_order: "desc"
+          sort_order: "desc",
+          status: "available" // Only show available properties
         })
 
         // Map properties to match the expected interface
@@ -62,6 +77,13 @@ export default function PropiedadesPage() {
 
         setProperties(mappedProperties)
         setFilteredProperties(mappedProperties)
+
+        // Extract unique neighborhoods
+        const neighborhoods = [...new Set(mappedProperties
+          .map(p => p.neighborhood)
+          .filter(n => n && n.trim() !== "")
+        )].sort()
+        setUniqueNeighborhoods(neighborhoods)
       } catch (error) {
         console.error("Error fetching properties:", error)
         setProperties([])
@@ -106,6 +128,14 @@ export default function PropiedadesPage() {
       filtered = filtered.filter((property) => property.price <= Number.parseInt(maxPrice))
     }
 
+    // Area filters
+    if (minArea) {
+      filtered = filtered.filter((property) => property.area_m2 && property.area_m2 >= Number.parseInt(minArea))
+    }
+    if (maxArea) {
+      filtered = filtered.filter((property) => property.area_m2 && property.area_m2 <= Number.parseInt(maxArea))
+    }
+
     // Bedrooms filter
     if (bedroomsFilter !== "all") {
       filtered = filtered.filter((property) => property.bedrooms && property.bedrooms >= Number.parseInt(bedroomsFilter))
@@ -114,6 +144,11 @@ export default function PropiedadesPage() {
     // Bathrooms filter
     if (bathroomsFilter !== "all") {
       filtered = filtered.filter((property) => property.bathrooms && property.bathrooms >= Number.parseInt(bathroomsFilter))
+    }
+
+    // Neighborhood filter
+    if (neighborhoodFilter !== "all") {
+      filtered = filtered.filter((property) => property.neighborhood === neighborhoodFilter)
     }
 
     // Sort
@@ -134,7 +169,29 @@ export default function PropiedadesPage() {
 
     setFilteredProperties(filtered)
     setCurrentPage(1)
-  }, [properties, searchTerm, operationFilter, typeFilter, minPrice, maxPrice, bedroomsFilter, bathroomsFilter, sortBy])
+  }, [properties, searchTerm, operationFilter, typeFilter, minPrice, maxPrice, minArea, maxArea, bedroomsFilter, bathroomsFilter, neighborhoodFilter, sortBy])
+
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams()
+
+    if (searchTerm) params.set("search", searchTerm)
+    if (operationFilter !== "all") params.set("operation", operationFilter)
+    if (typeFilter !== "all") params.set("type", typeFilter)
+    if (minPrice) params.set("minPrice", minPrice)
+    if (maxPrice) params.set("maxPrice", maxPrice)
+    if (minArea) params.set("minArea", minArea)
+    if (maxArea) params.set("maxArea", maxArea)
+    if (bedroomsFilter !== "all") params.set("bedrooms", bedroomsFilter)
+    if (bathroomsFilter !== "all") params.set("bathrooms", bathroomsFilter)
+    if (neighborhoodFilter !== "all") params.set("neighborhood", neighborhoodFilter)
+    if (sortBy !== "newest") params.set("sortBy", sortBy)
+
+    const queryString = params.toString()
+    const newUrl = queryString ? `/propiedades?${queryString}` : "/propiedades"
+
+    router.replace(newUrl, { scroll: false })
+  }, [searchTerm, operationFilter, typeFilter, minPrice, maxPrice, minArea, maxArea, bedroomsFilter, bathroomsFilter, neighborhoodFilter, sortBy, router])
 
   // Pagination
   const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE)
@@ -148,8 +205,11 @@ export default function PropiedadesPage() {
     setTypeFilter("all")
     setMinPrice("")
     setMaxPrice("")
+    setMinArea("")
+    setMaxArea("")
     setBedroomsFilter("all")
     setBathroomsFilter("all")
+    setNeighborhoodFilter("all")
     setSortBy("newest")
   }
 
@@ -219,53 +279,58 @@ export default function PropiedadesPage() {
           />
           {/* Premium overlay */}
           <div className="absolute inset-0 bg-night-blue/50" />
-          {/* Orange fade overlay - imported effect */}
-          <div className="absolute inset-x-0 bottom-0 h-32 md:h-48 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
+          {/* Orange fade overlay - imported effect - Enhanced overlay for better text contrast */}
+          <div className="absolute inset-x-0 bottom-0 h-32 md:h-48 bg-gradient-to-t from-orange-600/85 via-orange-500/50 to-transparent" />
         </div>
 
         <div className="container-premium relative z-10">
           {/* Page Title - PREMIUM TYPOGRAPHY */}
-          <div className="text-center mb-premium-xl">
-            <h1 className="display-lg text-premium-primary mb-premium-md">
-              NUESTRAS <span className="accent-premium">PROPIEDADES</span>
+          <div className="text-center component-spacing">
+            <h1 className="hero-title mb-element-spacing">
+              NUESTRAS PROPIEDADES
             </h1>
-            <p className="body-xl text-premium-secondary mb-premium-lg max-w-4xl mx-auto">
-              Descubrí las mejores propiedades cuidadosamente seleccionadas por nuestro equipo  
-              y encontrá tu propiedad ideal con nuestro acompañamiento profesional.
-            </p>
-            <div className="caption-lg text-premium-secondary">
+            <div className="element-spacing max-w-4xl mx-auto">
+              <div className="bg-black/30 backdrop-blur-sm rounded-2xl px-8 py-6 border border-white/10">
+                <p className="body-text text-white text-center font-medium">
+                  Descubrí las mejores propiedades cuidadosamente seleccionadas por nuestro equipo
+                  y encontrá tu propiedad ideal con nuestro acompañamiento profesional.
+                </p>
+              </div>
+            </div>
+            <div className="secondary-text text-center">
               <p>{filteredProperties.length} propiedades disponibles</p>
             </div>
           </div>
 
-          {/* Filters - Premium Design */}
+          {/* Filters - Simplified Premium Design */}
           <div className="max-w-7xl mx-auto">
-            <div className="bg-premium-card backdrop-blur-md rounded-2xl p-premium-lg border border-vibrant-orange/20 shadow-2xl">
-              <div className="flex items-center mb-premium-md">
-                <Filter className="w-6 h-6 text-vibrant-orange mr-3" />
-                <h2 className="heading-md text-premium-primary">Filtros de búsqueda</h2>
+            <div className="bg-premium-card backdrop-blur-md rounded-2xl p-8 border border-support-gray/20 shadow-xl">
+              <div className="flex items-center element-spacing">
+                <Filter className="w-5 h-5 text-vibrant-orange mr-3" />
+                <h2 className="component-title">Filtros de búsqueda</h2>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                {/* Search */}
-                <div className="lg:col-span-2">
+              {/* Primary Filters - Most Important */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 element-spacing">
+                {/* Search - Full width on mobile */}
+                <div className="md:col-span-2">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-support-gray w-4 h-4" />
                     <Input
                       placeholder="Buscar por título, dirección o barrio..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange backdrop-blur-sm"
+                      className="pl-10 bg-night-blue/60 border-support-gray/30 text-bone-white placeholder:text-subtle-gray focus:border-vibrant-orange backdrop-blur-sm rounded-xl py-3 focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300 h-12"
                     />
                   </div>
                 </div>
 
                 {/* Operation */}
                 <Select value={operationFilter} onValueChange={setOperationFilter}>
-                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
+                  <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300 h-12">
                     <SelectValue placeholder="Operación" />
                   </SelectTrigger>
-                  <SelectContent className="bg-premium-card border-support-gray/30">
+                  <SelectContent className="bg-night-blue border-support-gray/30">
                     <SelectItem value="all">Alquiler/Venta</SelectItem>
                     <SelectItem value="sale">Venta</SelectItem>
                     <SelectItem value="rent">Alquiler</SelectItem>
@@ -274,10 +339,10 @@ export default function PropiedadesPage() {
 
                 {/* Type */}
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
+                  <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white backdrop-blur-sm rounded-xl px-4 py-3 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300 h-12">
                     <SelectValue placeholder="Tipo" />
                   </SelectTrigger>
-                  <SelectContent className="bg-premium-card border-support-gray/30">
+                  <SelectContent className="bg-night-blue border-support-gray/30">
                     <SelectItem value="all">Tipo de propiedad</SelectItem>
                     <SelectItem value="house">Casa</SelectItem>
                     <SelectItem value="apartment">Departamento</SelectItem>
@@ -287,69 +352,116 @@ export default function PropiedadesPage() {
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {/* Price Range */}
-                <Input
-                  placeholder="Precio mín."
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm"
-                />
-                <Input
-                  placeholder="Precio máx."
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary backdrop-blur-sm"
-                />
+              {/* Secondary Filters - Organized in logical groups */}
+              <div className="space-y-4">
+                {/* Price and Area */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="secondary-text block mb-2">Precio mínimo</label>
+                    <Input
+                      placeholder="Ej: 50000"
+                      value={minPrice}
+                      onChange={(e) => setMinPrice(e.target.value)}
+                      className="bg-night-blue/60 border-support-gray/30 text-bone-white placeholder:text-subtle-gray rounded-xl h-12 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
+                    />
+                  </div>
+                  <div>
+                    <label className="secondary-text block mb-2">Precio máximo</label>
+                    <Input
+                      placeholder="Ej: 200000"
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(e.target.value)}
+                      className="bg-night-blue/60 border-support-gray/30 text-bone-white placeholder:text-subtle-gray rounded-xl h-12 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
+                    />
+                  </div>
+                  <div>
+                    <label className="secondary-text block mb-2">Metros² mínimos</label>
+                    <Input
+                      placeholder="Ej: 50"
+                      value={minArea}
+                      onChange={(e) => setMinArea(e.target.value)}
+                      className="bg-night-blue/60 border-support-gray/30 text-bone-white placeholder:text-subtle-gray rounded-xl h-12 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
+                    />
+                  </div>
+                  <div>
+                    <label className="secondary-text block mb-2">Metros² máximos</label>
+                    <Input
+                      placeholder="Ej: 200"
+                      value={maxArea}
+                      onChange={(e) => setMaxArea(e.target.value)}
+                      className="bg-night-blue/60 border-support-gray/30 text-bone-white placeholder:text-subtle-gray rounded-xl h-12 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
+                    />
+                  </div>
+                </div>
 
-                {/* Bedrooms */}
-                <Select value={bedroomsFilter} onValueChange={setBedroomsFilter}>
-                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
-                    <SelectValue placeholder="Dormitorios" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-premium-card border-support-gray/30">
-                    <SelectItem value="all">Habitaciones</SelectItem>
-                    <SelectItem value="1">1+</SelectItem>
-                    <SelectItem value="2">2+</SelectItem>
-                    <SelectItem value="3">3+</SelectItem>
-                    <SelectItem value="4">4+</SelectItem>
-                  </SelectContent>
-                </Select>
+                {/* Features and Sort */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  {/* Neighborhood */}
+                  <Select value={neighborhoodFilter} onValueChange={setNeighborhoodFilter}>
+                    <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white rounded-xl h-12 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
+                      <SelectValue placeholder="Barrio" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-night-blue border-support-gray/30">
+                      <SelectItem value="all">Todos los barrios</SelectItem>
+                      {uniqueNeighborhoods.map((neighborhood) => (
+                        <SelectItem key={neighborhood} value={neighborhood}>
+                          {neighborhood}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
 
-                {/* Bathrooms */}
-                <Select value={bathroomsFilter} onValueChange={setBathroomsFilter}>
-                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
-                    <SelectValue placeholder="Baños" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-premium-card border-support-gray/30">
-                    <SelectItem value="all">Baños</SelectItem>
-                    <SelectItem value="1">1+</SelectItem>
-                    <SelectItem value="2">2+</SelectItem>
-                    <SelectItem value="3">3+</SelectItem>
-                  </SelectContent>
-                </Select>
+                  {/* Bedrooms */}
+                  <Select value={bedroomsFilter} onValueChange={setBedroomsFilter}>
+                    <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white rounded-xl h-12 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
+                      <SelectValue placeholder="Dormitorios" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-night-blue border-support-gray/30">
+                      <SelectItem value="all">Cualquier cantidad</SelectItem>
+                      <SelectItem value="1">1+ dormitorio</SelectItem>
+                      <SelectItem value="2">2+ dormitorios</SelectItem>
+                      <SelectItem value="3">3+ dormitorios</SelectItem>
+                      <SelectItem value="4">4+ dormitorios</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                {/* Sort */}
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="bg-premium-card border-support-gray/30 text-premium-primary backdrop-blur-sm">
-                    <SelectValue placeholder="Ordenar por" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-premium-card border-support-gray/30">
-                    <SelectItem value="newest">Más recientes</SelectItem>
-                    <SelectItem value="price-low">Precio menor</SelectItem>
-                    <SelectItem value="price-high">Precio mayor</SelectItem>
-                    <SelectItem value="views">Más vistas</SelectItem>
-                  </SelectContent>
-                </Select>
+                  {/* Bathrooms */}
+                  <Select value={bathroomsFilter} onValueChange={setBathroomsFilter}>
+                    <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white rounded-xl h-12 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
+                      <SelectValue placeholder="Baños" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-night-blue border-support-gray/30">
+                      <SelectItem value="all">Cualquier cantidad</SelectItem>
+                      <SelectItem value="1">1+ baño</SelectItem>
+                      <SelectItem value="2">2+ baños</SelectItem>
+                      <SelectItem value="3">3+ baños</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                {/* Clear Filters */}
-                <Button
-                  onClick={clearFilters}
-                  variant="outline"
-                  className="hover:bg-vibrant-orange/80 hover:text-bone-white hover:border-vibrant-orange/60 transition-all duration-300"
-                >
-                  Limpiar
-                </Button>
+                  {/* Sort */}
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white rounded-xl h-12 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
+                      <SelectValue placeholder="Ordenar por" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-night-blue border-support-gray/30">
+                      <SelectItem value="newest">Más recientes</SelectItem>
+                      <SelectItem value="price-low">Precio: menor a mayor</SelectItem>
+                      <SelectItem value="price-high">Precio: mayor a menor</SelectItem>
+                      <SelectItem value="views">Más populares</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Clear Filters Button */}
+                <div className="flex justify-center pt-4">
+                  <Button
+                    onClick={clearFilters}
+                    variant="outline"
+                    className="hover:bg-vibrant-orange hover:text-bone-white hover:border-vibrant-orange transition-all duration-300 rounded-xl px-6 py-3 font-medium"
+                  >
+                    Limpiar todos los filtros
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -357,166 +469,22 @@ export default function PropiedadesPage() {
       </section>
 
       {/* Results - PREMIUM DESIGN */}
-      <section className="section-premium bg-premium-main">
+      <section className="section-spacing bg-premium-main">
         <div className="container-premium">
-          {/* Results count */}
-          <div className="flex items-center justify-between mb-premium-lg">
-            <p className="body-lg text-premium-secondary">{filteredProperties.length} propiedades encontradas</p>
+          {/* Results count and summary */}
+          <div className="flex items-center justify-between component-spacing">
+            <div>
+              <h2 className="component-title mb-2">Resultados</h2>
+              <p className="secondary-text">{filteredProperties.length} propiedades encontradas</p>
+            </div>
           </div>
 
-          {/* Properties List */}
+          {/* Properties List - DISEÑO VERTICAL CON IMÁGENES PROMINENTES */}
           {currentProperties.length > 0 ? (
-            <div className="space-y-premium-lg mb-premium-xl">
-            {currentProperties.map((property) => (
-              <Card
-                key={property.id}
-                className="group overflow-hidden hover-lift"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
-                  {/* Image Section */}
-                  <div className="lg:col-span-2 relative">
-                    <Link href={`/propiedades/${property.id}`}>
-                      <div className="relative cursor-pointer h-64 lg:h-80">
-                        {property.images && property.images.length > 0 ? (
-                          <Image
-                            src={property.images[0]}
-                            alt={property.title}
-                            fill
-                            className="object-cover hover-scale"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.src = "/placeholder.svg"
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                            <div className="text-gray-400 text-center">
-                              <div className="w-16 h-16 bg-gray-600 rounded mx-auto mb-3"></div>
-                              <p>Sin imagen</p>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Status badges */}
-                        <div className="absolute top-premium-sm left-premium-sm">
-                          <div className="bg-night-blue/90 text-bone-white px-premium-sm py-2 rounded-xl caption-lg font-semibold backdrop-blur-md border border-vibrant-orange/30">
-                            {property.operation === "sale" ? "VENTA" : "ALQUILER"}
-                          </div>
-                        </div>
-
-                        {/* Featured badge */}
-                        {property.featured && (
-                          <div className="absolute top-premium-sm right-premium-sm bg-gradient-to-r from-vibrant-orange/90 to-vibrant-orange/70 text-bone-white px-premium-sm py-2 rounded-xl caption-lg flex items-center gap-2 backdrop-blur-md shadow-lg">
-                            <Eye className="w-4 h-4" />
-                            DESTACADA
-                          </div>
-                        )}
-
-                        {/* Favorite button */}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="absolute bottom-premium-sm right-premium-sm bg-night-blue/80 hover:bg-night-blue text-bone-white hover:text-vibrant-orange backdrop-blur-md rounded-xl p-3 shadow-lg"
-                        >
-                          <Heart className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    </Link>
-                  </div>
-
-                  {/* Content Section */}
-                  <div className="lg:col-span-3 p-premium-md lg:p-premium-lg flex flex-col justify-between">
-                    <div>
-                      {/* Header */}
-                      <div className="flex items-start justify-between mb-premium-md">
-                        <div className="flex-1">
-                          <Link href={`/propiedades/${property.id}`}>
-                            <h3 className="heading-lg text-premium-primary mb-premium-sm hover:text-vibrant-orange transition-colors cursor-pointer">
-                              {property.title}
-                            </h3>
-                          </Link>
-                          <div className="flex items-center text-vibrant-orange body-md mb-premium-sm">
-                            <MapPin className="w-5 h-5 mr-2" />
-                            {property.neighborhood}, Reconquista
-                          </div>
-                        </div>
-                        <div className="text-right ml-premium-md">
-                          <div className="display-sm text-premium-primary mb-premium-sm">
-                            {property.currency}$ {property.price.toLocaleString()}
-                          </div>
-                          <div className="caption-lg text-premium-secondary">
-                            {property.operation === "rent" ? "por mes" : ""}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Property Details */}
-                      {(property.bedrooms || property.bathrooms || property.area_m2) && (
-                        <div className="flex items-center gap-premium-md text-premium-primary mb-premium-lg">
-                          {property.bedrooms && (
-                            <div className="flex items-center bg-support-gray/10 px-premium-sm py-2 rounded-xl">
-                              <Bed className="w-5 h-5 mr-2 text-vibrant-orange" />
-                              <span className="body-md font-medium">{property.bedrooms} dormitorios</span>
-                            </div>
-                          )}
-                          {property.bathrooms && (
-                            <div className="flex items-center bg-support-gray/10 px-premium-sm py-2 rounded-xl">
-                              <Bath className="w-5 h-5 mr-2 text-vibrant-orange" />
-                              <span className="body-md font-medium">{property.bathrooms} baños</span>
-                            </div>
-                          )}
-                          <div className="flex items-center bg-support-gray/10 px-premium-sm py-2 rounded-xl">
-                            <Square className="w-5 h-5 mr-2 text-vibrant-orange" />
-                            <span className="body-md font-medium">{property.area_m2}m²</span>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Features */}
-                      {property.features && property.features.length > 0 && (
-                        <div className="mb-premium-lg">
-                          <h4 className="heading-sm text-premium-primary mb-premium-sm">Características:</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {property.features.slice(0, 5).map((feature, i) => (
-                              <span key={i} className="bg-vibrant-orange/15 text-vibrant-orange border border-vibrant-orange/25 px-3 py-1 rounded-xl caption-lg font-medium">
-                                {feature}
-                              </span>
-                            ))}
-                            {property.features.length > 5 && (
-                              <span className="text-premium-secondary caption-lg px-3 py-1">+{property.features.length - 5} más</span>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-premium-sm pt-premium-md border-t border-support-gray/20">
-                      <Link href={`/propiedades/${property.id}`} className="flex-1">
-                        <Button className="w-full" size="lg">
-                          Ver detalles completos <ArrowLeft className="w-5 h-5 ml-2 rotate-180" />
-                        </Button>
-                      </Link>
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        className="px-premium-md"
-                      >
-                        <Heart className="w-5 h-5 mr-2" />
-                        Guardar
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="lg"
-                        className="px-premium-md"
-                      >
-                        Contactar
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
+            <div className="space-y-8 mb-premium-xl">
+              {currentProperties.map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
             </div>
           ) : (
             <div className="text-center py-premium-xl">
@@ -533,121 +501,106 @@ export default function PropiedadesPage() {
             </div>
           )}
 
-          {/* Pagination */}
+          {/* Pagination - Enhanced */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="disabled:opacity-50"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Anterior
-              </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-premium-card/50 backdrop-blur-sm rounded-xl p-6 border border-vibrant-orange/10">
+              {/* Pagination Info */}
+              <div className="text-premium-secondary text-sm">
+                Mostrando {startIndex + 1}-{Math.min(endIndex, filteredProperties.length)} de {filteredProperties.length} propiedades
+              </div>
 
-              {[...Array(totalPages)].map((_, i) => (
+              {/* Pagination Controls */}
+              <div className="flex items-center space-x-2">
                 <Button
-                  key={i}
-                  variant={currentPage === i + 1 ? "default" : "outline"}
+                  variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(i + 1)}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="disabled:opacity-50 hover:bg-vibrant-orange/10 hover:border-vibrant-orange/30"
                 >
-                  {i + 1}
+                  <ChevronLeft className="w-4 h-4" />
+                  Anterior
                 </Button>
-              ))}
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="disabled:opacity-50"
-              >
-                Siguiente
-                <ChevronRight className="w-4 h-4" />
-              </Button>
+                {/* Smart pagination - show only relevant pages */}
+                {(() => {
+                  const pagesToShow = []
+                  const maxVisiblePages = 5
+
+                  if (totalPages <= maxVisiblePages) {
+                    // Show all pages if total is small
+                    for (let i = 1; i <= totalPages; i++) {
+                      pagesToShow.push(i)
+                    }
+                  } else {
+                    // Smart pagination logic
+                    let startPage = Math.max(1, currentPage - 2)
+                    let endPage = Math.min(totalPages, currentPage + 2)
+
+                    // Adjust if we're near the start or end
+                    if (currentPage <= 3) {
+                      endPage = Math.min(5, totalPages)
+                    }
+                    if (currentPage > totalPages - 3) {
+                      startPage = Math.max(1, totalPages - 4)
+                    }
+
+                    // Add first page and ellipsis if needed
+                    if (startPage > 1) {
+                      pagesToShow.push(1)
+                      if (startPage > 2) pagesToShow.push('...')
+                    }
+
+                    // Add middle pages
+                    for (let i = startPage; i <= endPage; i++) {
+                      pagesToShow.push(i)
+                    }
+
+                    // Add ellipsis and last page if needed
+                    if (endPage < totalPages) {
+                      if (endPage < totalPages - 1) pagesToShow.push('...')
+                      pagesToShow.push(totalPages)
+                    }
+                  }
+
+                  return pagesToShow.map((page, index) => {
+                    if (page === '...') {
+                      return <span key={`ellipsis-${index}`} className="px-2 text-premium-secondary">...</span>
+                    }
+                    return (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(page as number)}
+                        className={currentPage === page
+                          ? "bg-gradient-to-r from-vibrant-orange to-orange-600 text-bone-white"
+                          : "hover:bg-vibrant-orange/10 hover:border-vibrant-orange/30"
+                        }
+                      >
+                        {page}
+                      </Button>
+                    )
+                  })
+                })()}
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="disabled:opacity-50 hover:bg-vibrant-orange/10 hover:border-vibrant-orange/30"
+                >
+                  Siguiente
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           )}
         </div>
       </section>
 
-      {/* Footer - PREMIUM DESIGN */}
-      <footer className="bg-premium-main border-t border-support-gray/20 section-premium">
-        <div className="container-premium">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-premium-lg">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-premium-md">
-                <Image
-                  src="/assets/logos/marconi_title.svg"
-                  alt="Marconi Inmobiliaria"
-                  width={140}
-                  height={45}
-                  className="h-10 w-auto"
-                />
-              </div>
-              <p className="body-lg text-premium-secondary mb-premium-md max-w-md">
-                Experiencia premium en bienes raíces. Comprometidos con encontrar 
-                la propiedad perfecta para cada familia.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="heading-sm text-premium-primary mb-premium-md">Enlaces</h3>
-              <ul className="space-y-3 text-premium-secondary">
-                <li>
-                  <Link
-                    href="/propiedades"
-                    className="body-md hover:text-vibrant-orange transition-colors accent-premium"
-                  >
-                    Propiedades
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/agentes"
-                    className="body-md hover:text-vibrant-orange transition-colors"
-                  >
-                    Agentes
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contacto"
-                    className="body-md hover:text-vibrant-orange transition-colors"
-                  >
-                    Contacto
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/"
-                    className="body-md hover:text-vibrant-orange transition-colors"
-                  >
-                    Inicio
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="heading-sm text-premium-primary mb-premium-md">Contacto</h3>
-              <ul className="space-y-3 text-premium-secondary">
-                <li className="body-md">Reconquista, Santa Fe</li>
-                <li className="body-md">+54 9 3482 308100</li>
-                <li className="body-md">marconinegociosinmobiliarios@hotmail.com</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-support-gray/20 mt-premium-xl pt-premium-lg text-center">
-            <p className="caption-lg text-premium-secondary">
-              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

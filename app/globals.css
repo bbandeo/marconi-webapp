@@ -30,10 +30,10 @@
     --secondary: 210 13% 16%;
     --secondary-foreground: 0 0% 96%;
 
-    --muted: 210 13% 54%; /* #8A9199 - Gris de Soporte */
+    --muted: 210 13% 70%; /* #B3B3B3 - Gris Sutil para texto secundario */
     --muted-foreground: 0 0% 96%;
 
-    --accent: 21 84% 56%; /* #F37321 - Naranja Vibrante */
+    --accent: 21 84% 56%; /* #F37321 - Naranja Vibrante - SOLO interactivos */
     --accent-foreground: 0 0% 96%;
 
     --destructive: 0 84.2% 60.2%;
@@ -64,9 +64,9 @@
     --secondary-foreground: 0 0% 96%;
 
     --muted: 210 13% 20%;
-    --muted-foreground: 210 13% 54%; /* #8A9199 - Gris de Soporte */
+    --muted-foreground: 210 13% 70%; /* #B3B3B3 - Gris Sutil para texto secundario */
 
-    --accent: 21 84% 56%; /* #F37321 - Naranja Vibrante */
+    --accent: 21 84% 56%; /* #F37321 - Naranja Vibrante - SOLO interactivos */
     --accent-foreground: 0 0% 96%;
 
     --destructive: 0 62.8% 30.6%;
@@ -111,6 +111,50 @@
   .caption-lg { @apply font-inter font-normal text-support-gray; font-size: 0.875rem; line-height: 1.5; }
   .caption-md { @apply font-inter font-normal text-support-gray; font-size: 0.75rem; line-height: 1.5; }
   .caption-sm { @apply font-inter font-normal text-support-gray; font-size: 0.625rem; line-height: 1.5; }
+
+  /* JERARQUÍA DE TÍTULOS - ECONOMÍA DEL COLOR */
+  .heading-primary { @apply text-bone-white; } /* H1 - Siempre blanco */
+  .heading-secondary { @apply text-bone-white; } /* H2, H3 - Siempre blanco */
+  .text-secondary { @apply text-subtle-gray; } /* Textos descriptivos */
+  .text-meta { @apply text-support-gray; } /* Metadatos y etiquetas */
+
+  /* JERARQUÍA TIPOGRÁFICA PROFESIONAL - ESCALA ESTRICTA */
+
+  /* H1 - Hero Titles: 48px, Bold */
+  .hero-title {
+    @apply text-5xl md:text-6xl font-bold heading-primary leading-tight tracking-tight;
+    text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.8);
+  }
+
+  /* H2 - Section Titles: 36px, Bold */
+  .section-title {
+    @apply text-3xl md:text-4xl font-bold heading-primary leading-tight;
+  }
+
+  /* H3 - Component Titles: 24px, Semibold */
+  .component-title {
+    @apply text-xl md:text-2xl font-semibold heading-primary leading-snug;
+  }
+
+  /* H4 - Subtitles: 20px, Medium */
+  .subtitle {
+    @apply text-lg md:text-xl font-medium heading-primary leading-relaxed;
+  }
+
+  /* Body Text: 16px, Regular */
+  .body-text {
+    @apply text-base leading-relaxed text-secondary;
+  }
+
+  /* Secondary Text: 14px, Regular */
+  .secondary-text {
+    @apply text-sm leading-relaxed text-meta;
+  }
+
+  /* ESPACIADO VERTICAL PREMIUM - GENEROSO Y BALANCEADO */
+  .section-spacing { @apply py-16 md:py-24; }
+  .component-spacing { @apply mb-8 md:mb-12; }
+  .element-spacing { @apply mb-4 md:mb-6; }
   
   /* Espaciado Premium */
   .section-premium { @apply py-premium-lg md:py-premium-xl; }
@@ -121,8 +165,10 @@
   .bg-premium-main { @apply bg-night-blue; }
   .bg-premium-card { @apply bg-night-blue/95 backdrop-blur-sm; }
   .text-premium-primary { @apply text-bone-white; }
-  .text-premium-secondary { @apply text-support-gray; }
-  .accent-premium { @apply text-vibrant-orange; }
+  .text-premium-secondary { @apply text-subtle-gray; }
+  /* ACCENT PREMIUM - SOLO para elementos interactivos */
+  .accent-premium { @apply text-vibrant-orange; } /* Solo botones, enlaces activos */
+  .interactive-element { @apply text-vibrant-orange hover:text-vibrant-orange/90 transition-colors; }
   
   /* MICRO-INTERACCIONES PREMIUM */
   
@@ -336,6 +382,40 @@
     }
   }
   
+  /* SISTEMA DE COLORES CON ECONOMÍA - EJEMPLOS CSS */
+
+  /* ✅ CORRECTO - Naranja solo en elementos interactivos */
+  button.cta {
+    color: #fff;
+    background: #F37321;
+    transition: background-color 0.3s ease;
+  }
+  button.cta:hover {
+    background: #e86820;
+  }
+  a.link-clave {
+    color: #F37321;
+    text-decoration: underline;
+  }
+  a.link-clave:hover {
+    color: #e86820;
+  }
+
+  /* ✅ CORRECTO - Jerarquía de títulos consistente */
+  h1, h2, h3 {
+    color: #F5F5F5; /* Blanco hueso para todos los títulos */
+  }
+  .text-secundario {
+    color: #B3B3B3; /* Gris sutil para descriptos */
+  }
+  .text-meta {
+    color: #8A9199; /* Gris soporte para metadatos */
+  }
+
+  /* ❌ EVITAR - Naranja en elementos estáticos */
+  /* h1 { color: #F37321; } */ /* No usar naranja en títulos */
+  /* .descripcion { color: #F37321; } */ /* No usar naranja en texto descriptivo */
+
   /* Color system estratégico */
   .brand-accent-selective { color: #F37321; }
   .hero-text-primary { color: #FFFFFF; }

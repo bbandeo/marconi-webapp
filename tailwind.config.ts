@@ -53,15 +53,17 @@ const config = {
         'caption-sm': ['0.625rem', { lineHeight: '1.5', fontWeight: '400' }],
       },
       colors: {
-        // SISTEMA DE COLORES PREMIUM - BRIEFING AGRESIVO
+        // SISTEMA DE COLORES PREMIUM - ECONOMÍA DEL COLOR
         // Azul Nocturno - 80% del uso visual
         "night-blue": "#212832",
-        // Naranja Vibrante - 10% uso quirúrgico para CTAs críticos
-        "vibrant-orange": "#F37321", 
-        // Blanco Hueso - Para texto principal
+        // Naranja Vibrante - SOLO para elementos interactivos (botones, CTAs, enlaces)
+        "vibrant-orange": "#F37321",
+        // Blanco Hueso - Para títulos y texto principal
         "bone-white": "#F5F5F5",
-        // Gris de Soporte - Para texto secundario
+        // Gris de Soporte - Para texto secundario y metadatos
         "support-gray": "#8A9199",
+        // Gris Sutil - Para textos descriptivos secundarios
+        "subtle-gray": "#B3B3B3",
         
         // Legacy (mantener por compatibilidad durante transición)
         "brand-orange": "#F37321", // Actualizado al naranja vibrante

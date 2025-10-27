@@ -7,12 +7,14 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Users, Building2, Settings, Menu, ExternalLink, BarChart3 } from "lucide-react"
+import { Users, Building2, Settings, Menu, ExternalLink, BarChart3, FileText } from "lucide-react"
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: BarChart3 },
   { name: "Propiedades", href: "/admin/properties", icon: Building2 },
   { name: "Contactos", href: "/admin/contacts", icon: Users },
+  { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  { name: "Documentación", href: "/admin/readme", icon: FileText },
   { name: "Configuración", href: "/admin/settings", icon: Settings },
 ]
 

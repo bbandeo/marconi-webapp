@@ -27,7 +27,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Image from "next/image";
 import Link from "next/link";
-import Header from "@/components/Header";
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
+import { LeadSourceSelector, useLeadSourceDetection, useLeadSourceSelector } from "@/components/LeadSourceSelector"
+import { useAnalytics } from "@/hooks/useAnalytics"
+import { trackLead } from '@/lib/analytics-client'
+import { type LeadSourceCode, LEAD_SOURCE_CODES } from "@/types/analytics"
 
 export default function ContactoPage() {
   const [contactForm, setContactForm] = useState({
@@ -41,12 +46,18 @@ export default function ContactoPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
+  // Analytics and lead source tracking
+  const analytics = useAnalytics({ enableAutoTracking: true });
+  const detectedSource = useLeadSourceDetection();
+  const leadSourceSelector = useLeadSourceSelector(detectedSource || 'web_form');
+
   const handleSubmitContact = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitLoading(true);
     setSubmitError("");
 
     try {
+      // Create the lead first
       const response = await fetch('/api/leads', {
         method: 'POST',
         headers: {
@@ -57,12 +68,29 @@ export default function ContactoPage() {
           email: contactForm.email,
           phone: contactForm.phone,
           message: `Asunto: ${contactForm.subject}\n\n${contactForm.message}`,
-          source: 'contact_page',
+          source: leadSourceSelector.selectedSource || 'web_form',
           property_id: null,
         }),
       });
 
       if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id && leadSourceSelector.selectedSource) {
+          await analytics.trackLeadGeneration(
+            leadData.id,
+            leadSourceSelector.selectedSource as LeadSourceCode,
+            undefined, // no specific property
+            {
+              form_type: 'contact_page',
+              utm_source: new URLSearchParams(window.location.search).get('utm_source') || undefined,
+              utm_medium: new URLSearchParams(window.location.search).get('utm_medium') || undefined,
+              utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || undefined
+            }
+          );
+        }
+
         setSubmitSuccess(true);
         setContactForm({
           name: "",
@@ -71,6 +99,7 @@ export default function ContactoPage() {
           subject: "",
           message: "",
         });
+        leadSourceSelector.reset();
       } else {
         throw new Error('Error al enviar la consulta');
       }
@@ -79,6 +108,125 @@ export default function ContactoPage() {
       setSubmitError('Hubo un error al enviar tu consulta. Por favor, intenta nuevamente.');
     } finally {
       setSubmitLoading(false);
+    }
+  };
+
+  // Handle phone contact lead generation
+  const handlePhoneClick = async () => {
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: 'Cliente - Llamada telefónica',
+          phone: '+54 3482 308100',
+          message: 'Solicitud de contacto telefónico desde página de contacto',
+          source: 'telefono',
+          property_id: null,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, LEAD_SOURCE_CODES.TELEFONO);
+        }
+      }
+    } catch (error) {
+      console.error('Error creating phone lead:', error);
+    }
+  };
+
+  // Handle WhatsApp contact lead generation
+  const handleWhatsAppClick = async () => {
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: 'Cliente - WhatsApp',
+          phone: '+54 9 3482 308100',
+          message: 'Solicitud de contacto por WhatsApp desde página de contacto',
+          source: 'whatsapp',
+          property_id: null,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, LEAD_SOURCE_CODES.WHATSAPP);
+        }
+      }
+    } catch (error) {
+      console.error('Error creating WhatsApp lead:', error);
+    }
+  };
+
+  // Handle email contact lead generation
+  const handleEmailClick = async () => {
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: 'Cliente - Email',
+          email: 'marconinegociosinmobiliarios@hotmail.com',
+          message: 'Solicitud de contacto por email desde página de contacto',
+          source: 'email',
+          property_id: null,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, LEAD_SOURCE_CODES.EMAIL);
+        }
+      }
+    } catch (error) {
+      console.error('Error creating email lead:', error);
+    }
+  };
+
+  // Handle social media contact lead generation
+  const handleSocialClick = async (platform: 'facebook' | 'instagram') => {
+    try {
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `Cliente - ${platform.charAt(0).toUpperCase() + platform.slice(1)}`,
+          message: `Contacto desde ${platform} en página de contacto`,
+          source: platform,
+          property_id: null,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, platform === 'facebook' ? LEAD_SOURCE_CODES.FACEBOOK : LEAD_SOURCE_CODES.INSTAGRAM);
+        }
+      }
+    } catch (error) {
+      console.error(`Error creating ${platform} lead:`, error);
     }
   };
 
@@ -178,14 +326,23 @@ export default function ContactoPage() {
                   className="text-center"
                 >
                   <Button
-                    asChild
                     size="lg"
                     className="w-full"
+                    onClick={async () => {
+                      if (method.title === "Teléfono") {
+                        await handlePhoneClick();
+                        window.location.href = method.action;
+                      } else if (method.title === "WhatsApp") {
+                        await handleWhatsAppClick();
+                        window.open(method.action, '_blank', 'noopener,noreferrer');
+                      } else if (method.title === "Email") {
+                        await handleEmailClick();
+                        window.location.href = method.action;
+                      }
+                    }}
                   >
-                    <a href={method.action} target="_blank" rel="noopener noreferrer">
-                      <method.icon className="w-5 h-5 mr-2" />
-                      {method.title}
-                    </a>
+                    <method.icon className="w-5 h-5 mr-2" />
+                    {method.title}
                   </Button>
                   <p className="caption-lg text-premium-secondary mt-premium-sm">{method.content}</p>
                 </motion.div>
@@ -299,6 +456,21 @@ export default function ContactoPage() {
 
                       <div>
                         <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
+                          ¿Cómo nos encontraste? *
+                        </label>
+                        <LeadSourceSelector
+                          {...leadSourceSelector.selectorProps}
+                          showDescription={true}
+                          variant="select"
+                          className="w-full"
+                        />
+                        {!leadSourceSelector.isValid && (
+                          <p className="text-red-400 text-sm mt-1">Por favor selecciona cómo nos encontraste</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                           Mensaje *
                         </label>
                         <Textarea
@@ -320,7 +492,7 @@ export default function ContactoPage() {
                         type="submit"
                         size="lg"
                         className="w-full"
-                        disabled={submitLoading || !contactForm.name || !contactForm.email || !contactForm.subject || !contactForm.message}
+                        disabled={submitLoading || !contactForm.name || !contactForm.email || !contactForm.subject || !contactForm.message || !leadSourceSelector.isValid}
                       >
                         {submitLoading ? "Enviando..." : "Enviar Consulta"}
                         <Send className="w-5 h-5 ml-2" />
@@ -407,23 +579,25 @@ export default function ContactoPage() {
                         variant="outline"
                         size="sm"
                         className="hover:bg-blue-600 hover:text-bone-white hover:border-blue-600"
-                        asChild
+                        onClick={async () => {
+                          await handleSocialClick('facebook');
+                          window.open('https://facebook.com', '_blank', 'noopener,noreferrer');
+                        }}
                       >
-                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                          <Facebook className="w-4 h-4 mr-2" />
-                          Facebook
-                        </a>
+                        <Facebook className="w-4 h-4 mr-2" />
+                        Facebook
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         className="hover:bg-pink-600 hover:text-bone-white hover:border-pink-600"
-                        asChild
+                        onClick={async () => {
+                          await handleSocialClick('instagram');
+                          window.open('https://instagram.com', '_blank', 'noopener,noreferrer');
+                        }}
                       >
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                          <Instagram className="w-4 h-4 mr-2" />
-                          Instagram
-                        </a>
+                        <Instagram className="w-4 h-4 mr-2" />
+                        Instagram
                       </Button>
                     </div>
                   </CardContent>
@@ -580,74 +754,7 @@ export default function ContactoPage() {
         </div>
       </section>
 
-      {/* Footer - PREMIUM DESIGN */}
-      <footer className="bg-premium-main border-t border-support-gray/20 section-premium">
-        <div className="container-premium">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-premium-lg">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-premium-md">
-                <Image
-                  src="/assets/logos/marconi_title.svg"
-                  alt="Marconi Inmobiliaria"
-                  width={140}
-                  height={45}
-                  className="h-10 w-auto"
-                />
-              </div>
-              <p className="body-lg text-premium-secondary mb-premium-md max-w-md">
-                Experiencia premium en bienes raíces. Comprometidos con encontrar 
-                la propiedad perfecta para cada familia.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="heading-sm text-premium-primary mb-premium-md">Enlaces</h3>
-              <ul className="space-y-3 text-premium-secondary">
-                <li>
-                  <Link
-                    href="/propiedades"
-                    className="body-md hover:text-vibrant-orange transition-colors"
-                  >
-                    Propiedades
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/agentes"
-                    className="body-md hover:text-vibrant-orange transition-colors"
-                  >
-                    Agentes
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contacto"
-                    className="body-md hover:text-vibrant-orange transition-colors accent-premium"
-                  >
-                    Contacto
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="heading-sm text-premium-primary mb-premium-md">Contacto</h3>
-              <ul className="space-y-3 text-premium-secondary">
-                <li className="body-md">Jorge Newbery 1562</li>
-                <li className="body-md">Reconquista, Santa Fe</li>
-                <li className="body-md">+54 3482 308100</li>
-                <li className="body-md">marconinegociosinmobiliarios@hotmail.com</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-support-gray/20 mt-premium-xl pt-premium-lg text-center">
-            <p className="caption-lg text-premium-secondary">
-              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

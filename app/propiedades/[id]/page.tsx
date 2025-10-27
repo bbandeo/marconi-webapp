@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { PropertyDetailMap } from "@/components/PropertyDetailMap"
 import { 
   ArrowLeft, 
   MapPin, 
@@ -32,6 +33,9 @@ import {
 } from "lucide-react"
 import type { Property as PropertyType } from "@/lib/supabase"
 import Header from "@/components/Header"
+import { ComprehensivePropertyTracker, ContactTracker, ImageGalleryTracker, useImageGalleryTracker } from "@/components/PropertyViewTracker"
+import { trackPropertyView, trackContactClick, trackWhatsAppClick, trackLead } from '@/lib/analytics-client'
+import { LEAD_SOURCE_CODES } from '@/types/analytics'
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -103,6 +107,16 @@ export default function PropertyDetailPage() {
     }
   }, [params.id])
 
+  // Track property view
+  useEffect(() => {
+    if (property?.id) {
+      trackPropertyView(property.id, {
+        pageUrl: window.location.href,
+        referrerUrl: document.referrer
+      })
+    }
+  }, [property?.id])
+
   // Image gallery navigation
   const nextImage = () => {
     if (property?.images && property.images.length > 1) {
@@ -155,11 +169,42 @@ export default function PropertyDetailPage() {
   // Contact form handler
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement contact form submission
-    console.log("Contact form submitted:", contactForm)
-    alert("¡Mensaje enviado! Nos pondremos en contacto contigo pronto.")
-    setShowContactForm(false)
-    setContactForm({ name: "", email: "", phone: "", message: "" })
+    
+    try {
+      // Create the lead first
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: contactForm.name,
+          email: contactForm.email,
+          phone: contactForm.phone,
+          message: contactForm.message,
+          source: 'formulario_web',
+          property_id: property?.id,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, LEAD_SOURCE_CODES.FORMULARIO_WEB, property?.id);
+        }
+
+        alert("¡Mensaje enviado! Nos pondremos en contacto contigo pronto.")
+        setShowContactForm(false)
+        setContactForm({ name: "", email: "", phone: "", message: "" })
+      } else {
+        throw new Error('Error al enviar el mensaje');
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      alert('Hubo un error al enviar tu mensaje. Por favor, intenta nuevamente.');
+    }
   }
 
   if (loading) {
@@ -204,6 +249,14 @@ export default function PropertyDetailPage() {
 
   return (
     <div className="min-h-screen bg-premium-main">
+      {/* Analytics Tracking */}
+      <ComprehensivePropertyTracker 
+        propertyId={property.id}
+        title={property.title}
+        totalImages={property.images?.length || 0}
+        onViewTracked={(eventId) => console.log('Property view tracked:', eventId)}
+      />
+
       {/* Header Premium */}
       <Header />
       
@@ -227,9 +280,13 @@ export default function PropertyDetailPage() {
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Image Gallery */}
-            <div className="relative mb-premium-lg">
-              <div className="relative h-96 rounded-2xl overflow-hidden bg-premium-card hover-lift">
-                {property.images && property.images.length > 0 ? (
+            <ImageGalleryTracker 
+              propertyId={property.id} 
+              totalImages={property.images?.length || 0}
+            >
+              <div className="relative mb-premium-lg">
+                <div className="relative h-96 rounded-2xl overflow-hidden bg-premium-card hover-lift">
+                  {property.images && property.images.length > 0 ? (
                   <>
                     <Image
                       src={property.images[currentImageIndex]}
@@ -315,7 +372,8 @@ export default function PropertyDetailPage() {
                   ))}
                 </div>
               )}
-            </div>
+              </div>
+            </ImageGalleryTracker>
 
             {/* Property Details */}
             <Card className="hover-lift">
@@ -418,21 +476,7 @@ export default function PropertyDetailPage() {
               <Card className="hover-lift mt-premium-lg">
                 <CardContent className="card-premium">
                   <h3 className="heading-lg text-premium-primary mb-premium-md">Ubicación</h3>
-                  <div className="relative h-80 rounded-2xl overflow-hidden bg-premium-card flex items-center justify-center">
-                    {/* Static map placeholder - easily replaceable with actual Google Maps */}
-                    <div className="text-center text-premium-secondary">
-                      <MapPin className="w-12 h-12 mx-auto mb-3 text-vibrant-orange" />
-                      <p className="heading-md text-premium-primary">{property.address}</p>
-                      <p className="body-md text-premium-secondary">{property.neighborhood}, {property.city}</p>
-                      <p className="caption-lg mt-3 text-premium-secondary">Mapa interactivo próximamente</p>
-                      <Button 
-                        className="mt-premium-md"
-                        onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${property.address}, ${property.neighborhood}, ${property.city}`)}`)}
-                      >
-                        Ver en Google Maps
-                      </Button>
-                    </div>
-                  </div>
+                  <PropertyDetailMap property={property} className="h-80" />
                 </CardContent>
               </Card>
             )}
@@ -447,40 +491,186 @@ export default function PropertyDetailPage() {
                 
                 {!showContactForm ? (
                   <div className="space-y-premium-sm">
+                    <ContactTracker propertyId={property.id} type="form" metadata={{ form_type: 'property_inquiry' }}>
+                      <Button
+                        onClick={() => {
+                          trackContactClick(property.id)
+                          setShowContactForm(true)
+                        }}
+                        className="w-full"
+                        size="lg"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        Enviar consulta
+                      </Button>
+                    </ContactTracker>
+                    
+                    <ContactTracker propertyId={property.id} type="phone" metadata={{ contact_method: 'direct_call' }}>
+                      <Button
+                        variant="outline"
+                        onClick={async () => {
+                          trackContactClick(property.id)
+                          
+                          // Create lead for phone contact
+                          try {
+                            const response = await fetch('/api/leads', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                name: 'Cliente - Llamada telefónica',
+                                phone: '+54 3482 308100',
+                                message: `Solicitud de llamada para propiedad "${property.title}" - Código #${property.id}`,
+                                source: 'telefono',
+                                property_id: property.id,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const leadData = await response.json();
+                              
+                              // Track the lead generation in analytics
+                              if (leadData.id) {
+                                await trackLead(leadData.id, LEAD_SOURCE_CODES.TELEFONO, property.id);
+                              }
+                            }
+                          } catch (error) {
+                            console.error('Error creating phone lead:', error);
+                          }
+                        }}
+                        className="w-full"
+                        size="lg"
+                      >
+                        <Phone className="w-4 h-4 mr-2" />
+                        Llamar ahora
+                      </Button>
+                    </ContactTracker>
+                    
+                    <ContactTracker propertyId={property.id} type="email" metadata={{ contact_method: 'direct_email' }}>
+                      <Button
+                        variant="outline"
+                        onClick={async () => {
+                          trackContactClick(property.id)
+                          
+                          // Create lead for email contact
+                          try {
+                            const response = await fetch('/api/leads', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                name: 'Cliente - Email',
+                                email: 'marconinegociosinmobiliarios@hotmail.com',
+                                message: `Consulta por email para propiedad "${property.title}" - Código #${property.id}`,
+                                source: 'email',
+                                property_id: property.id,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const leadData = await response.json();
+                              
+                              // Track the lead generation in analytics
+                              if (leadData.id) {
+                                await trackLead(leadData.id, LEAD_SOURCE_CODES.EMAIL, property.id);
+                              }
+                            }
+                          } catch (error) {
+                            console.error('Error creating email lead:', error);
+                          }
+                        }}
+                        className="w-full"
+                        size="lg"
+                      >
+                        <Mail className="w-4 h-4 mr-2" />
+                        Enviar email
+                      </Button>
+                    </ContactTracker>
+                    
+                    <ContactTracker propertyId={property.id} type="form" metadata={{ form_type: 'schedule_visit' }}>
+                      <Button
+                        variant="outline"
+                        onClick={async () => {
+                          trackContactClick(property.id)
+                          
+                          // Create lead for visit request
+                          try {
+                            const response = await fetch('/api/leads', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                name: 'Cliente - Solicitud de visita',
+                                message: `Solicitud de visita para propiedad "${property.title}" - Código #${property.id}`,
+                                source: 'formulario_web',
+                                property_id: property.id,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const leadData = await response.json();
+                              
+                              // Track the lead generation in analytics
+                              if (leadData.id) {
+                                await trackLead(leadData.id, LEAD_SOURCE_CODES.FORMULARIO_WEB, property.id);
+                              }
+                            }
+                          } catch (error) {
+                            console.error('Error creating visit request lead:', error);
+                          }
+                        }}
+                        className="w-full"
+                        size="lg"
+                      >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Agendar visita
+                      </Button>
+                    </ContactTracker>
+                    
                     <Button
-                      onClick={() => setShowContactForm(true)}
-                      className="w-full"
+                      onClick={async () => {
+                        trackWhatsAppClick(property.id)
+                        
+                        // Create lead for WhatsApp contact
+                        try {
+                          const response = await fetch('/api/leads', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                              name: 'Cliente - WhatsApp',
+                              phone: '+54 9 1234567890',
+                              message: `Consulta por propiedad "${property.title}" - Código #${property.id}`,
+                              source: 'whatsapp',
+                              property_id: property.id,
+                            }),
+                          });
+
+                          if (response.ok) {
+                            const leadData = await response.json();
+                            
+                            // Track the lead generation in analytics
+                            if (leadData.id) {
+                              await trackLead(leadData.id, LEAD_SOURCE_CODES.WHATSAPP, property.id);
+                            }
+                          }
+                        } catch (error) {
+                          console.error('Error creating WhatsApp lead:', error);
+                        }
+                        
+                        // Abrir WhatsApp con mensaje predeterminado
+                        const message = encodeURIComponent(`Hola! Me interesa la propiedad "${property.title}" - Código #${property.id}`)
+                        window.open(`https://wa.me/5491234567890?text=${message}`, '_blank')
+                      }}
+                      className="w-full bg-green-600 hover:bg-green-700"
                       size="lg"
                     >
                       <MessageCircle className="w-4 h-4 mr-2" />
-                      Enviar consulta
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      size="lg"
-                    >
-                      <Phone className="w-4 h-4 mr-2" />
-                      Llamar ahora
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      size="lg"
-                    >
-                      <Mail className="w-4 h-4 mr-2" />
-                      Enviar email
-                    </Button>
-                    
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      size="lg"
-                    >
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Agendar visita
+                      WhatsApp
                     </Button>
                   </div>
                 ) : (

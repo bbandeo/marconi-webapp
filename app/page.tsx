@@ -5,6 +5,7 @@ import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import {
   Search,
   MapPin,
+  Landmark,
   Bed,
   Bath,
   Square,
@@ -21,10 +22,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FeaturedPropertiesSlider } from "@/components/FeaturedPropertiesSlider";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // Importar servicios
 import { useIsClient } from "@/hooks/use-is-client";
@@ -231,14 +234,14 @@ export default function HomePage() {
             priority
           />
           
-          {/* OVERLAY DINÁMICO AJUSTADO - NUEVAS OPACIDADES */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/0 to-black/80" />
-          
-          {/* EFECTO DIFUMINADO NARANJA AJUSTADO */}
-          <div className="absolute inset-x-0 bottom-0 h-40 md:h-64 bg-gradient-to-t from-orange-600/80 via-orange-500/40 to-transparent" />
-          
-          {/* Overlay radial ajustado */}
-          <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/0 to-black/25" />
+          {/* OVERLAY MEJORADO PARA LEGIBILIDAD */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/70" />
+
+          {/* EFECTO DIFUMINADO NARANJA SUTIL */}
+          <div className="absolute inset-x-0 bottom-0 h-32 md:h-48 bg-gradient-to-t from-orange-600/60 via-orange-500/30 to-transparent" />
+
+          {/* Overlay central para mejorar contraste del texto */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
         </motion.div>
 
         {/* CONTENIDO PRINCIPAL - LAYOUT UNIFICADO PARA TODOS LOS TAMAÑOS */}
@@ -275,26 +278,8 @@ export default function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
             style={{ y: bottomY }}
-            className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-6 sm:pb-8 lg:pb-10"
+            className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-8 sm:pb-12 lg:pb-16"
           >
-            {/* LOGO RESPONSIVO AGRANDADO PARA DESKTOP */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.7, type: "spring", bounce: 0.3 }}
-              className="mb-6 sm:mb-8"
-            >
-              <div className="bg-white/10 backdrop-blur-md rounded-xl sm:rounded-2xl px-8 sm:px-10 lg:px-20 py-6 sm:py-7 lg:py-12 border border-white/20 shadow-2xl shadow-black/30">
-                <Image
-                  src="/assets/logos/marconi_header_orangewhite.png"
-                  alt="Marconi Inmobiliaria"
-                  width={900}
-                  height={270}
-                  className="h-20 sm:h-24 lg:h-36 w-auto opacity-95"
-                />
-              </div>
-            </motion.div>
-            
             {/* CTA PRIMARIO ÚNICO PARA TODOS LOS TAMAÑOS */}
             <Link href="/propiedades">
               <Button 
@@ -318,17 +303,42 @@ export default function HomePage() {
       {/* Propiedades Destacadas - PREMIUM DESIGN */}
       <section
         id="propiedades"
-        className="section-premium bg-premium-main relative overflow-hidden"
+        className="section-spacing relative overflow-hidden"
       >
+        {/* Fondo simplificado y elegante */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800">
+          {/* Sombras suaves para profundidad */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10" />
+        </div>
+
         <div className="container-premium relative z-10">
-          {/* Header Premium - ESPACIADO GENEROSO */}
-          <div className="text-center mb-premium-xl">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
-            </h2>
-            <p className="body-lg text-premium-secondary max-w-2xl mx-auto">
-              Selección exclusiva de propiedades premium en ubicaciones estratégicas
-            </p>
+          {/* Header Premium - JERARQUÍA TIPOGRÁFICA LIMPIA */}
+          <div className="text-center component-spacing group">
+            {/* Título aplicando la nueva jerarquía */}
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="section-title"
+            >
+              PROPIEDADES DESTACADAS
+            </motion.h2>
+            
+            {/* Subtítulo mejorado con nueva jerarquía */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="max-w-3xl mx-auto"
+            >
+              <div className="bg-gray-800/40 backdrop-blur-sm rounded-2xl px-8 py-4 border border-gray-700/30">
+                <p className="body-text text-center">
+                  Hogares seleccionados con estándares de excelencia para tu familia.
+                </p>
+              </div>
+            </motion.div>
           </div>
 
           {loadingProperties ? (
@@ -338,126 +348,10 @@ export default function HomePage() {
             </div>
           ) : (
             <>
-              {/* GRID PROPIEDADES - DISEÑO ESTRATÉGICO PREMIUM */}
-              <div className="grid md:grid-cols-2 gap-8 max-w-7xl mx-auto">
-                {featuredProperties.slice(0, 6).map((property, index) => (
-                  <motion.div
-                    key={property.id}
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1, duration: 0.6 }}
-                    viewport={{ once: true }}
-                  >
-                    <Card className="group overflow-hidden bg-gray-800/50 border border-gray-700/30 backdrop-blur-sm hover:border-orange-500/40 transition-all duration-500 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 cursor-pointer">
-                      {/* IMAGEN CON OVERLAYS ESTRATÉGICOS */}
-                      <Link href={`/propiedades/${property.id}`}>
-                        <div className="relative overflow-hidden h-80 md:h-96">
-                          {property.images && property.images.length > 0 ? (
-                            <Image
-                              src={property.images[0]}
-                              alt={property.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-700"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = "/placeholder.svg";
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                              <div className="text-gray-400 text-center">
-                                <Home className="w-16 h-16 mx-auto mb-4 opacity-40" />
-                                <p className="text-sm font-medium">Sin imagen disponible</p>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Gradiente inferior para destacar precio */}
-                          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                          
-                          {/* PILL BADGE - VENTA/ALQUILER CON GRADIENTE */}
-                          <div className="absolute top-6 left-6">
-                            <div className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg shadow-orange-600/30 hover:shadow-orange-600/50 transition-shadow duration-300 backdrop-blur-sm">
-                              {property.operation_type === "venta" ? "VENTA" : "ALQUILER"}
-                            </div>
-                          </div>
-
-                          {/* PRECIO EN OVERLAY - TIPOGRAFÍA BOLD */}
-                          <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="absolute bottom-6 right-6 text-right"
-                          >
-                            <div className="bg-black/70 backdrop-blur-md rounded-xl px-4 py-3 border border-white/10">
-                              <div className="text-2xl font-bold text-white mb-1">
-                                {property.currency}$ {property.price.toLocaleString()}
-                              </div>
-                              {property.operation_type === "alquiler" && (
-                                <div className="text-xs text-gray-300 font-medium">
-                                  por mes
-                                </div>
-                              )}
-                            </div>
-                          </motion.div>
-                        </div>
-                      </Link>
-
-                      {/* INFORMACIÓN CON MÁS AIRE - PADDING GENEROSO */}
-                      <CardContent className="p-8">
-                        <Link href={`/propiedades/${property.id}`}>
-                          {/* TÍTULO CON JERARQUÍA CLARA */}
-                          <h3 className="text-xl font-bold text-white mb-4 hover:text-orange-400 transition-colors cursor-pointer line-clamp-2 leading-tight">
-                            {property.title}
-                          </h3>
-                          
-                          {/* UBICACIÓN - GRIS CLARO LEGIBLE */}
-                          <div className="flex items-center text-gray-300 mb-6">
-                            <MapPin className="w-5 h-5 mr-3 text-orange-400" />
-                            <span className="text-base font-medium">{property.neighborhood}, Reconquista</span>
-                          </div>
-                          
-                          {/* CARACTERÍSTICAS SI ESTÁN DISPONIBLES */}
-                          {(property.bedrooms || property.bathrooms || property.area_m2) && (
-                            <div className="flex items-center gap-4 text-gray-400 text-sm">
-                              {property.bedrooms && (
-                                <div className="flex items-center bg-gray-700/50 px-3 py-2 rounded-lg">
-                                  <Bed className="w-4 h-4 mr-2 text-orange-400" />
-                                  <span className="font-medium">{property.bedrooms}</span>
-                                </div>
-                              )}
-                              {property.bathrooms && (
-                                <div className="flex items-center bg-gray-700/50 px-3 py-2 rounded-lg">
-                                  <Bath className="w-4 h-4 mr-2 text-orange-400" />
-                                  <span className="font-medium">{property.bathrooms}</span>
-                                </div>
-                              )}
-                              {property.area_m2 && (
-                                <div className="flex items-center bg-gray-700/50 px-3 py-2 rounded-lg">
-                                  <Square className="w-4 h-4 mr-2 text-orange-400" />
-                                  <span className="font-medium">{property.area_m2}m²</span>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </Link>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+              {/* SLIDER PROPIEDADES - DISEÑO ESTRATÉGICO PREMIUM */}
+              <div className="max-w-7xl mx-auto">
+                <FeaturedPropertiesSlider properties={featuredProperties} />
               </div>
-
-              {featuredProperties.length === 0 && (
-                <div className="text-center py-premium-xl">
-                  <Home className="w-16 h-16 text-premium-secondary mx-auto mb-premium-md opacity-40" />
-                  <h3 className="heading-lg text-premium-primary mb-premium-sm">
-                    Propiedades en preparación
-                  </h3>
-                  <p className="body-md text-premium-secondary">
-                    Estamos seleccionando las mejores propiedades para ti
-                  </p>
-                </div>
-              )}
 
               {/* CTA PREMIUM - BOTÓN FULL WIDTH LLAMATIVO */}
               {featuredProperties.length > 0 && (
@@ -483,8 +377,8 @@ export default function HomePage() {
                       </motion.div>
                     </Button>
                   </Link>
-                  <p className="text-gray-300 mt-4 text-lg font-medium">
-                    Más de 200 propiedades premium disponibles
+                  <p className="text-secondary mt-4 text-lg font-medium">
+                    Encontrá la propiedad perfecta para vos.
                   </p>
                 </motion.div>
               )}
@@ -493,52 +387,113 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* STATS SECTION - DINÁMICO CON ANIMACIONES DE CONTADOR */}
-      <section className="py-20 bg-gray-900 relative overflow-hidden">
-        {/* Separador decorativo con líneas sutiles */}
-        <div className="absolute top-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent" />
-        
-        <div className="container mx-auto px-4">
+      {/* QUIÉNES SOMOS - Sección informativa con diseño consistente */}
+      <section className="section-spacing bg-gray-900 relative overflow-hidden">
+        <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Columna de texto */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="space-y-6"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              RESULTADOS QUE <span className="text-orange-500">HABLAN</span>
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-800/60 border border-gray-700/60 secondary-text">
+              Conocé nuestro equipo
+            </div>
+            <h2 className="section-title">
+              ¿Quiénes somos?
             </h2>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-              La confianza de nuestros clientes respalda nuestra trayectoria
+            <p className="text-lg text-secondary">
+              Somos <span className="font-semibold text-white">Marconi Inmobiliaria</span>, una empresa local que entiende tus
+              necesidades. Conocemos Reconquista como la palma de nuestra mano y te acompañamos en cada paso.
             </p>
-          </motion.div>
+            <p className="text-lg text-secondary">
+              Con un enfoque joven y dinámico, nos especializamos en encontrar la propiedad perfecta para cada cliente,
+              desde hogares familiares hasta inversiones estratégicas.
+            </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-            <CounterAnimation value="500+" label="Propiedades Vendidas" icon={Home} />
-            <CounterAnimation value="1000+" label="Clientes Satisfechos" icon={Users} />
-            <CounterAnimation value="15+" label="Años de Experiencia" icon={Award} />
-            <CounterAnimation value="4.9" label="Calificación Promedio" icon={Star} />
-          </div>
-
-          {/* Líneas divisorias sutiles entre métricas */}
-          <div className="hidden md:block absolute inset-0 pointer-events-none">
-            <div className="container mx-auto px-4 h-full flex items-center">
-              <div className="w-full relative">
-                <div className="absolute left-1/4 top-1/2 w-px h-24 bg-gradient-to-b from-transparent via-gray-600/30 to-transparent transform -translate-y-1/2" />
-                <div className="absolute left-2/4 top-1/2 w-px h-24 bg-gradient-to-b from-transparent via-gray-600/30 to-transparent transform -translate-y-1/2" />
-                <div className="absolute left-3/4 top-1/2 w-px h-24 bg-gradient-to-b from-transparent via-gray-600/30 to-transparent transform -translate-y-1/2" />
+            {/* Beneficios */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Confianza local</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <Landmark className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Conocimiento del mercado</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Atención personalizada</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <Award className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Experiencia comprobada</span>
               </div>
             </div>
-          </div>
+
+            <Link href="/agentes">
+              <Button
+                size="lg"
+                className="mt-8 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold px-12 py-6 rounded-full shadow-2xl shadow-orange-600/30 hover:shadow-orange-600/50 transition-all duration-300 group border-0 w-fit text-lg"
+              >
+                Conocé más
+                <motion.div
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                  className="ml-4"
+                >
+                  <ArrowRight className="w-6 h-6" />
+                </motion.div>
+              </Button>
+            </Link>
+          </motion.div>
+
+          {/* Columna imagen */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="relative rotate-[-4deg]">
+              <div className="rounded-3xl border-4 border-orange-500/30 p-2 bg-orange-500/10">
+                <div className="rounded-2xl overflow-hidden bg-gray-800">
+                  <Image
+                    src={
+                      getOptimizedImageUrl("gustavo_vdczse", { width: 900, height: 600, gravity: "face", format: "auto", quality: "auto" }) || "/placeholder.svg"
+                    }
+                    alt="Foto de Gustavo Marconi"
+                    width={900}
+                    height={600}
+                    className="w-full h-[360px] md:h-[420px] object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Tarjeta de nombre */}
+            <div className="absolute -bottom-6 left-6 bg-black/80 text-white rounded-xl px-4 py-3 shadow-2xl border border-white/10">
+              <div className="font-semibold">Gustavo Marconi</div>
+              <div className="text-sm text-gray-300">Fundador & Agente Principal</div>
+              <div className="text-orange-400 text-xs">★★★★★</div>
+            </div>
+          </motion.div>
         </div>
-        
-        {/* Separador decorativo inferior */}
-        <div className="absolute bottom-0 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-orange-500/30 to-transparent" />
       </section>
 
-      {/* CTA SECTION - GRADIENTE DIAGONAL PREMIUM */}
-      <section className="py-20 bg-gradient-to-br from-orange-600 via-orange-500 to-red-600 relative overflow-hidden">
+      {/* CTA SECTION - DISEÑO PREMIUM SIMPLIFICADO */}
+      <section className="section-spacing bg-gradient-to-br from-orange-600 via-orange-500 to-red-600 relative overflow-hidden">
         {/* Patrón de textura sutil */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -586,24 +541,22 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="max-w-4xl mx-auto"
           >
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
-              className="text-5xl md:text-6xl font-black text-white mb-8 tracking-tight"
-              style={{ fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif' }}
+              className="section-title text-center mb-element-spacing"
             >
-              COMENZÁ TU BÚSQUEDA
-              <span className="block text-4xl md:text-5xl font-bold mt-2">HOY MISMO</span>
+              COMENZÁ TU BÚSQUEDA HOY MISMO
             </motion.h2>
             
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
               viewport={{ once: true }}
-              className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto font-medium leading-relaxed"
+              className="subtitle text-center text-white mb-component-spacing max-w-3xl mx-auto"
             >
               Acompañamiento profesional premium para encontrar la propiedad perfecta que transforme tu vida
             </motion.p>
@@ -668,86 +621,7 @@ export default function HomePage() {
         </svg>
       </div>
 
-      {/* Footer - PREMIUM DESIGN */}
-      <footer className="bg-gray-900 pt-8 pb-16 relative">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-6">
-                <Image
-                  src="/assets/logos/marconi_header_orangewhite.png"
-                  alt="Marconi Inmobiliaria"
-                  width={140}
-                  height={45}
-                  className="h-10 w-auto"
-                />
-              </div>
-              <p className="text-lg text-gray-300 mb-6 max-w-md leading-relaxed">
-                Experiencia premium en bienes raíces. Comprometidos con encontrar 
-                la propiedad perfecta para cada familia.
-              </p>
-              
-              {/* Iconos de redes sociales minimalistas */}
-              <div className="flex space-x-4">
-                <div className="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center hover:border-orange-500 hover:bg-orange-500/10 transition-all duration-300 cursor-pointer group">
-                  <div className="w-4 h-4 bg-gray-400 group-hover:bg-orange-500 transition-colors duration-300 rounded-sm"></div>
-                </div>
-                <div className="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center hover:border-orange-500 hover:bg-orange-500/10 transition-all duration-300 cursor-pointer group">
-                  <div className="w-4 h-4 bg-gray-400 group-hover:bg-orange-500 transition-colors duration-300 rounded-sm"></div>
-                </div>
-                <div className="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center hover:border-orange-500 hover:bg-orange-500/10 transition-all duration-300 cursor-pointer group">
-                  <div className="w-4 h-4 bg-gray-400 group-hover:bg-orange-500 transition-colors duration-300 rounded-sm"></div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold text-white mb-6">Enlaces</h3>
-              <ul className="space-y-4 text-gray-300">
-                <li>
-                  <Link
-                    href="/propiedades"
-                    className="text-base hover:text-orange-400 transition-colors duration-300 hover:translate-x-1 inline-block"
-                  >
-                    Propiedades
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/agentes"
-                    className="text-base hover:text-orange-400 transition-colors duration-300 hover:translate-x-1 inline-block"
-                  >
-                    Agentes
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contacto"
-                    className="text-base hover:text-orange-400 transition-colors duration-300 hover:translate-x-1 inline-block"
-                  >
-                    Contacto
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-lg font-bold text-white mb-6">Contacto</h3>
-              <ul className="space-y-4 text-gray-300">
-                <li className="text-base">📍 Reconquista, Santa Fe</li>
-                <li className="text-base">📞 +54 9 3482 308100</li>
-                <li className="text-base">✉️ marconinegociosinmobiliarios@hotmail.com</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-700/50 mt-12 pt-8 text-center">
-            <p className="text-gray-400 text-base">
-              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
