@@ -137,6 +137,17 @@ export default function ContactDetailModal({ contact, isOpen, onClose, onUpdate 
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <Building className="w-4 h-4 text-gray-400" />
+                {contact.propertyImage ? (
+                  <img
+                    src={contact.propertyImage}
+                    alt={contact.property}
+                    className="w-10 h-10 rounded object-cover border border-gray-200"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.src = "/placeholder.svg"
+                    }}
+                  />
+                ) : null}
                 <div>
                   <p className="font-medium">{contact.property}</p>
                   <p className="text-sm text-gray-500">Propiedad de interés</p>

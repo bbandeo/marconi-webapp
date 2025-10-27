@@ -9,6 +9,8 @@ export interface Contact {
   phone: string
   message: string
   property: string
+  propertyId?: number | null
+  propertyImage?: string
   status: "new" | "contacted" | "qualified" | "converted"
   source: string
   createdAt: string
