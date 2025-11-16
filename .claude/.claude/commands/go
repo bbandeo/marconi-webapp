@@ -1,0 +1,126 @@
+---
+name: go
+description: Execute tasks with enhanced capabilities using context7 for documentation, sequential thinking for decision making, serena for semantic code analysis, mobile-mcp for mobile automation, and read-website-fast for web content extraction
+argument-hint: "[task description]"
+---
+
+You are executing a `/go` command with enhanced capabilities. Always follow these requirements:
+
+## MANDATORY TOOLS USAGE
+
+1. **Always use serena** for semantic code retrieval and editing tools
+   - Use serena to find existing patterns, functions, and architectural decisions in the codebase
+   - Search by intent and functionality, not just text matching
+   - Use serena to understand how similar features are implemented in the project
+   - Leverage serena for code analysis before making changes to maintain consistency
+
+2. **Always use context7** for up-to-date documentation on third-party code
+   - Before working with any external library or framework, use context7 to get current documentation
+   - Use context7 when you need API references, usage examples, or best practices for external dependencies
+   - Verify latest API versions and avoid deprecated methods using context7
+
+3. **Always use sequential thinking** for any decision making
+   - Use sequential thinking to break down complex problems into logical steps
+   - Use it to analyze options and make informed architectural decisions
+   - Use it for planning multi-step tasks and identifying dependencies
+   - Use it whenever you need to reason through a solution or evaluate trade-offs
+
+4. **Always use mobile-mcp** for mobile automation tasks
+   - Use mobile-mcp for iOS and Android app automation on simulators, emulators, and physical devices
+   - Use it for automated testing of mobile user flows and UI interactions
+   - Use mobile-mcp for extracting structured data from mobile applications
+   - Use it for multi-step user journey automation driven by requirements
+
+5. **Always use read-website-fast** for web content extraction and research
+   - Use read-website-fast to quickly extract and convert web content to clean markdown
+   - Use it for researching best practices, documentation, and competitor analysis
+   - Use it to gather context from external sources before implementation
+   - Use it for efficient web scraping with minimal token consumption
+
+## PREREQUISITE
+
+Before doing anything else, you MUST:
+- Read the claude.md root file to understand project context and available agents
+- Use the CLAUDE.md instructions to guide your approach and tool selection
+
+## EXECUTION PROCESS
+
+1. **Context Gathering**
+   - First, read `/data/data/com.termux/files/home/CLAUDE.md`
+   - Use serena to understand existing codebase patterns and architecture
+   - If research is needed, use read-website-fast to gather external information
+
+2. **Planning Phase**
+   - Use sequential thinking to plan your approach and identify dependencies
+   - Break down the task into logical, executable steps
+   - Consider existing patterns found via serena in your planning
+
+3. **Documentation Research**
+   - If the task involves external libraries/frameworks, use context7 to get current documentation
+   - Verify API compatibility and best practices using context7
+
+4. **Implementation Strategy**
+   - Execute the task following the project guidelines from CLAUDE.md
+   - Use specialized agents as recommended in CLAUDE.md when appropriate
+   - Maintain consistency with existing codebase patterns identified by serena
+
+5. **Mobile Testing (if applicable)**
+   - If the task involves mobile functionality, use mobile-mcp for automated testing
+   - Validate user flows and interactions across different devices/platforms
+
+6. **Quality Assurance**
+   - Verify implementation against requirements
+   - Ensure consistency with project architecture and patterns
+
+## TOOL SELECTION GUIDELINES
+
+**Use serena when:**
+- Analyzing existing code patterns
+- Finding similar implementations in the codebase
+- Understanding project architecture before making changes
+- Maintaining consistency with existing patterns
+
+**Use context7 when:**
+- Working with external libraries or frameworks
+- Needing current API documentation
+- Verifying compatibility and best practices
+- Avoiding deprecated methods
+
+**Use sequential thinking when:**
+- Planning complex, multi-step tasks
+- Making architectural decisions
+- Evaluating different implementation approaches
+- Breaking down requirements into actionable steps
+
+**Use mobile-mcp when:**
+- Automating mobile app interactions
+- Testing mobile user flows
+- Working with iOS/Android simulators or devices
+- Extracting data from mobile applications
+
+**Use read-website-fast when:**
+- Researching external documentation or best practices
+- Analyzing competitor implementations
+- Gathering context from web sources
+- Converting web content for analysis
+
+## ERROR HANDLING
+
+If any tool is unavailable:
+- **serena unavailable**: Manually analyze code patterns and document findings
+- **context7 unavailable**: Use read-website-fast to get documentation from official sources
+- **sequential thinking unavailable**: Manually break down the problem in structured steps
+- **mobile-mcp unavailable**: Use alternative testing approaches or manual validation
+- **read-website-fast unavailable**: Use web_search and web_fetch for content extraction
+
+## TASK
+
+Execute the following task: $ARGUMENTS
+
+Remember: 
+- Always use serena for code analysis and pattern discovery
+- Always use context7 for external documentation 
+- Always use sequential thinking for decision making and planning
+- Use mobile-mcp for mobile automation when applicable
+- Use read-website-fast for web research when needed
+- Read CLAUDE.md first to understand project context and guidelines

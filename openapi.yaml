@@ -1,0 +1,1052 @@
+openapi: 3.1.0
+info:
+  title: Marconi Inmobiliaria Analytics & Geocoding API
+  description: |
+    Comprehensive API for real estate analytics tracking and geocoding services.
+    Includes GDPR-compliant user session management, property view tracking,
+    lead generation attribution, and external geocoding proxy services.
+  version: "1.0.0"
+  contact:
+    name: Marconi Inmobiliaria API Support
+    email: contact@marconi-inmobiliaria.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://marconi-inmobiliaria.vercel.app/api
+    description: Production server
+  - url: http://localhost:3000/api
+    description: Development server
+
+security:
+  - bearerAuth: []
+  - apiKey: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    # ==== COMMON SCHEMAS ====
+    StandardResponse:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+          description: Operation success status
+        error:
+          type: string
+          description: Error message if success is false
+        message:
+          type: string
+          description: Success message
+
+    # ==== GEOCODING SCHEMAS ====
+    GeocodingResponse:
+      type: object
+      properties:
+        lat:
+          type: number
+          format: float
+          description: Latitude coordinate
+          example: -29.15
+        lng:
+          type: number
+          format: float
+          description: Longitude coordinate
+          example: -59.65
+        display_name:
+          type: string
+          description: Human-readable address description
+          example: "Reconquista, Santa Fe, Argentina"
+
+    # ==== ANALYTICS SESSION SCHEMAS ====
+    CreateSessionRequest:
+      type: object
+      properties:
+        user_agent:
+          type: string
+          description: Browser user agent string
+          maxLength: 500
+        country_code:
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          pattern: '^[A-Z]{2}$'
+          example: "AR"
+        device_type:
+          type: string
+          enum: [desktop, mobile, tablet]
+          description: Device type classification
+        browser:
+          type: string
+          description: Browser name
+          maxLength: 100
+        os:
+          type: string
+          description: Operating system name
+          maxLength: 100
+        referrer_domain:
+          type: string
+          description: Referring domain (without protocol)
+          maxLength: 255
+        landing_page:
+          type: string
+          description: First page visited in session
+          maxLength: 500
+        utm_source:
+          type: string
+          description: UTM source parameter
+          maxLength: 255
+        utm_medium:
+          type: string
+          description: UTM medium parameter
+          maxLength: 255
+        utm_campaign:
+          type: string
+          description: UTM campaign parameter
+          maxLength: 255
+        utm_term:
+          type: string
+          description: UTM term parameter
+          maxLength: 255
+        utm_content:
+          type: string
+          description: UTM content parameter
+          maxLength: 255
+
+    SessionResponse:
+      allOf:
+        - $ref: '#/components/schemas/StandardResponse'
+        - type: object
+          properties:
+            session_id:
+              type: string
+              format: uuid
+              description: Unique session identifier
+
+    # ==== PROPERTY VIEW SCHEMAS ====
+    CreatePropertyViewRequest:
+      type: object
+      required:
+        - session_id
+        - property_id
+      properties:
+        session_id:
+          type: string
+          format: uuid
+          description: Analytics session ID
+        property_id:
+          type: integer
+          minimum: 1
+          description: Property ID being viewed
+        time_on_page:
+          type: integer
+          minimum: 0
+          maximum: 86400
+          description: Time spent on page in seconds
+        scroll_depth:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: Maximum scroll percentage reached
+        contact_button_clicked:
+          type: boolean
+          default: false
+          description: Whether contact button was clicked
+        whatsapp_clicked:
+          type: boolean
+          default: false
+          description: Whether WhatsApp button was clicked
+        phone_clicked:
+          type: boolean
+          default: false
+          description: Whether phone button was clicked
+        email_clicked:
+          type: boolean
+          default: false
+          description: Whether email button was clicked
+        images_viewed:
+          type: integer
+          minimum: 0
+          default: 0
+          description: Number of images viewed in gallery
+        page_url:
+          type: string
+          format: uri
+          description: Full URL of the property page
+        referrer_url:
+          type: string
+          format: uri
+          description: URL of referring page
+        search_query:
+          type: string
+          maxLength: 255
+          description: Search query that led to this property
+
+    PropertyViewResponse:
+      allOf:
+        - $ref: '#/components/schemas/StandardResponse'
+        - type: object
+          properties:
+            event_id:
+              type: string
+              format: uuid
+              description: Unique view event identifier
+
+    # ==== USER INTERACTION SCHEMAS ====
+    CreateInteractionRequest:
+      type: object
+      required:
+        - session_id
+        - event_type
+      properties:
+        session_id:
+          type: string
+          format: uuid
+          description: Analytics session ID
+        property_id:
+          type: integer
+          minimum: 1
+          description: Property ID if interaction is property-specific
+        event_type:
+          type: string
+          enum: [
+            click, scroll, form_field_focus, form_submit, page_load,
+            page_unload, contact_click, phone_click, whatsapp_click,
+            email_click, image_view, gallery_interaction
+          ]
+          description: Type of user interaction
+        event_target:
+          type: string
+          maxLength: 255
+          description: CSS selector or element identifier
+        page_url:
+          type: string
+          format: uri
+          description: URL where interaction occurred
+        event_data:
+          type: object
+          description: Additional event-specific data
+          additionalProperties: true
+        timestamp:
+          type: integer
+          description: Unix timestamp of interaction (optional, defaults to current time)
+
+    BatchInteractionRequest:
+      type: object
+      required:
+        - interactions
+      properties:
+        interactions:
+          type: array
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/CreateInteractionRequest'
+
+    # ==== LEAD GENERATION SCHEMAS ====
+    CreateLeadGenerationRequest:
+      type: object
+      required:
+        - lead_id
+        - lead_source_id
+      properties:
+        lead_id:
+          type: integer
+          minimum: 1
+          description: Lead ID from CRM system
+        session_id:
+          type: string
+          format: uuid
+          description: Analytics session ID
+        property_id:
+          type: integer
+          minimum: 1
+          description: Property ID that generated the lead
+        lead_source_id:
+          type: integer
+          minimum: 1
+          description: Lead source ID from lead sources catalog
+        form_type:
+          type: string
+          enum: [contact, phone_call, whatsapp, email, callback, visit_request]
+          description: Type of form or contact method used
+        conversion_page:
+          type: string
+          format: uri
+          description: Page URL where conversion occurred
+        time_to_conversion:
+          type: integer
+          minimum: 0
+          description: Time from first session activity to conversion (minutes)
+        session_pages_viewed:
+          type: integer
+          minimum: 1
+          default: 1
+          description: Number of pages viewed in session before conversion
+        properties_viewed:
+          type: integer
+          minimum: 0
+          default: 0
+          description: Number of unique properties viewed before conversion
+        utm_source:
+          type: string
+          maxLength: 255
+        utm_medium:
+          type: string
+          maxLength: 255
+        utm_campaign:
+          type: string
+          maxLength: 255
+        utm_term:
+          type: string
+          maxLength: 255
+        utm_content:
+          type: string
+          maxLength: 255
+
+    LeadWithSourceRequest:
+      type: object
+      required:
+        - lead_id
+        - source_code
+      properties:
+        lead_id:
+          type: integer
+          minimum: 1
+          description: Lead ID from CRM system
+        source_code:
+          type: string
+          enum: [
+            formulario_web, whatsapp, telefono, email, facebook,
+            instagram, google_ads, facebook_ads, referido, walk_in,
+            marketplace, otros
+          ]
+          description: Lead source code for automatic source lookup
+        session_id:
+          type: string
+          format: uuid
+          description: Analytics session ID
+        property_id:
+          type: integer
+          minimum: 1
+          description: Property ID that generated the lead
+        form_type:
+          type: string
+          enum: [contact, phone_call, whatsapp, email, callback, visit_request]
+        conversion_page:
+          type: string
+          format: uri
+        session_pages_viewed:
+          type: integer
+          minimum: 1
+        properties_viewed:
+          type: integer
+          minimum: 0
+        utm_source:
+          type: string
+          maxLength: 255
+        utm_medium:
+          type: string
+          maxLength: 255
+        utm_campaign:
+          type: string
+          maxLength: 255
+        utm_term:
+          type: string
+          maxLength: 255
+        utm_content:
+          type: string
+          maxLength: 255
+
+    # ==== DASHBOARD SCHEMAS ====
+    DashboardFilters:
+      type: object
+      properties:
+        start_date:
+          type: string
+          format: date
+          description: Start date for analytics period (ISO 8601)
+          example: "2024-01-01"
+        end_date:
+          type: string
+          format: date
+          description: End date for analytics period (ISO 8601)
+          example: "2024-01-31"
+        property_ids:
+          type: array
+          items:
+            type: integer
+          description: Filter by specific property IDs
+        lead_source_ids:
+          type: array
+          items:
+            type: integer
+          description: Filter by specific lead source IDs
+        utm_source:
+          type: string
+          description: Filter by UTM source
+        utm_campaign:
+          type: string
+          description: Filter by UTM campaign
+        device_type:
+          type: string
+          enum: [desktop, mobile, tablet]
+          description: Filter by device type
+        country_code:
+          type: string
+          pattern: '^[A-Z]{2}$'
+          description: Filter by country code
+
+    DashboardStatsResponse:
+      allOf:
+        - $ref: '#/components/schemas/StandardResponse'
+        - type: object
+          properties:
+            data:
+              type: object
+              properties:
+                total_sessions:
+                  type: integer
+                  description: Total number of analytics sessions
+                total_property_views:
+                  type: integer
+                  description: Total property view events
+                unique_property_views:
+                  type: integer
+                  description: Unique property views (deduplicated)
+                total_leads:
+                  type: integer
+                  description: Total leads generated
+                conversion_rate:
+                  type: number
+                  format: float
+                  description: Overall conversion rate (leads/sessions)
+                avg_time_on_page:
+                  type: number
+                  format: float
+                  description: Average time spent on property pages (seconds)
+                top_properties:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      property_id:
+                        type: integer
+                      title:
+                        type: string
+                      metric_value:
+                        type: number
+                      unique_views:
+                        type: integer
+                      leads:
+                        type: integer
+                top_lead_sources:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      source_id:
+                        type: integer
+                      source_name:
+                        type: string
+                      leads_count:
+                        type: integer
+                      conversion_rate:
+                        type: number
+                traffic_by_device:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      device_type:
+                        type: string
+                      sessions:
+                        type: integer
+                      percentage:
+                        type: number
+                daily_stats:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        format: date
+                      sessions:
+                        type: integer
+                      views:
+                        type: integer
+                      leads:
+                        type: integer
+            filters:
+              $ref: '#/components/schemas/DashboardFilters'
+
+    # ==== ERROR SCHEMAS ====
+    ValidationErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/StandardResponse'
+        - type: object
+          properties:
+            field:
+              type: string
+              description: Field that failed validation
+
+    RateLimitErrorResponse:
+      allOf:
+        - $ref: '#/components/schemas/StandardResponse'
+        - type: object
+          properties:
+            retry_after:
+              type: integer
+              description: Seconds to wait before retrying
+
+paths:
+  # ==== GEOCODING ENDPOINTS ====
+  /geocode:
+    get:
+      tags:
+        - Geocoding
+      summary: Geocode an address to coordinates
+      description: |
+        Converts an address to latitude/longitude coordinates using OpenStreetMap Nominatim.
+        Features 24-hour caching, rate limiting (1 request/second), and Argentina-specific filtering.
+        Provides fallback coordinates for Reconquista, Santa Fe on errors or no results.
+      parameters:
+        - name: address
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 500
+          description: Address to geocode
+          example: "San Martin 123, Reconquista, Santa Fe"
+      responses:
+        '200':
+          description: Geocoding successful (includes fallback responses)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GeocodingResponse'
+              examples:
+                success:
+                  summary: Successful geocoding
+                  value:
+                    lat: -29.15
+                    lng: -59.65
+                    display_name: "San Martin 123, Reconquista, Santa Fe, Argentina"
+                fallback:
+                  summary: Fallback response
+                  value:
+                    lat: -29.15
+                    lng: -59.65
+                    display_name: "Reconquista, Santa Fe, Argentina (fallback)"
+        '400':
+          description: Invalid request - missing or empty address parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+              example:
+                success: false
+                error: "Address parameter is required"
+        '429':
+          description: Rate limit exceeded
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+                example: 1
+              description: Seconds to wait before retrying
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitErrorResponse'
+
+  # ==== ANALYTICS SESSION ENDPOINTS ====
+  /analytics/session:
+    post:
+      tags:
+        - Analytics
+      summary: Create or retrieve analytics session
+      description: |
+        Creates a new analytics session or retrieves existing one based on IP and user agent.
+        IP addresses are hashed for GDPR compliance. Sessions are deduplicated within 4-hour windows.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+      responses:
+        '200':
+          description: Session created or retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+              example:
+                success: true
+                session_id: "550e8400-e29b-41d4-a716-446655440000"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+    put:
+      tags:
+        - Analytics
+      summary: Update session last seen timestamp
+      description: Updates the last_seen_at timestamp for an existing session
+      parameters:
+        - name: session_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Session ID to update
+      responses:
+        '200':
+          description: Session updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+        '400':
+          description: Missing or invalid session ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  # ==== PROPERTY VIEW ENDPOINTS ====
+  /analytics/property-view:
+    post:
+      tags:
+        - Analytics
+      summary: Track property view event
+      description: |
+        Records a property view event with session attribution. Includes automatic
+        debouncing to prevent duplicate views within 2-hour windows per property/session.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePropertyViewRequest'
+      responses:
+        '200':
+          description: Property view recorded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PropertyViewResponse'
+              example:
+                success: true
+                event_id: "550e8400-e29b-41d4-a716-446655440001"
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+    put:
+      tags:
+        - Analytics
+      summary: Track property view with automatic session creation
+      description: |
+        Records a property view and automatically creates/retrieves an analytics session
+        if session_id is not provided. Useful for simplified client-side integration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/CreatePropertyViewRequest'
+                - $ref: '#/components/schemas/CreateSessionRequest'
+      responses:
+        '200':
+          description: Property view and session created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PropertyViewResponse'
+                  - type: object
+                    properties:
+                      session_id:
+                        type: string
+                        format: uuid
+                        description: Created or retrieved session ID
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  # ==== USER INTERACTION ENDPOINTS ====
+  /analytics/interaction:
+    post:
+      tags:
+        - Analytics
+      summary: Record user interaction event
+      description: |
+        Records a single user interaction event (click, scroll, form interaction, etc.)
+        for UX analysis and user behavior tracking.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInteractionRequest'
+      responses:
+        '200':
+          description: Interaction recorded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+              example:
+                success: true
+                message: "Interaction recorded successfully"
+        '400':
+          description: Validation error - missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+    put:
+      tags:
+        - Analytics
+      summary: Record multiple interaction events (batch)
+      description: |
+        Records multiple user interaction events in a single request.
+        Limited to 100 interactions per batch for performance.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchInteractionRequest'
+      responses:
+        '200':
+          description: Batch interactions recorded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+              example:
+                success: true
+                message: "5 interactions recorded successfully"
+        '400':
+          description: Validation error - invalid batch data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  # ==== LEAD GENERATION ENDPOINTS ====
+  /analytics/lead-generation:
+    post:
+      tags:
+        - Analytics
+      summary: Record lead generation event
+      description: |
+        Records a lead generation event with full attribution data including
+        session tracking, UTM parameters, and conversion metrics.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLeadGenerationRequest'
+      responses:
+        '200':
+          description: Lead generation event recorded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+    put:
+      tags:
+        - Analytics
+      summary: Record lead with automatic source detection
+      description: |
+        Records a lead generation event using a source code for automatic
+        lead source lookup. Simplifies client-side integration.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadWithSourceRequest'
+      responses:
+        '200':
+          description: Lead recorded with source attribution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  # ==== DASHBOARD ENDPOINTS ====
+  /analytics/dashboard:
+    get:
+      tags:
+        - Analytics
+      summary: Get dashboard analytics (basic)
+      description: |
+        Retrieves comprehensive analytics data for the admin dashboard
+        with optional filtering. Defaults to last 30 days if no date range provided.
+      parameters:
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Start date (ISO 8601)
+          example: "2024-01-01"
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: End date (ISO 8601)
+          example: "2024-01-31"
+        - name: property_ids
+          in: query
+          schema:
+            type: string
+          description: Comma-separated property IDs
+          example: "1,2,3"
+        - name: lead_source_ids
+          in: query
+          schema:
+            type: string
+          description: Comma-separated lead source IDs
+          example: "1,2,3"
+        - name: utm_source
+          in: query
+          schema:
+            type: string
+          description: Filter by UTM source
+        - name: utm_campaign
+          in: query
+          schema:
+            type: string
+          description: Filter by UTM campaign
+        - name: device_type
+          in: query
+          schema:
+            type: string
+            enum: [desktop, mobile, tablet]
+          description: Filter by device type
+        - name: country_code
+          in: query
+          schema:
+            type: string
+            pattern: '^[A-Z]{2}$'
+          description: Filter by country code
+      responses:
+        '200':
+          description: Dashboard analytics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardStatsResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+    post:
+      tags:
+        - Analytics
+      summary: Get advanced dashboard analytics
+      description: |
+        Retrieves specific analytics metrics based on requested metric types.
+        Supports complex filtering and multiple metric sets in a single request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/DashboardFilters'
+                - type: object
+                  properties:
+                    metrics:
+                      type: array
+                      items:
+                        type: string
+                        enum: [overview, properties, campaigns, sources, devices, all]
+                      default: [overview]
+                      description: Specific metrics to retrieve
+                      example: ["overview", "properties", "campaigns"]
+      responses:
+        '200':
+          description: Advanced analytics retrieved successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/StandardResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        description: Requested analytics data grouped by metric type
+                        additionalProperties: true
+                      filters:
+                        $ref: '#/components/schemas/DashboardFilters'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+  # ==== GDPR COMPLIANCE ENDPOINTS ====
+  /analytics/gdpr/opt-out:
+    post:
+      tags:
+        - GDPR Compliance
+      summary: Opt out of analytics tracking
+      description: |
+        Allows users to opt out of analytics tracking in compliance with GDPR.
+        Marks existing sessions as opted out and prevents future tracking.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                  format: uuid
+                  description: Session ID to opt out (optional if IP provided)
+                ip_address:
+                  type: string
+                  description: IP address to opt out (hashed automatically)
+                reason:
+                  type: string
+                  maxLength: 255
+                  description: Optional reason for opt-out
+      responses:
+        '200':
+          description: Opt-out processed successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/StandardResponse'
+                  - type: object
+                    properties:
+                      affected_records:
+                        type: integer
+                        description: Number of records marked as opted out
+        '400':
+          description: Invalid request - missing session ID or IP
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+
+tags:
+  - name: Geocoding
+    description: Address to coordinate conversion services
+  - name: Analytics
+    description: User behavior and property interaction tracking
+  - name: GDPR Compliance
+    description: Privacy and data protection features
+
+x-rateLimit:
+  geocode:
+    requests: 60
+    period: 60
+    description: "Rate limited to 1 request per second with internal queuing"
+  analytics:
+    requests: 1000
+    period: 60
+    description: "Rate limited to ~16 requests per second for analytics endpoints"

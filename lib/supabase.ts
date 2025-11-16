@@ -46,6 +46,8 @@ export interface Database {
           neighborhood: string | null
           city: string
           province: string
+          latitude: number | null
+          longitude: number | null
           images: string[]
           features: string[]
           featured: boolean
@@ -69,6 +71,8 @@ export interface Database {
           neighborhood?: string | null
           city?: string
           province?: string
+          latitude?: number | null
+          longitude?: number | null
           images?: string[]
           features?: string[]
           featured?: boolean
@@ -92,6 +96,8 @@ export interface Database {
           neighborhood?: string | null
           city?: string
           province?: string
+          latitude?: number | null
+          longitude?: number | null
           images?: string[]
           features?: string[]
           featured?: boolean
@@ -189,6 +195,53 @@ export interface Database {
           updated_at?: string
         }
       }
+      agents: {
+        Row: {
+          id: number
+          name: string
+          email: string
+          phone: string
+          whatsapp: string | null
+          photo_url: string | null
+          photo_public_id: string | null
+          bio: string | null
+          specialty: string | null
+          years_of_experience: number | null
+          active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          name: string
+          email: string
+          phone: string
+          whatsapp?: string | null
+          photo_url?: string | null
+          photo_public_id?: string | null
+          bio?: string | null
+          specialty?: string | null
+          years_of_experience?: number | null
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          name?: string
+          email?: string
+          phone?: string
+          whatsapp?: string | null
+          photo_url?: string | null
+          photo_public_id?: string | null
+          bio?: string | null
+          specialty?: string | null
+          years_of_experience?: number | null
+          active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
   }
 }
@@ -202,6 +255,10 @@ export type LeadInsert = Database["public"]["Tables"]["leads"]["Insert"]
 export type LeadUpdate = Database["public"]["Tables"]["leads"]["Update"]
 
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
+
+export type Agent = Database["public"]["Tables"]["agents"]["Row"]
+export type AgentInsert = Database["public"]["Tables"]["agents"]["Insert"]
+export type AgentUpdate = Database["public"]["Tables"]["agents"]["Update"]
 
 // Mapeo de valores para el frontend
 export const STATUS_MAP = {

@@ -14,7 +14,11 @@ import {
   MapPin,
   Bed,
   Bath,
-  Square
+  Square,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,7 +28,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger
 } from "@/components/ui/dropdown-menu";
 import {
   Select,
@@ -35,7 +43,8 @@ import {
 } from "@/components/ui/select";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import { PropertyService } from "@/services/properties";
-import type { Property, STATUS_MAP } from "@/lib/supabase";
+import type { Property } from "@/lib/supabase";
+import { STATUS_MAP } from "@/lib/supabase";
 
 interface PropertyWithStats extends Property {
   views?: number;
@@ -49,32 +58,70 @@ interface PropertyImageProps {
 
 function PropertyImage({ images, title }: PropertyImageProps) {
   const [imageError, setImageError] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   const firstImage = images && images.length > 0 ? images[0] : null;
-  console.log("Images:", images);
-  console.log("First Image:", firstImage);
+
+  const handleMouseEnter = () => {
+    const timeout = setTimeout(() => {
+      setShowPopup(true);
+    }, 500); // 500ms delay before showing popup
+    setHoverTimeout(timeout);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
+    }
+    setShowPopup(false);
+  };
 
   if (!firstImage || imageError) {
     return (
-      <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center">
+      <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center border border-gray-600">
         <Home className="w-6 h-6 text-gray-400" />
       </div>
     );
   }
 
   return (
-    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-700">
-      <img
-        src={
-          getOptimizedImageUrl(firstImage, {
-            width: 48,
-            height: 48,
-            crop: "fill"
-          }) || "/placeholder.svg"
-        }
-        alt={title}
-        className="w-full h-full object-cover"
-        onError={() => setImageError(true)}
-      />
+    <div className="relative">
+      <div 
+        className="w-12 h-12 rounded-lg overflow-hidden bg-gray-700 border border-gray-600 shadow-sm cursor-pointer group"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <img
+          src={firstImage}
+          alt={`Imagen de ${title}`}
+          className="w-full h-full object-cover transition-all duration-300 group-hover:scale-110"
+          onError={() => setImageError(true)}
+          loading="lazy"
+        />
+      </div>
+      
+      {/* Popup Image */}
+      {showPopup && (
+        <div className="absolute z-50 left-16 top-0 bg-gray-800 border border-gray-600 rounded-lg shadow-2xl animate-in fade-in-0 zoom-in-95 duration-200 pointer-events-none">
+          <div className="w-80 sm:w-96 lg:w-[28rem] p-2">
+            <div className="relative w-full">
+              <img
+                src={firstImage}
+                alt={`Vista previa de ${title}`}
+                className="w-full h-auto max-h-64 sm:max-h-72 lg:max-h-80 object-contain rounded bg-gray-900"
+                onError={() => setImageError(true)}
+                style={{ aspectRatio: 'auto' }}
+              />
+            </div>
+            <div className="px-1 py-2">
+              <p className="text-sm text-gray-300 break-words leading-tight">
+                {title}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -192,6 +239,38 @@ export default function PropertiesPage() {
     }
   };
 
+  const changePropertyStatus = async (propertyId: number, newStatus: string) => {
+    try {
+      const response = await fetch(`/api/properties/${propertyId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          status: newStatus
+        })
+      });
+
+      if (response.ok) {
+        setProperties((prev) =>
+          prev.map((property) =>
+            property.id === propertyId
+              ? { ...property, status: newStatus }
+              : property
+          )
+        );
+
+        // Show success feedback
+        console.log(`Estado de propiedad cambiado a ${getStatusDisplay(newStatus)} exitosamente`);
+      } else {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error("Error changing property status:", error);
+      alert("Error al cambiar el estado de la propiedad");
+    }
+  };
+
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case "available":
@@ -209,6 +288,21 @@ export default function PropertiesPage() {
 
   const getStatusDisplay = (status: string) => {
     return STATUS_MAP[status as keyof typeof STATUS_MAP] || status;
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "available":
+        return CheckCircle;
+      case "sold":
+        return XCircle;
+      case "rented":
+        return Clock;
+      case "reserved":
+        return AlertCircle;
+      default:
+        return CheckCircle;
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -556,7 +650,7 @@ export default function PropertiesPage() {
                     </td>
                     <td className="py-4 px-6">
                       <Badge className={getStatusColor(property.status)}>
-                        {property.status}
+                        {getStatusDisplay(property.status)}
                       </Badge>
                     </td>
                     <td className="py-4 px-6">
@@ -618,6 +712,57 @@ export default function PropertiesPage() {
                               <Edit className="w-4 h-4 mr-2" />
                               Editar
                             </DropdownMenuItem>
+
+                            <DropdownMenuSeparator className="bg-gray-600" />
+
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger className="text-white hover:bg-gray-600">
+                                <span className="flex items-center">
+                                  {(() => {
+                                    const StatusIcon = getStatusIcon(property.status);
+                                    return <StatusIcon className="w-4 h-4 mr-2" />;
+                                  })()}
+                                  Cambiar Estado
+                                </span>
+                              </DropdownMenuSubTrigger>
+                              <DropdownMenuSubContent className="bg-gray-700 border-gray-600">
+                                <DropdownMenuItem
+                                  onClick={() => changePropertyStatus(property.id, "available")}
+                                  className="text-white hover:bg-gray-600"
+                                  disabled={property.status === "available"}
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+                                  Disponible
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => changePropertyStatus(property.id, "sold")}
+                                  className="text-white hover:bg-gray-600"
+                                  disabled={property.status === "sold"}
+                                >
+                                  <XCircle className="w-4 h-4 mr-2 text-red-500" />
+                                  Vendido
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => changePropertyStatus(property.id, "rented")}
+                                  className="text-white hover:bg-gray-600"
+                                  disabled={property.status === "rented"}
+                                >
+                                  <Clock className="w-4 h-4 mr-2 text-blue-500" />
+                                  Alquilado
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => changePropertyStatus(property.id, "reserved")}
+                                  className="text-white hover:bg-gray-600"
+                                  disabled={property.status === "reserved"}
+                                >
+                                  <AlertCircle className="w-4 h-4 mr-2 text-yellow-500" />
+                                  Reservado
+                                </DropdownMenuItem>
+                              </DropdownMenuSubContent>
+                            </DropdownMenuSub>
+
+                            <DropdownMenuSeparator className="bg-gray-600" />
+
                             <DropdownMenuItem
                               onClick={() => deleteProperty(property.id)}
                               className="text-red-400 hover:bg-gray-600 hover:text-red-300"

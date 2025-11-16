@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { PropertyDetailMap } from "@/components/PropertyDetailMap"
 import { 
   ArrowLeft, 
   MapPin, 
@@ -31,6 +32,10 @@ import {
   Home
 } from "lucide-react"
 import type { Property as PropertyType } from "@/lib/supabase"
+import Header from "@/components/Header"
+import { ComprehensivePropertyTracker, ContactTracker, ImageGalleryTracker } from "@/components/PropertyViewTracker"
+import { trackLead } from '@/lib/analytics-client'
+import { LEAD_SOURCE_CODES } from '@/types/analytics'
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -102,6 +107,8 @@ export default function PropertyDetailPage() {
     }
   }, [params.id])
 
+  // Property view tracking is handled by ComprehensivePropertyTracker component below
+
   // Image gallery navigation
   const nextImage = () => {
     if (property?.images && property.images.length > 1) {
@@ -154,56 +161,104 @@ export default function PropertyDetailPage() {
   // Contact form handler
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: Implement contact form submission
-    console.log("Contact form submitted:", contactForm)
-    alert("¡Mensaje enviado! Nos pondremos en contacto contigo pronto.")
-    setShowContactForm(false)
-    setContactForm({ name: "", email: "", phone: "", message: "" })
+    
+    try {
+      // Create the lead first
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: contactForm.name,
+          email: contactForm.email,
+          phone: contactForm.phone,
+          message: contactForm.message,
+          source: 'formulario_web',
+          property_id: property?.id,
+        }),
+      });
+
+      if (response.ok) {
+        const leadData = await response.json();
+        
+        // Track the lead generation in analytics
+        if (leadData.id) {
+          await trackLead(leadData.id, LEAD_SOURCE_CODES.FORMULARIO_WEB, property?.id);
+        }
+
+        alert("¡Mensaje enviado! Nos pondremos en contacto contigo pronto.")
+        setShowContactForm(false)
+        setContactForm({ name: "", email: "", phone: "", message: "" })
+      } else {
+        throw new Error('Error al enviar el mensaje');
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      alert('Hubo un error al enviar tu mensaje. Por favor, intenta nuevamente.');
+    }
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-800 rounded mb-6"></div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2">
-                <div className="h-96 bg-gray-800 rounded-lg mb-6"></div>
-                <div className="h-48 bg-gray-800 rounded-lg"></div>
-              </div>
-              <div>
-                <div className="h-64 bg-gray-800 rounded-lg"></div>
+      <div className="min-h-screen bg-premium-main">
+        <Header />
+        <section className="section-premium">
+          <div className="container-premium">
+            <div className="animate-pulse">
+              <div className="h-8 bg-premium-card rounded mb-premium-lg"></div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-premium-lg">
+                <div className="lg:col-span-2">
+                  <div className="h-96 bg-premium-card rounded-2xl mb-premium-lg"></div>
+                  <div className="h-48 bg-premium-card rounded-2xl"></div>
+                </div>
+                <div>
+                  <div className="h-64 bg-premium-card rounded-2xl"></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       </div>
     )
   }
 
   if (error || !property) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">{error || "Propiedad no encontrada"}</h1>
-          <Button onClick={() => router.push("/propiedades")} className="bg-brand-orange hover:bg-brand-orange/90">
-            Volver a propiedades
-          </Button>
-        </div>
+      <div className="min-h-screen bg-premium-main">
+        <Header />
+        <section className="section-premium flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="heading-xl text-premium-primary mb-premium-md">{error || "Propiedad no encontrada"}</h1>
+            <Button onClick={() => router.push("/propiedades")} size="lg">
+              Volver a propiedades
+            </Button>
+          </div>
+        </section>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-premium-main">
+      {/* Analytics Tracking */}
+      <ComprehensivePropertyTracker 
+        propertyId={property.id}
+        title={property.title}
+        totalImages={property.images?.length || 0}
+        onViewTracked={(eventId) => console.log('Property view tracked:', eventId)}
+      />
+
+      {/* Header Premium */}
+      <Header />
+      
       {/* Back button */}
-      <div className="bg-gray-800 border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="bg-premium-main border-b border-support-gray/20">
+        <div className="container-premium py-premium-md">
           <Button
             onClick={() => router.push("/propiedades")}
             variant="ghost"
-            className="text-gray-300 hover:text-white hover:bg-gray-700"
+            className="text-premium-secondary hover:text-premium-primary"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Volver a propiedades
@@ -211,14 +266,19 @@ export default function PropertyDetailPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <section className="section-premium">
+        <div className="container-premium">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-premium-lg">
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Image Gallery */}
-            <div className="relative mb-6">
-              <div className="relative h-96 rounded-lg overflow-hidden bg-gray-800">
-                {property.images && property.images.length > 0 ? (
+            <ImageGalleryTracker 
+              propertyId={property.id} 
+              totalImages={property.images?.length || 0}
+            >
+              <div className="relative mb-premium-lg">
+                <div className="relative h-96 rounded-2xl overflow-hidden bg-premium-card hover-lift">
+                  {property.images && property.images.length > 0 ? (
                   <>
                     <Image
                       src={property.images[currentImageIndex]}
@@ -304,11 +364,12 @@ export default function PropertyDetailPage() {
                   ))}
                 </div>
               )}
-            </div>
+              </div>
+            </ImageGalleryTracker>
 
             {/* Property Details */}
-            <Card className="bg-gray-800 border-gray-700">
-              <CardContent className="p-6">
+            <Card className="hover-lift">
+              <CardContent className="card-premium">
                 {/* Title and Basic Info */}
                 <div className="mb-6">
                   <div className="flex items-center gap-3 mb-4">
@@ -336,20 +397,20 @@ export default function PropertyDetailPage() {
                     )}
                   </div>
 
-                  <h1 className="text-3xl font-bold text-white mb-4">{property.title}</h1>
+                  <h1 className="display-md text-premium-primary mb-premium-md">{property.title}</h1>
                   
-                  <div className="flex items-center text-gray-300 mb-4">
-                    <MapPin className="w-5 h-5 mr-2" />
+                  <div className="flex items-center text-premium-secondary mb-premium-md">
+                    <MapPin className="w-5 h-5 mr-2 text-vibrant-orange" />
                     {property.address}, {property.neighborhood}
                   </div>
 
-                  <div className="text-3xl font-bold text-brand-orange mb-4">
+                  <div className="display-lg text-vibrant-orange mb-premium-md">
                     {property.currency}$ {property.price.toLocaleString()}
-                    {property.operation === "rent" && <span className="text-lg text-gray-400">/mes</span>}
+                    {property.operation === "rent" && <span className="body-lg text-premium-secondary">/mes</span>}
                   </div>
 
                   {/* Property specs */}
-                  <div className="flex items-center gap-6 text-gray-300">
+                  <div className="flex items-center gap-6 text-premium-secondary">
                     {property.bedrooms && (
                       <div className="flex items-center">
                         <Bed className="w-5 h-5 mr-2" />
@@ -377,9 +438,9 @@ export default function PropertyDetailPage() {
 
                 {/* Description */}
                 {property.description && (
-                  <div className="mb-6">
-                    <h3 className="text-xl font-semibold text-white mb-3">Descripción</h3>
-                    <p className="text-gray-300 leading-relaxed whitespace-pre-wrap">
+                  <div className="mb-premium-lg">
+                    <h3 className="heading-lg text-premium-primary mb-premium-md">Descripción</h3>
+                    <p className="body-md text-premium-secondary leading-relaxed whitespace-pre-wrap">
                       {property.description}
                     </p>
                   </div>
@@ -388,12 +449,12 @@ export default function PropertyDetailPage() {
                 {/* Features */}
                 {property.features && property.features.length > 0 && (
                   <div>
-                    <h3 className="text-xl font-semibold text-white mb-3">Características</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <h3 className="heading-lg text-premium-primary mb-premium-md">Características</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-premium-sm">
                       {property.features.map((feature, index) => (
-                        <div key={index} className="flex items-center text-gray-300">
+                        <div key={index} className="flex items-center text-premium-secondary">
                           {getFeatureIcon(feature)}
-                          <span className="ml-2">{feature}</span>
+                          <span className="ml-2 body-md">{feature}</span>
                         </div>
                       ))}
                     </div>
@@ -404,24 +465,10 @@ export default function PropertyDetailPage() {
 
             {/* Google Maps */}
             {property.address && (
-              <Card className="bg-gray-800 border-gray-700 mt-6">
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold text-white mb-4">Ubicación</h3>
-                  <div className="relative h-80 rounded-lg overflow-hidden bg-gray-700 flex items-center justify-center">
-                    {/* Static map placeholder - easily replaceable with actual Google Maps */}
-                    <div className="text-center text-gray-400">
-                      <MapPin className="w-12 h-12 mx-auto mb-3 text-brand-orange" />
-                      <p className="font-medium text-white text-lg">{property.address}</p>
-                      <p className="text-gray-300">{property.neighborhood}, {property.city}</p>
-                      <p className="text-sm mt-3 text-gray-400">Mapa interactivo próximamente</p>
-                      <Button 
-                        className="mt-4 bg-brand-orange hover:bg-brand-orange/90"
-                        onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${property.address}, ${property.neighborhood}, ${property.city}`)}`)}
-                      >
-                        Ver en Google Maps
-                      </Button>
-                    </div>
-                  </div>
+              <Card className="hover-lift mt-premium-lg">
+                <CardContent className="card-premium">
+                  <h3 className="heading-lg text-premium-primary mb-premium-md">Ubicación</h3>
+                  <PropertyDetailMap property={property} className="h-80" />
                 </CardContent>
               </Card>
             )}
@@ -430,51 +477,192 @@ export default function PropertyDetailPage() {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             {/* Contact Card */}
-            <Card className="bg-gray-800 border-gray-700 sticky top-8">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold text-white mb-4">¿Interesado en esta propiedad?</h3>
+            <Card className="hover-lift sticky top-8">
+              <CardContent className="card-premium">
+                <h3 className="heading-lg text-premium-primary mb-premium-md">¿Interesado en esta propiedad?</h3>
                 
                 {!showContactForm ? (
-                  <div className="space-y-3">
-                    <Button
-                      onClick={() => setShowContactForm(true)}
-                      className="w-full bg-brand-orange hover:bg-brand-orange/90 text-white"
-                    >
-                      <MessageCircle className="w-4 h-4 mr-2" />
-                      Enviar consulta
-                    </Button>
+                  <div className="space-y-premium-sm">
+                    <ContactTracker propertyId={property.id} type="form" metadata={{ form_type: 'property_inquiry' }}>
+                      <Button
+                        onClick={() => setShowContactForm(true)}
+                        className="w-full"
+                        size="lg"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        Enviar consulta
+                      </Button>
+                    </ContactTracker>
                     
-                    <Button
-                      variant="outline"
-                      className="w-full bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
-                    >
-                      <Phone className="w-4 h-4 mr-2" />
-                      Llamar ahora
-                    </Button>
+                    <ContactTracker propertyId={property.id} type="phone" metadata={{ contact_method: 'direct_call' }}>
+                      <Button
+                        variant="outline"
+                        onClick={async () => {
+                          // Create lead for phone contact
+                          try {
+                            const response = await fetch('/api/leads', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                name: 'Cliente - Llamada telefónica',
+                                phone: '+54 3482 308100',
+                                message: `Solicitud de llamada para propiedad "${property.title}" - Código #${property.id}`,
+                                source: 'telefono',
+                                property_id: property.id,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const leadData = await response.json();
+                              
+                              // Track the lead generation in analytics
+                              if (leadData.id) {
+                                await trackLead(leadData.id, LEAD_SOURCE_CODES.TELEFONO, property.id);
+                              }
+                            }
+                          } catch (error) {
+                            console.error('Error creating phone lead:', error);
+                          }
+                        }}
+                        className="w-full"
+                        size="lg"
+                      >
+                        <Phone className="w-4 h-4 mr-2" />
+                        Llamar ahora
+                      </Button>
+                    </ContactTracker>
                     
-                    <Button
-                      variant="outline"
-                      className="w-full bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
-                    >
-                      <Mail className="w-4 h-4 mr-2" />
-                      Enviar email
-                    </Button>
+                    <ContactTracker propertyId={property.id} type="email" metadata={{ contact_method: 'direct_email' }}>
+                      <Button
+                        variant="outline"
+                        onClick={async () => {
+                          // Create lead for email contact
+                          try {
+                            const response = await fetch('/api/leads', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                name: 'Cliente - Email',
+                                email: 'marconinegociosinmobiliarios@hotmail.com',
+                                message: `Consulta por email para propiedad "${property.title}" - Código #${property.id}`,
+                                source: 'email',
+                                property_id: property.id,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const leadData = await response.json();
+                              
+                              // Track the lead generation in analytics
+                              if (leadData.id) {
+                                await trackLead(leadData.id, LEAD_SOURCE_CODES.EMAIL, property.id);
+                              }
+                            }
+                          } catch (error) {
+                            console.error('Error creating email lead:', error);
+                          }
+                        }}
+                        className="w-full"
+                        size="lg"
+                      >
+                        <Mail className="w-4 h-4 mr-2" />
+                        Enviar email
+                      </Button>
+                    </ContactTracker>
                     
-                    <Button
-                      variant="outline"
-                      className="w-full bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
-                    >
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Agendar visita
-                    </Button>
+                    <ContactTracker propertyId={property.id} type="form" metadata={{ form_type: 'schedule_visit' }}>
+                      <Button
+                        variant="outline"
+                        onClick={async () => {
+                          // Create lead for visit request
+                          try {
+                            const response = await fetch('/api/leads', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                name: 'Cliente - Solicitud de visita',
+                                message: `Solicitud de visita para propiedad "${property.title}" - Código #${property.id}`,
+                                source: 'formulario_web',
+                                property_id: property.id,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const leadData = await response.json();
+                              
+                              // Track the lead generation in analytics
+                              if (leadData.id) {
+                                await trackLead(leadData.id, LEAD_SOURCE_CODES.FORMULARIO_WEB, property.id);
+                              }
+                            }
+                          } catch (error) {
+                            console.error('Error creating visit request lead:', error);
+                          }
+                        }}
+                        className="w-full"
+                        size="lg"
+                      >
+                        <Calendar className="w-4 h-4 mr-2" />
+                        Agendar visita
+                      </Button>
+                    </ContactTracker>
+
+                    <ContactTracker propertyId={property.id} type="whatsapp" metadata={{ contact_method: 'whatsapp' }}>
+                      <Button
+                        onClick={async () => {
+                          // Create lead for WhatsApp contact
+                          try {
+                            const response = await fetch('/api/leads', {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({
+                                name: 'Cliente - WhatsApp',
+                                phone: '+54 9 1234567890',
+                                message: `Consulta por propiedad "${property.title}" - Código #${property.id}`,
+                                source: 'whatsapp',
+                                property_id: property.id,
+                              }),
+                            });
+
+                            if (response.ok) {
+                              const leadData = await response.json();
+
+                              // Track the lead generation in analytics
+                              if (leadData.id) {
+                                await trackLead(leadData.id, LEAD_SOURCE_CODES.WHATSAPP, property.id);
+                              }
+                            }
+                          } catch (error) {
+                            console.error('Error creating WhatsApp lead:', error);
+                          }
+
+                          // Abrir WhatsApp con mensaje predeterminado
+                          const message = encodeURIComponent(`Hola! Me interesa la propiedad "${property.title}" - Código #${property.id}`)
+                          window.open(`https://wa.me/5491234567890?text=${message}`, '_blank')
+                        }}
+                        className="w-full bg-green-600 hover:bg-green-700"
+                        size="lg"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        WhatsApp
+                      </Button>
+                    </ContactTracker>
                   </div>
                 ) : (
-                  <form onSubmit={handleContactSubmit} className="space-y-4">
+                  <form onSubmit={handleContactSubmit} className="space-y-premium-md">
                     <Input
                       placeholder="Tu nombre"
                       value={contactForm.name}
                       onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                       required
                     />
                     <Input
@@ -482,27 +670,28 @@ export default function PropertyDetailPage() {
                       placeholder="Tu email"
                       value={contactForm.email}
                       onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                       required
                     />
                     <Input
                       placeholder="Tu teléfono"
                       value={contactForm.phone}
                       onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                     />
                     <Textarea
                       placeholder="Tu mensaje"
                       value={contactForm.message}
                       onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                      className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                       rows={4}
                       required
                     />
-                    <div className="flex gap-2">
+                    <div className="flex gap-premium-sm">
                       <Button
                         type="submit"
-                        className="flex-1 bg-brand-orange hover:bg-brand-orange/90 text-white"
+                        className="flex-1"
+                        size="lg"
                       >
                         Enviar
                       </Button>
@@ -510,7 +699,7 @@ export default function PropertyDetailPage() {
                         type="button"
                         onClick={() => setShowContactForm(false)}
                         variant="outline"
-                        className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700"
+                        size="lg"
                       >
                         Cancelar
                       </Button>
@@ -519,21 +708,21 @@ export default function PropertyDetailPage() {
                 )}
 
                 {/* Property info summary */}
-                <div className="mt-6 pt-6 border-t border-gray-700">
-                  <div className="text-sm text-gray-400 space-y-2">
+                <div className="mt-premium-lg pt-premium-lg border-t border-support-gray/20">
+                  <div className="caption-lg text-premium-secondary space-y-premium-sm">
                     <div className="flex justify-between">
                       <span>Código:</span>
-                      <span className="text-white">#{property.id}</span>
+                      <span className="text-premium-primary">#{property.id}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Publicado:</span>
-                      <span className="text-white">
+                      <span className="text-premium-primary">
                         {new Date(property.created_at).toLocaleDateString('es-AR')}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Actualizado:</span>
-                      <span className="text-white">
+                      <span className="text-premium-primary">
                         {new Date(property.updated_at).toLocaleDateString('es-AR')}
                       </span>
                     </div>
@@ -543,7 +732,8 @@ export default function PropertyDetailPage() {
             </Card>
           </div>
         </div>
-      </div>
+        </div>
+      </section>
     </div>
   )
 }

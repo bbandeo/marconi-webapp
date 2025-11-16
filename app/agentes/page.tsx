@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Phone,
@@ -16,6 +16,7 @@ import {
   Crown,
   Check,
   ArrowRight,
+  UserCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,11 @@ import { Badge } from "@/components/ui/badge";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Image from "next/image";
 import Link from "next/link";
+import Header from "@/components/Header"
+import Footer from "@/components/Footer";
+import Hero from "@/components/Hero"
+import { AgentService } from "@/services/agents";
+import type { Agent as DBAgent } from "@/lib/supabase";
 
 interface Agent {
   id: number;
@@ -39,112 +45,41 @@ interface Agent {
   icon: typeof Home;
 }
 
-const agents: Agent[] = [
-  {
-    id: 1,
-    name: "Gustavo Marconi",
-    role: "Gestor Comercial y CEO",
-    specialization: "Propiedades Residenciales y Comerciales",
-    phone: "+54 9 3482 704694",
-    email: "marconinegociosinmobiliarios@hotmail.com",
-    image: "gustavo_vdczse",
-    description: "CEO y fundador de Marconi Inmobiliaria, con más de 15 años de experiencia en el mercado inmobiliario de Reconquista. Especialista en propiedades residenciales y comerciales, liderando el equipo con visión estratégica y compromiso total con la satisfacción del cliente.",
-    achievements: [
-      "Fundador de Marconi Inmobiliaria",
-      "Más de 500 transacciones exitosas",
-      "Líder del mercado inmobiliario local",
-      "Especialista en inversiones inmobiliarias"
-    ],
-    icon: Crown
-  },
-  {
-    id: 2,
-    name: "Ramón Suligoy",
-    role: "Gestor comercial",
-    specialization: "Propiedades Comerciales",
-    phone: "+54 9 3482 219676",
-    email: "marconinegociosinmobiliarios@hotmail.com",
-    image: "ramon_iyryyc",
-    description: "Gestor comercial especializado en propiedades comerciales e inversiones. Con amplia experiencia en el mercado local, ayuda a empresarios y emprendedores a encontrar la ubicación perfecta para sus negocios en Reconquista y zona.",
-    achievements: [
-      "Especialista en locales comerciales",
-      "Asesor de más de 100 empresas",
-      "Experto en inversiones comerciales",
-      "Conocimiento profundo del mercado local"
-    ],
-    icon: Building2
-  },
-  {
-    id: 3,
-    name: "Priscila Maydana",
-    role: "Gestora comercial",
-    specialization: "Propiedades Residenciales",
-    phone: "+54 9 3482 653547",
-    email: "marconinegociosinmobiliarios@hotmail.com",
-    image: "priscila_gbc46h",
-    description: "Gestora comercial especializada en propiedades residenciales. Su enfoque personalizado y atención al detalle la convierten en la elección ideal para familias que buscan su hogar perfecto en Reconquista.",
-    achievements: [
-      "Especialista en propiedades familiares",
-      "Más de 200 familias satisfechas",
-      "Experta en barrios residenciales",
-      "Certificación en atención al cliente"
-    ],
-    icon: Home
-  },
-  {
-    id: 4,
-    name: "Facundo Altamirano",
-    role: "Community manager inmobiliario",
-    specialization: "Marketing Digital Inmobiliario",
-    phone: "+54 9 3482 755308",
-    email: "marconinegociosinmobiliarios@hotmail.com",
-    image: "facundo_axinkj",
-    description: "Community Manager especializado en marketing digital inmobiliario. Se encarga de la presencia online de la empresa y de conectar propiedades con potenciales compradores a través de estrategias digitales innovadoras.",
-    achievements: [
-      "Especialista en marketing digital",
-      "Gestión de redes sociales inmobiliarias",
-      "Estrategias de contenido efectivas",
-      "Amplio alcance en redes sociales"
-    ],
-    icon: Users
-  },
-  {
-    id: 5,
-    name: "Micaela Domínguez",
-    role: "Community manager inmobiliario",
-    specialization: "Marketing Digital y Comunicaciones",
-    phone: "+54 9 3487 229722",
-    email: "marconinegociosinmobiliarios@hotmail.com",
-    image: "micaela_rl56r5",
-    description: "Community Manager especializada en comunicaciones digitales y marketing inmobiliario. Trabaja en conjunto con el equipo para crear contenido atractivo y mantener una comunicación fluida con clientes actuales y potenciales.",
-    achievements: [
-      "Experta en comunicación digital",
-      "Gestión integral de redes sociales",
-      "Creación de contenido visual",
-      "Atención al cliente online"
-    ],
-    icon: MessageCircle
-  },
-  {
-    id: 6,
-    name: "Bruno Bordón",
-    role: "Corredor Inmobiliario",
-    specialization: "Transacciones Inmobiliarias",
-    phone: "+54 9 3482 261937",
-    email: "marconinegociosinmobiliarios@hotmail.com",
-    image: "bruno_aqcgnn",
-    description: "Corredor inmobiliario matriculado con amplia experiencia en transacciones inmobiliarias. Se especializa en asesorar legalmente las operaciones y garantizar que todos los procesos se realicen de manera correcta y segura.",
-    achievements: [
-      "Corredor matriculado",
-      "Especialista en aspectos legales",
-      "Más de 300 transacciones completadas",
-      "Asesoramiento integral en operaciones"
-    ],
-    icon: Award
+// Helper function to map DB agent to page agent format
+function mapDBAgentToPageAgent(dbAgent: DBAgent): Agent {
+  // Determine icon based on specialty
+  let icon = UserCircle;
+  if (dbAgent.specialty?.toLowerCase().includes('comercial')) icon = Building2;
+  else if (dbAgent.specialty?.toLowerCase().includes('residencial')) icon = Home;
+  else if (dbAgent.specialty?.toLowerCase().includes('marketing') || dbAgent.specialty?.toLowerCase().includes('digital')) icon = Users;
+  else if (dbAgent.specialty?.toLowerCase().includes('corredor') || dbAgent.specialty?.toLowerCase().includes('legal')) icon = Award;
+
+  // Generate achievements based on years of experience
+  const achievements: string[] = [];
+  if (dbAgent.specialty) {
+    achievements.push(`Especialista en ${dbAgent.specialty}`);
   }
-];
+  if (dbAgent.years_of_experience) {
+    achievements.push(`${dbAgent.years_of_experience} años de experiencia`);
+  }
+  achievements.push("Agente profesional de Marconi Inmobiliaria");
+
+  return {
+    id: dbAgent.id,
+    name: dbAgent.name,
+    role: dbAgent.specialty || "Agente Inmobiliario",
+    specialization: dbAgent.specialty || "Propiedades",
+    phone: dbAgent.phone,
+    email: dbAgent.email,
+    image: dbAgent.photo_public_id || "",
+    description: dbAgent.bio || `${dbAgent.name} es parte del equipo profesional de Marconi Inmobiliaria.`,
+    achievements,
+    icon,
+  };
+}
 
 export default function AgentesPage() {
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [contactForm, setContactForm] = useState({
     name: "",
@@ -155,6 +90,21 @@ export default function AgentesPage() {
   });
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Load agents from database
+  useEffect(() => {
+    async function loadAgents() {
+      try {
+        const dbAgents = await AgentService.getActiveAgents();
+        const mappedAgents = dbAgents.map(mapDBAgentToPageAgent);
+        setAgents(mappedAgents);
+      } catch (error) {
+        console.error("Error loading agents:", error);
+        // Keep empty array on error
+      }
+    }
+    loadAgents();
+  }, []);
 
   const handleContactAgent = (agent: Agent) => {
     setSelectedAgent(agent);
@@ -207,90 +157,60 @@ export default function AgentesPage() {
     }
   };
 
+  const scrollToTeam = () => {
+    document.getElementById('team-section')?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-        <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/assets/logos/marconi_header_orangewhite.png"
-                alt="Marconi Inmobiliaria"
-                width={140}
-                height={45}
-                className="h-8 md:h-10 w-auto"
-                priority
-              />
-            </Link>
+    <div className="min-h-screen bg-premium-main">
+      {/* Header Premium */}
+      <Header />
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                PROPIEDADES
-              </Link>
-              <Link
-                href="/agentes"
-                className="text-brand-orange font-semibold"
-              >
+      <Hero
+        backgroundImage="/assets/hero/agentsc.png"
+        alt="Agentes - Marconi Inmobiliaria"
+        title={
+          <>
+            NUESTROS{" "}
+            <span className="text-orange-400 relative inline-block">
+              <span className="absolute inset-0 blur-lg bg-orange-500/40"></span>
+              <span className="relative" style={{
+                textShadow: '0 0 20px rgba(251, 146, 60, 0.5), 0 0 40px rgba(251, 146, 60, 0.3), 0 4px 8px rgba(0, 0, 0, 0.3)'
+              }}>
                 AGENTES
-              </Link>
-              <Link
-                href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                CONTACTO
-              </Link>
-            </nav>
-          </div>
-        </div>
-        
-        {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
-      </header>
+              </span>
+            </span>
+          </>
+        }
+        description="Conocé al equipo de profesionales inmobiliarios que te acompañará en cada paso para encontrar tu próxima propiedad en Reconquista"
+        withAnimation={true}
+        imageClassName="object-cover object-center"
+        ctaText="Conocer al Equipo"
+        ctaAction={scrollToTeam}
+      />
 
-      {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-br from-gray-900 to-black">
-        <div className="container mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              NUESTROS <span className="text-brand-orange">AGENTES</span>
-            </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
-              Conocé al equipo de profesionales inmobiliarios que te acompañará 
-              en cada paso para encontrar tu próxima propiedad en Reconquista
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Team Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
+      {/* Team Section - PREMIUM DESIGN */}
+      <section id="team-section" className="section-premium bg-premium-main">
+        <div className="container-premium">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-premium-xl"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+            <h2 className="display-md text-premium-primary mb-premium-lg">
               Nuestro Equipo de Expertos
             </h2>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+            <p className="body-xl text-premium-secondary max-w-3xl mx-auto">
               Cada uno de nuestros agentes cuenta con años de experiencia y conocimiento 
               profundo del mercado inmobiliario local
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-premium-lg">
             {agents.map((agent, index) => (
               <motion.div
                 key={agent.id}
@@ -299,7 +219,7 @@ export default function AgentesPage() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card className="bg-gray-800 border-gray-700 overflow-hidden hover:border-brand-orange transition-all duration-300 group">
+                <Card className="overflow-hidden hover-lift group">
                   <div className="relative">
                     <div className="aspect-[3/4] overflow-hidden">
                       <Image
@@ -314,35 +234,35 @@ export default function AgentesPage() {
                         alt={agent.name}
                         width={300}
                         height={400}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-full object-cover hover-scale"
                       />
                     </div>
                     
                     {/* Status badge */}
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-green-500 text-white">
-                        <div className="w-2 h-2 bg-white rounded-full mr-1"></div>
+                    <div className="absolute top-premium-sm right-premium-sm">
+                      <Badge className="bg-vibrant-orange text-bone-white">
+                        <div className="w-2 h-2 bg-bone-white rounded-full mr-1"></div>
                         Disponible
                       </Badge>
                     </div>
                   </div>
 
-                  <CardContent className="p-6">
-                    <div className="mb-4">
-                      <h3 className="text-xl font-bold text-white mb-1">{agent.name}</h3>
-                      <p className="text-brand-orange font-semibold mb-1">{agent.role}</p>
+                  <CardContent className="card-premium">
+                    <div className="mb-premium-md">
+                      <h3 className="heading-lg text-premium-primary mb-premium-sm">{agent.name}</h3>
+                      <p className="body-md text-vibrant-orange font-semibold mb-premium-sm">{agent.role}</p>
                     </div>
 
-                    <div className="mb-4">
-                      <Badge variant="secondary" className="bg-gray-700 text-gray-300 mb-2">
+                    <div className="mb-premium-md">
+                      <Badge variant="secondary" className="bg-support-gray/10 text-premium-secondary mb-premium-sm">
                         {agent.specialization}
                       </Badge>
                     </div>
 
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-premium-sm">
                       <Button 
-                        className="flex-1 bg-brand-orange hover:bg-brand-orange/90 text-white"
+                        className="flex-1"
                         onClick={() => handleContactAgent(agent)}
                       >
                         Contactar
@@ -351,7 +271,6 @@ export default function AgentesPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white bg-transparent"
                         asChild
                       >
                         <a href={`tel:${agent.phone}`}>
@@ -368,24 +287,24 @@ export default function AgentesPage() {
       </section>
 
 
-      {/* Contact Form Section */}
-      <section id="contact-form" className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
+      {/* Contact Form Section - PREMIUM DESIGN */}
+      <section id="contact-form" className="section-premium bg-premium-main">
+        <div className="container-premium">
+          <div className="max-w-3xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center mb-12"
+              className="text-center mb-premium-xl"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              <h2 className="display-md text-premium-primary mb-premium-lg">
                 {selectedAgent ? (
-                  <>Contactá a <span className="text-brand-orange">{selectedAgent.name}</span></>
+                  <>Contactá a <span className="accent-premium">{selectedAgent.name}</span></>
                 ) : (
-                  <>Contactá a Nuestro <span className="text-brand-orange">Equipo</span></>
+                  <>Contactá a Nuestro <span className="accent-premium">Equipo</span></>
                 )}
               </h2>
-              <p className="text-lg text-gray-300">
+              <p className="body-xl text-premium-secondary">
                 {selectedAgent ? 
                   `${selectedAgent.name} te responderá a la brevedad para ayudarte con ${selectedAgent.specialization.toLowerCase()}` :
                   "Completá el formulario y nuestros agentes se pondrán en contacto contigo"
@@ -399,15 +318,15 @@ export default function AgentesPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="bg-gray-800 border-gray-700">
-                <CardContent className="p-8">
+              <Card>
+                <CardContent className="card-premium">
                   {submitSuccess ? (
-                    <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Check className="w-8 h-8 text-white" />
+                    <div className="text-center py-premium-lg">
+                      <div className="w-20 h-20 bg-vibrant-orange rounded-full flex items-center justify-center mx-auto mb-premium-md shadow-xl hover-lift">
+                        <Check className="w-10 h-10 text-bone-white" />
                       </div>
-                      <h3 className="text-2xl font-bold text-white mb-2">¡Mensaje Enviado!</h3>
-                      <p className="text-gray-300 mb-6">
+                      <h3 className="heading-lg text-premium-primary mb-premium-sm">¡Mensaje Enviado!</h3>
+                      <p className="body-lg text-premium-secondary mb-premium-lg">
                         {selectedAgent ? `${selectedAgent.name} recibirá` : "Nuestro equipo recibirá"} tu consulta 
                         y se pondrá en contacto contigo a la brevedad.
                       </p>
@@ -417,48 +336,48 @@ export default function AgentesPage() {
                           setSelectedAgent(null);
                         }}
                         variant="outline"
-                        className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white bg-transparent"
+                        size="lg"
                       >
                         Enviar otra consulta
                       </Button>
                     </div>
                   ) : (
-                    <form onSubmit={handleSubmitContact} className="space-y-6">
+                    <form onSubmit={handleSubmitContact} className="space-y-premium-lg">
                       {selectedAgent && (
-                        <div className="bg-brand-orange/10 border border-brand-orange/20 rounded-lg p-4">
+                        <div className="bg-vibrant-orange/10 border border-vibrant-orange/20 rounded-2xl p-premium-md">
                           <div className="flex items-center">
-                            <selectedAgent.icon className="w-8 h-8 text-brand-orange mr-3" />
+                            <selectedAgent.icon className="w-8 h-8 text-vibrant-orange mr-3" />
                             <div>
-                              <div className="font-semibold text-white">{selectedAgent.name}</div>
-                              <div className="text-sm text-brand-orange">{selectedAgent.specialization}</div>
+                              <div className="heading-sm text-premium-primary">{selectedAgent.name}</div>
+                              <div className="caption-lg text-vibrant-orange">{selectedAgent.specialization}</div>
                             </div>
                           </div>
                         </div>
                       )}
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-premium-md">
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                             Nombre completo
                           </label>
                           <Input
                             type="text"
                             value={contactForm.name}
                             onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
-                            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange"
+                            className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                             placeholder="Tu nombre completo"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">
+                          <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                             Email
                           </label>
                           <Input
                             type="email"
                             value={contactForm.email}
                             onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
-                            className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange"
+                            className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                             placeholder="tu@email.com"
                             required
                           />
@@ -466,45 +385,46 @@ export default function AgentesPage() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                           Teléfono
                         </label>
                         <Input
                           type="tel"
                           value={contactForm.phone}
                           onChange={(e) => setContactForm(prev => ({ ...prev, phone: e.target.value }))}
-                          className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange"
+                          className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange"
                           placeholder="+54 9 3482 308100"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">
+                        <label className="block caption-lg font-medium text-premium-primary mb-premium-sm">
                           Mensaje
                         </label>
                         <Textarea
                           value={contactForm.message}
                           onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
-                          className="bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-brand-orange min-h-32"
+                          className="bg-premium-card border-support-gray/30 text-premium-primary placeholder:text-premium-secondary focus:border-vibrant-orange min-h-32"
                           placeholder="Contanos qué tipo de propiedad estás buscando, tu presupuesto y cualquier detalle importante..."
                           required
                         />
                       </div>
 
-                      <div className="flex gap-4">
+                      <div className="flex gap-premium-sm">
                         <Button
                           type="submit"
-                          className="flex-1 bg-brand-orange hover:bg-brand-orange/90 text-white"
+                          size="lg"
+                          className="flex-1"
                           disabled={submitLoading}
                         >
                           {submitLoading ? "Enviando..." : "Enviar Consulta"}
-                          <MessageCircle className="w-4 h-4 ml-2" />
+                          <MessageCircle className="w-5 h-5 ml-2" />
                         </Button>
                         {selectedAgent && (
                           <Button
                             type="button"
                             variant="outline"
-                            className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white bg-transparent"
+                            size="lg"
                             onClick={() => {
                               setSelectedAgent(null);
                               setContactForm(prev => ({ ...prev, message: "", agentId: null }));
@@ -523,25 +443,25 @@ export default function AgentesPage() {
         </div>
       </section>
 
-      {/* Why Choose Us Section */}
-      <section className="py-20 bg-black">
-        <div className="container mx-auto px-4">
+      {/* Why Choose Us Section - PREMIUM DESIGN */}
+      <section className="section-premium bg-premium-main">
+        <div className="container-premium">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-premium-xl"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              ¿Por qué elegir <span className="text-brand-orange">Marconi Inmobiliaria</span>?
+            <h2 className="display-md text-premium-primary mb-premium-lg">
+              ¿Por qué elegir <span className="accent-premium">Marconi Inmobiliaria</span>?
             </h2>
-            <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+            <p className="body-xl text-premium-secondary max-w-4xl mx-auto">
               Nuestro compromiso va más allá de simplemente vender propiedades. 
               Te acompañamos en todo el proceso con profesionalismo y dedicación.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-premium-lg">
             {[
               {
                 icon: Users,
@@ -572,84 +492,18 @@ export default function AgentesPage() {
                 transition={{ delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-6">
-                  <feature.icon className="h-8 w-8 text-brand-orange" />
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-vibrant-orange/10 rounded-2xl mb-premium-lg">
+                  <feature.icon className="h-10 w-10 text-vibrant-orange" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-4">{feature.title}</h3>
-                <p className="text-gray-300">{feature.description}</p>
+                <h3 className="heading-md text-premium-primary mb-premium-md">{feature.title}</h3>
+                <p className="body-md text-premium-secondary">{feature.description}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <Image
-                  src="/assets/logos/marconi_title.svg"
-                  alt="Marconi Inmobiliaria"
-                  width={140}
-                  height={45}
-                  className="h-8 w-auto"
-                />
-              </div>
-              <p className="text-gray-400 mb-4">
-                La inmobiliaria líder en Reconquista, comprometida con encontrar
-                el hogar perfecto para cada familia.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-white font-semibold mb-4">Enlaces</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    href="/propiedades"
-                    className="hover:text-white transition-colors"
-                  >
-                    Propiedades
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/agentes"
-                    className="hover:text-white transition-colors"
-                  >
-                    Agentes
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contacto"
-                    className="hover:text-white transition-colors"
-                  >
-                    Contacto
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-white font-semibold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Reconquista, Santa Fe</li>
-                <li>+54 9 3482 308100</li>
-                <li>marconinegociosinmobiliarios@hotmail.com</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>
-              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

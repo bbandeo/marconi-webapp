@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import dynamic from "next/dynamic";
 import {
   Search,
   MapPin,
+  Landmark,
   Bed,
   Bath,
   Square,
@@ -16,24 +18,113 @@ import {
   Award,
   Heart,
   Eye,
+  Map,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { FeaturedPropertiesSlider } from "@/components/FeaturedPropertiesSlider";
+import { HeroSearchBar } from "@/components/HeroSearchBar";
 import { getOptimizedImageUrl } from "@/lib/cloudinary";
 import Link from "next/link";
 import Image from "next/image";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // Importar servicios
 import { useIsClient } from "@/hooks/use-is-client";
 import { PropertyService } from "@/services/properties";
 import type { Property } from "@/lib/supabase";
 
+// Importar mapa con dynamic import (SSR disabled)
+const InteractivePropertyMap = dynamic(
+  () => import("@/components/map/InteractivePropertyMap"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="w-full h-[600px] bg-night-blue rounded-xl flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-support-gray/20 border-t-vibrant-orange mx-auto" />
+          <p className="text-bone-white">Cargando mapa...</p>
+        </div>
+      </div>
+    ),
+  }
+);
+
+// Componente para animación de contador
+function CounterAnimation({ value, label, icon: Icon }: { value: string, label: string, icon: any }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      const numericValue = parseInt(value.replace(/\D/g, ''));
+      let start = 0;
+      const duration = 2000;
+      const increment = numericValue / (duration / 16);
+      
+      const timer = setInterval(() => {
+        start += increment;
+        if (start >= numericValue) {
+          setCount(numericValue);
+          clearInterval(timer);
+        } else {
+          setCount(Math.floor(start));
+        }
+      }, 16);
+      
+      return () => clearInterval(timer);
+    }
+  }, [isInView, value]);
+
+  const displayValue = isInView ? 
+    (value.includes('+') ? `${count}+` : 
+     value.includes('%') ? `${count}%` : 
+     value.includes('.') ? value : 
+     count.toString()) : '0';
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      className="text-center group"
+    >
+      <motion.div 
+        whileHover={{ scale: 1.05 }}
+        className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-orange-600 to-red-600 rounded-full mb-6 shadow-xl shadow-orange-600/30 group-hover:shadow-orange-600/50 transition-all duration-300"
+      >
+        <Icon className="h-12 w-12 text-white" />
+      </motion.div>
+      <motion.div 
+        className="text-4xl font-bold text-white mb-3"
+        animate={isInView ? { scale: [1, 1.1, 1] } : {}}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        {displayValue}
+      </motion.div>
+      <div className="text-gray-300 text-lg font-medium">{label}</div>
+    </motion.div>
+  );
+}
+
 export default function HomePage() {
   const [currentStat, setCurrentStat] = useState(0);
-  const [scrolled, setScrolled] = useState(false);
   const isClient = useIsClient();
+  
+  // Parallax effects DISABLED to prevent elements escaping hero boundaries
+  const { scrollY } = useScroll();
+  // All transforms set to 0 to eliminate any movement
+  const heroY = useTransform(scrollY, [0, 800], [0, 0]);
+  const heroOpacity = useTransform(scrollY, [0, 600], [1, 1]);
+  const contentY = useTransform(scrollY, [0, 400], [0, 0]);
+  const bottomY = useTransform(scrollY, [0, 500], [0, 0]);
+  const scrollIndicatorY = useTransform(scrollY, [0, 300], [0, 0]);
 
   // Estados para datos del backend
   const [featuredProperties, setFeaturedProperties] = useState<Property[]>([]);
@@ -79,16 +170,6 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (!isClient) {
-      return;
-    }
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isClient]);
 
   /* 
 
@@ -143,486 +224,492 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Header */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-        <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/assets/logos/marconi_header_orangewhite.png"
-                alt="Marconi Inmobiliaria"
-                width={140}
-                height={45}
-                className="h-8 md:h-10 w-auto"
-                priority
-              />
-            </Link>
+    <div className="min-h-screen bg-premium-main">
+      {/* Header Premium */}
+      <Header />
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/propiedades"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                PROPIEDADES
-              </Link>
-              <Link
-                href="/agentes"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                AGENTES
-              </Link>
-              <Link
-                href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                CONTACTO
-              </Link>
-            </nav>
+      {/* HERO SECTION - LAYOUT MODERNO Y CONVERSIÓN */}
+      <section className="relative min-h-screen overflow-hidden" style={{ contain: 'layout style paint', clipPath: 'inset(0)' }}>
+        {/* Background Video con Parallax - Fixed overflow containment */}
+        <motion.div
+          className="absolute inset-0 overflow-hidden"
+          style={{ y: heroY, opacity: heroOpacity }}
+        >
+          {/* Video background */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="min-w-full min-h-full object-cover"
+              style={{
+                transformOrigin: 'center center',
+              }}
+            >
+              <source src="/assets/hero/area-reco.mp4" type="video/mp4" />
+            </video>
+          </div>
 
-            {/* Mobile Search Bar */}
-            <div className="md:hidden flex-1 max-w-xs ml-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Buscar propiedades..."
-                  className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
-                />
-              </div>
+          {/* OVERLAY MEJORADO PARA LEGIBILIDAD */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/40 to-black/70" />
+
+          {/* EFECTO DIFUMINADO NARANJA SUTIL */}
+          <div className="absolute inset-x-0 bottom-0 h-32 md:h-48 bg-gradient-to-t from-orange-600/60 via-orange-500/30 to-transparent" />
+
+          {/* Overlay central para mejorar contraste del texto */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
+        </motion.div>
+
+        {/* CONTENIDO PRINCIPAL - LAYOUT UNIFICADO PARA TODOS LOS TAMAÑOS */}
+        <div className="relative z-10 w-full min-h-screen flex flex-col overflow-hidden" style={{ contain: 'layout style', transform: 'translateY(-20vh)' }}>
+          
+          {/* CONTENIDO SUPERIOR - CLAIM CENTRADO */}
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center px-4">
+              {/* CLAIM PRINCIPAL */}
+              <motion.div
+                initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                style={{ y: contentY }}
+              >
+                <div className="relative inline-block">
+                  <Image
+                    src="/assets/impact_text/vivilaexperiencia.PNG"
+                    alt="Viví la experiencia de encontrar tu lugar en el mundo"
+                    width={1000}
+                    height={250}
+                    className="w-full max-w-[90%] sm:max-w-3xl lg:max-w-4xl h-auto"
+                    priority
+                  />
+                  <div className="absolute -inset-2 lg:-inset-4 bg-gradient-to-r from-orange-600/10 via-transparent to-red-600/10 rounded-2xl lg:rounded-3xl blur-2xl lg:blur-3xl -z-10" />
+                </div>
+              </motion.div>
             </div>
           </div>
+          
+          {/* CONTENIDO INFERIOR - BUSCADOR HERO */}
+          <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center pb-2 sm:pb-3 lg:pb-4 px-4">
+            <HeroSearchBar />
+          </div>
+        </div>
+      </section>
+
+      {/* Barra separadora fluida naranja */}
+      <div className="h-2 w-full bg-gradient-to-b from-orange-500/70 via-orange-600/30 to-[#0d0f1a]" />
+
+      {/* Propiedades Destacadas - PREMIUM DESIGN */}
+      <section
+        id="propiedades"
+        className="section-spacing relative overflow-hidden"
+      >
+        {/* Fondo simplificado y elegante */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800">
+          {/* Sombras suaves para profundidad */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10" />
         </div>
 
-        {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative h-[60vh] md:h-[92vh] flex flex-col">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <Image
-            src={
-              getOptimizedImageUrl("IMG_2850_c7gzcr", {
-                width: 1920,
-                height: 1080,
-                // crop: "none",
-                gravity: "south",
-                quality: "auto",
-                format: "auto",
-              }) || "/placeholder.svg"
-            }
-            alt="Reconquista - Marconi Inmobiliaria"
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Subtle dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/40" />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 h-full flex flex-col justify-center items-center">
-          {/* Centered Impact Text */}
-          <div className="flex-1 flex items-center justify-center w-full">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full"
+        <div className="container-premium relative z-10">
+          {/* Header Premium - JERARQUÍA TIPOGRÁFICA OPTIMIZADA */}
+          <div className="text-center mb-12">
+            {/* Título principal */}
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6"
             >
-              <div
-                style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-                className="w-full p-20 flex justify-center"
-              >
-                <Image
-                  src="/assets/impact_text/vivilaexperiencia.PNG"
-                  alt="Viví la experiencia de encontrar tu lugar en el mundo"
-                  width={800}
-                  height={200}
-                  priority
-                />
-              </div>
+              Propiedades destacadas
+            </motion.h2>
+
+            {/* Subtítulo simplificado */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="max-w-2xl mx-auto"
+            >
+              <p className="text-gray-400 text-lg leading-relaxed">
+                Hogares seleccionados con estándares de excelencia para tu familia.
+              </p>
             </motion.div>
           </div>
 
-          {/* Company Branding at Bottom */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0, duration: 0.4 }}
-            className="mb-8 text-center px-4"
-          >
-            <Image
-              src="/assets/logos/marconi_header_orangewhite.png"
-              alt="Marconi Inmobiliaria"
-              width={400}
-              height={120}
-              className="h-24 md:h-26 w-auto mx-auto opacity-90 mb-3"
-            />
-          </motion.div>
-        </div>
-      </section>
-      {/* Propiedades Destacadas - CONECTADO CON BACKEND */}
-      <section
-        id="propiedades"
-        className="py-16 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden"
-      >
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              PROPIEDADES <span className="text-orange-500">DESTACADAS</span>
-            </h2>
-            <p className="text-lg text-gray-300 mb-8">
-              Las mejores oportunidades de inversión en Reconquista
-            </p>
-          </div>
-
           {loadingProperties ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto"></div>
-              <p className="text-white mt-4">Cargando propiedades...</p>
+            <div className="text-center py-premium-lg">
+              <div className="animate-spin rounded-full h-20 w-20 border-4 border-support-gray/20 border-t-vibrant-orange mx-auto shadow-xl"></div>
+              <p className="text-premium-primary mt-premium-md body-lg pulse-premium">Cargando propiedades...</p>
             </div>
           ) : (
             <>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredProperties.map((property) => (
-                  <Card
-                    key={property.id}
-                    className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm h-full flex flex-col"
-                  >
-                    <div className="relative overflow-hidden">
-                      <Link href={`/propiedades/${property.id}`}>
-                        <div className="relative cursor-pointer h-48">
-                          {property.images && property.images.length > 0 ? (
-                            <Image
-                              src={property.images[0]}
-                              alt={property.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-500"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.src = "/placeholder.svg";
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                              <div className="text-gray-400 text-center">
-                                <div className="w-16 h-16 bg-gray-600 rounded mx-auto mb-3"></div>
-                                <p>Sin imagen</p>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Status badges */}
-                          <div className="absolute top-4 left-4">
-                            <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-3 py-1 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
-                              {property.operation_type === "venta"
-                                ? "VENTA"
-                                : "ALQUILER"}
-                            </div>
-                          </div>
-
-                          {/* Featured badge */}
-                          {property.featured && (
-                            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
-                              <Eye className="w-4 h-4" />
-                              DESTACADA
-                            </div>
-                          )}
-
-                          {/* Favorite button */}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                            }}
-                          >
-                            <Heart className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </Link>
-                    </div>
-
-                    <CardContent className="p-4 flex flex-col h-full">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex-1">
-                          <Link href={`/propiedades/${property.id}`}>
-                            <h3 className="font-bold text-white text-lg mb-2 hover:text-orange-300 transition-colors cursor-pointer">
-                              {property.title}
-                            </h3>
-                          </Link>
-                          <div className="flex items-center text-orange-300 font-medium mb-1">
-                            <MapPin className="w-4 h-4 mr-2" />
-                            {property.neighborhood}, Reconquista
-                          </div>
-                        </div>
-                        <div className="text-right ml-2">
-                          <div className="text-xl font-bold text-white mb-1">
-                            {property.currency}${" "}
-                            {property.price.toLocaleString()}
-                          </div>
-                          <div className="text-gray-400 text-xs">
-                            {property.operation_type === "alquiler"
-                              ? "por mes"
-                              : ""}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex-1">
-                        {/* Property Details */}
-                        {(property.bedrooms ||
-                          property.bathrooms ||
-                          property.area_m2) && (
-                          <div className="flex items-center gap-4 text-gray-300 mb-4 text-sm">
-                            {property.bedrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bed className="w-4 h-4 mr-1 text-orange-300" />
-                                <span className="font-medium">
-                                  {property.bedrooms}
-                                </span>
-                              </div>
-                            )}
-                            {property.bathrooms && (
-                              <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                                <Bath className="w-4 h-4 mr-1 text-orange-300" />
-                                <span className="font-medium">
-                                  {property.bathrooms}
-                                </span>
-                              </div>
-                            )}
-                            <div className="flex items-center bg-gray-700/40 px-2 py-1 rounded-lg">
-                              <Square className="w-4 h-4 mr-1 text-orange-300" />
-                              <span className="font-medium">
-                                {property.area_m2}m²
-                              </span>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Features */}
-                        {property.features && property.features.length > 0 && (
-                          <div className="mb-4">
-                            <div className="flex flex-wrap gap-2">
-                              {property.features.slice(0, 3).map((feature, i) => (
-                                <span
-                                  key={i}
-                                  className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-2 py-1 rounded-lg text-xs font-medium"
-                                >
-                                  {feature}
-                                </span>
-                              ))}
-                              {property.features.length > 3 && (
-                                <span className="text-gray-400 text-xs px-2 py-1">
-                                  +{property.features.length - 3} más
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Action Buttons - Always at bottom */}
-                      <div className="flex gap-2 pt-2 border-t border-gray-700/50 mt-auto">
-                        <Button
-                          className="flex-1 bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 text-sm font-medium rounded-xl shadow-lg"
-                          onClick={() => handlePropertyInterest(property)}
-                        >
-                          Me interesa <ArrowRight className="w-3 h-3 ml-1" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm rounded-xl"
-                          onClick={() => handlePropertyInterest(property)}
-                        >
-                          <MessageCircle className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-
-              {featuredProperties.length === 0 && (
-                <div className="text-center py-12">
-                  <Home className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-white text-lg">
-                    No hay propiedades destacadas disponibles
-                  </p>
-                  <p className="text-gray-400">
-                    Próximamente agregaremos nuevas propiedades
-                  </p>
+              {/* CONTENEDOR PREMIUM SOLO PARA CARDS Y NAVEGACIÓN */}
+              <div className="relative bg-[#141826] rounded-3xl shadow-xl shadow-black/40 px-8 py-10">
+                <div className="max-w-7xl mx-auto">
+                  <FeaturedPropertiesSlider properties={featuredProperties} />
                 </div>
-              )}
-
-              <div className="text-center mt-8">
-                <Link href="/propiedades">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white bg-transparent"
-                  >
-                    Ver todas las propiedades{" "}
-                    <ArrowRight className="w-4 h-4 ml-1" />
-                  </Button>
-                </Link>
               </div>
+
+              {/* CTA PREMIUM - BOTÓN CON GLOW Y FLECHA ANIMADA (FUERA DEL CONTENEDOR) */}
+              {featuredProperties.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  viewport={{ once: true }}
+                  className="flex flex-col items-center mt-16"
+                >
+                  <Link href="/propiedades">
+                    <Button
+                      size="lg"
+                      className="max-w-md bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-4 px-8 rounded-2xl shadow-2xl shadow-orange-600/30 hover:shadow-[0_0_15px_rgba(249,115,22,0.6)] transition-all duration-300 hover:scale-105 group border-0 flex items-center justify-center gap-2"
+                    >
+                      VER TODO EL CATÁLOGO
+                      <span className="transform transition-transform group-hover:translate-x-1">
+                        →
+                      </span>
+                    </Button>
+                  </Link>
+                  <p className="text-secondary mt-4 text-lg font-medium text-center">
+                    Encontrá la propiedad perfecta para vos.
+                  </p>
+                </motion.div>
+              )}
             </>
           )}
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-gray-900">
-        <div className="container mx-auto px-4">
+      {/* Separador decorativo minimalista entre secciones */}
+      <div className="relative w-full flex justify-center my-12">
+        <div className="h-px w-3/4 bg-gradient-to-r from-transparent via-gray-600/40 to-transparent" />
+        <span className="absolute -top-3 bg-[#0d0f1a] px-3 text-gray-500 text-sm">
+          • • •
+        </span>
+      </div>
+
+      {/* MAPA INTERACTIVO - Sección del mapa de propiedades */}
+      <section
+        id="mapa"
+        className="section-spacing relative overflow-hidden bg-gradient-to-b from-gray-900 via-slate-900 to-gray-900"
+      >
+        <div className="container-premium relative z-10">
+          {/* Header de la sección */}
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-vibrant-orange/10 border border-vibrant-orange/30 mb-6"
+            >
+              <Map className="w-5 h-5 text-vibrant-orange" />
+              <span className="text-vibrant-orange font-semibold text-sm uppercase tracking-wide">
+                Explora Ubicaciones
+              </span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6"
+            >
+              Mapa de Propiedades Disponibles
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-gray-400 text-lg leading-relaxed max-w-2xl mx-auto"
+            >
+              Descubre todas nuestras propiedades en Reconquista y alrededores. Haz clic en los marcadores para ver
+              más información.
+            </motion.p>
+          </div>
+
+          {/* Mapa interactivo */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="relative bg-night-blue/50 backdrop-blur-sm rounded-2xl p-2 sm:p-4 border border-support-gray/20 shadow-2xl">
+              <InteractivePropertyMap height="600px" className="shadow-xl" />
+            </div>
+
+            {/* Decorative elements */}
+            <div className="absolute -inset-4 bg-gradient-to-r from-vibrant-orange/5 via-transparent to-vibrant-orange/5 rounded-3xl blur-2xl -z-10" />
+          </motion.div>
+
+          {/* Info adicional */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
             viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            className="mt-8 text-center"
           >
-            {[
-              { icon: Home, number: "500+", label: "Propiedades Vendidas" },
-              { icon: Users, number: "1000+", label: "Clientes Satisfechos" },
-              { icon: Award, number: "15+", label: "Años de Experiencia" },
-              { icon: Star, number: "4.9", label: "Calificación Promedio" },
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="text-center"
-              >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-brand-orange/20 rounded-full mb-4">
-                  <stat.icon className="h-8 w-8 text-brand-orange" />
-                </div>
-                <div className="text-3xl font-museo font-medium text-white mb-2">
-                  {stat.number}
-                </div>
-                <div className="text-gray-400">{stat.label}</div>
-              </motion.div>
-            ))}
+            <p className="text-subtle-gray text-sm">
+              💡 <span className="text-bone-white">Tip:</span> Haz zoom y arrastra para explorar diferentes zonas.
+              Los clusters naranjas muestran grupos de propiedades cercanas.
+            </p>
           </motion.div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-brand-orange">
-        <div className="container mx-auto px-4 text-center">
+      {/* Separador decorativo minimalista entre secciones */}
+      <div className="relative w-full flex justify-center my-12">
+        <div className="h-px w-3/4 bg-gradient-to-r from-transparent via-gray-600/40 to-transparent" />
+        <span className="absolute -top-3 bg-[#0d0f1a] px-3 text-gray-500 text-sm">
+          • • •
+        </span>
+      </div>
+
+      {/* QUIÉNES SOMOS - Sección informativa con diseño consistente */}
+      <section className="section-spacing bg-gray-900 relative overflow-hidden">
+        <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Columna de texto */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="max-w-3xl mx-auto"
+            className="space-y-6"
           >
-            <h2 className="text-4xl font-museo font-medium text-white mb-6">
-              ¿Listo para encontrar tu próximo hogar?
+            <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-800/60 border border-gray-700/60 secondary-text">
+              Conocé nuestro equipo
+            </div>
+            <h2 className="section-title">
+              ¿Quiénes somos?
             </h2>
-            <p className="text-xl text-orange-100 mb-8">
-              Nuestro equipo de expertos está aquí para ayudarte en cada paso
-              del camino
+            <p className="text-lg text-secondary">
+              Somos <span className="font-semibold text-white">Marconi Inmobiliaria</span>, una empresa local que entiende tus
+              necesidades. Conocemos Reconquista como la palma de nuestra mano y te acompañamos en cada paso.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <p className="text-lg text-secondary">
+              Con un enfoque joven y dinámico, nos especializamos en encontrar la propiedad perfecta para cada cliente,
+              desde hogares familiares hasta inversiones estratégicas.
+            </p>
+
+            {/* Beneficios */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Confianza local</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <Landmark className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Conocimiento del mercado</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Atención personalizada</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-orange-500/15 text-orange-400 ring-1 ring-orange-500/30">
+                  <Award className="w-5 h-5" />
+                </div>
+                <span className="text-white/90 font-medium">Experiencia comprobada</span>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
+              <Link href="/agentes">
+                <Button
+                  size="lg"
+                  className="mt-8 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold px-12 py-6 rounded-full shadow-2xl shadow-orange-600/30 hover:shadow-orange-600/50 transition-all duration-300 group border-0 w-fit text-lg"
+                >
+                  Conocé más
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="ml-4"
+                  >
+                    <ArrowRight className="w-6 h-6" />
+                  </motion.div>
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* Columna imagen */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="relative rotate-[-4deg]">
+              <div className="rounded-3xl border-4 border-orange-500/30 p-2 bg-orange-500/10">
+                <div className="rounded-2xl overflow-hidden bg-gray-800">
+                  <Image
+                    src={
+                      getOptimizedImageUrl("gustavo_vdczse", { width: 900, height: 600, gravity: "face", format: "auto", quality: "auto" }) || "/placeholder.svg"
+                    }
+                    alt="Foto de Gustavo Marconi"
+                    width={900}
+                    height={600}
+                    className="w-full h-[360px] md:h-[420px] object-cover"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Tarjeta de nombre */}
+            <div className="absolute -bottom-6 left-6 bg-black/80 text-white rounded-xl px-4 py-3 shadow-2xl border border-white/10">
+              <div className="font-semibold">Gustavo Marconi</div>
+              <div className="text-sm text-gray-300">Fundador & Agente Principal</div>
+              <div className="text-orange-400 text-xs">★★★★★</div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA SECTION - DISEÑO PREMIUM SIMPLIFICADO */}
+      <section className="section-spacing bg-gradient-to-br from-orange-600 via-orange-500 to-red-600 relative overflow-hidden">
+        {/* Patrón de textura sutil */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `repeating-linear-gradient(
+              45deg,
+              transparent,
+              transparent 2px,
+              rgba(255,255,255,0.1) 2px,
+              rgba(255,255,255,0.1) 4px
+            )`
+          }} />
+        </div>
+        
+        {/* Elementos decorativos flotantes */}
+        <motion.div 
+          animate={{ 
+            y: [0, -20, 0],
+            rotate: [0, 5, 0]
+          }}
+          transition={{ 
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute top-20 left-20 w-32 h-32 rounded-full bg-white/5 backdrop-blur-sm"
+        />
+        <motion.div 
+          animate={{ 
+            y: [0, 20, 0],
+            rotate: [0, -5, 0]
+          }}
+          transition={{ 
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="absolute bottom-20 right-20 w-24 h-24 rounded-full bg-white/5 backdrop-blur-sm"
+        />
+        
+        <div className="container mx-auto px-4 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="max-w-4xl mx-auto"
+          >
+            <motion.h2
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="section-title text-center mb-8"
+            >
+              COMENZÁ TU BÚSQUEDA HOY MISMO
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="subtitle text-center text-white mb-12 max-w-3xl mx-auto"
+            >
+              Acompañamiento profesional premium para encontrar la propiedad perfecta que transforme tu vida
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              viewport={{ once: true }}
+              className="flex flex-col sm:flex-row gap-6 justify-center items-center"
+            >
               <Link href="/propiedades">
                 <Button
                   size="lg"
-                  variant="secondary"
-                  className="bg-white text-brand-orange hover:bg-gray-100"
+                  className="bg-gray-900 text-white hover:bg-gray-800 px-8 py-4 text-lg font-bold rounded-full shadow-2xl shadow-black/30 hover:shadow-black/50 transition-all duration-300 hover:scale-105 border-2 border-white/20 hover:border-white/40 min-w-[280px]"
                 >
-                  Explorar Propiedades
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  EXPLORAR PROPIEDADES
+                  <motion.div
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="ml-3"
+                  >
+                    <ArrowRight className="h-6 w-6" />
+                  </motion.div>
                 </Button>
               </Link>
+              
               <Link href="/contacto">
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-white text-white hover:bg-white hover:text-brand-orange bg-transparent"
+                  className="border-2 border-white text-white hover:bg-white hover:text-orange-600 px-8 py-4 text-lg font-bold rounded-full bg-transparent backdrop-blur-sm hover:scale-105 transition-all duration-300 shadow-xl min-w-[280px]"
                 >
-                  Contactar Agente
+                  CONTACTAR EXPERTO
                 </Button>
               </Link>
-            </div>
+            </motion.div>
+
+            {/* Elemento decorativo inferior */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              viewport={{ once: true }}
+              className="mt-12"
+            >
+              <div className="w-24 h-1 bg-white/40 mx-auto rounded-full" />
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <Image
-                  src="/assets/logos/marconi_title.svg"
-                  alt="Marconi Inmobiliaria"
-                  width={140}
-                  height={45}
-                  className="h-8 w-auto"
-                />
-              </div>
-              <p className="text-gray-400 mb-4">
-                La inmobiliaria líder en Reconquista, comprometida con encontrar
-                el hogar perfecto para cada familia.
-              </p>
-            </div>
+      {/* SEPARADOR WAVE DIVIDER */}
+      <div className="relative">
+        <svg 
+          className="w-full h-24 text-gray-900" 
+          viewBox="0 0 1200 120" 
+          preserveAspectRatio="none"
+          fill="currentColor"
+        >
+          <path d="M0,40 C300,120 900,0 1200,40 L1200,120 L0,120 Z" />
+        </svg>
+      </div>
 
-            <div>
-              <h3 className="text-white font-semibold mb-4">Enlaces</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    href="/propiedades"
-                    className="hover:text-white transition-colors"
-                  >
-                    Propiedades
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/agentes"
-                    className="hover:text-white transition-colors"
-                  >
-                    Agentes
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contacto"
-                    className="hover:text-white transition-colors"
-                  >
-                    Contacto
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-white font-semibold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Reconquista, Santa Fe</li>
-                <li>+54 9 3482 308100</li>
-                <li>marconinegociosinmobiliarios@hotmail.com</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>
-              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

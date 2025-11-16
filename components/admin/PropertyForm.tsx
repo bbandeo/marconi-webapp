@@ -36,6 +36,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { PropertyLocationPicker } from './PropertyLocationPicker'
 
 const propertySchema = z.object({
   title: z.string().min(1, "El título es requerido"),
@@ -51,6 +52,8 @@ const propertySchema = z.object({
   neighborhood: z.string().min(1, "El barrio es requerido"),
   city: z.string().default("Reconquista"),
   province: z.string().default("Santa Fe"),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
   featured: z.boolean().default(false),
   status: z.enum(["available", "sold", "rented", "reserved"]).default("available"),
 })
@@ -164,6 +167,8 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
       neighborhood: property?.neighborhood || "",
       city: property?.city || "Reconquista",
       province: property?.province || "Santa Fe",
+      latitude: property?.latitude || undefined,
+      longitude: property?.longitude || undefined,
       featured: property?.featured || false,
       status: property?.status || "available",
     },
@@ -257,6 +262,18 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
 
   const removeFeature = (index: number) => {
     setFeatures((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const handleLocationChange = (lat: number, lng: number) => {
+    setValue("latitude", lat)
+    setValue("longitude", lng)
+  }
+
+  const handleAddressChange = (address: string, neighborhood: string, city: string, province: string) => {
+    setValue("address", address)
+    setValue("neighborhood", neighborhood)
+    setValue("city", city)
+    setValue("province", province)
   }
 
   const onFormSubmit = async (data: PropertyFormData) => {
@@ -466,6 +483,27 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
               <Label htmlFor="province">Provincia</Label>
               <Input id="province" {...register("province")} placeholder="Santa Fe" />
             </div>
+          </div>
+
+          {/* Map location picker */}
+          <div className="space-y-4">
+            <div>
+              <Label>Ubicación en el Mapa</Label>
+              <p className="text-sm text-gray-600 mt-1">
+                Seleccione la ubicación exacta de la propiedad en el mapa
+              </p>
+            </div>
+            <PropertyLocationPicker
+              address={watch("address")}
+              neighborhood={watch("neighborhood")}
+              city={watch("city")}
+              province={watch("province")}
+              latitude={watch("latitude")}
+              longitude={watch("longitude")}
+              onLocationChange={handleLocationChange}
+              onAddressChange={handleAddressChange}
+              className="h-96"
+            />
           </div>
         </CardContent>
       </Card>

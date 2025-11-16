@@ -2,17 +2,23 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { Search, Filter, MapPin, Bed, Bath, Square, Heart, Eye, ChevronLeft, ChevronRight, Home, ArrowLeft } from "lucide-react"
+import { Search, Filter, MapPin, Bed, Bath, Square, Heart, Eye, ChevronLeft, ChevronRight, Home, ArrowLeft, ChevronDown, ChevronUp } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import Header from "@/components/Header"
+import Footer from "@/components/Footer"
+import PropertyCard from "@/components/PropertyCard"
+import Hero from "@/components/Hero"
 import { getOptimizedImageUrl } from "@/lib/cloudinary"
 import { PropertyService } from "@/services/properties"
 import type { Property as PropertyType } from "@/lib/supabase"
+import { useAnalytics } from "@/hooks/useAnalytics"
 
 interface Property extends PropertyType {
   operation: "sale" | "rent"
@@ -22,20 +28,31 @@ interface Property extends PropertyType {
 const ITEMS_PER_PAGE = 12
 
 export default function PropiedadesPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [properties, setProperties] = useState<Property[]>([])
   const [filteredProperties, setFilteredProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
+  const [uniqueNeighborhoods, setUniqueNeighborhoods] = useState<string[]>([])
 
-  // Filters
-  const [searchTerm, setSearchTerm] = useState("")
-  const [operationFilter, setOperationFilter] = useState("all")
-  const [typeFilter, setTypeFilter] = useState("all")
-  const [minPrice, setMinPrice] = useState("")
-  const [maxPrice, setMaxPrice] = useState("")
-  const [bedroomsFilter, setBedroomsFilter] = useState("all")
-  const [bathroomsFilter, setBathroomsFilter] = useState("all")
-  const [sortBy, setSortBy] = useState("newest")
+  // Analytics tracking
+  const analytics = useAnalytics({ enableAutoTracking: true })
+
+  // Filters - Initialize from URL params
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "")
+  const [operationFilter, setOperationFilter] = useState(searchParams.get("operation") || "all")
+  const [typeFilter, setTypeFilter] = useState(searchParams.get("type") || "all")
+  const [minPrice, setMinPrice] = useState(searchParams.get("minPrice") || "")
+  const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "")
+  const [minArea, setMinArea] = useState(searchParams.get("minArea") || "")
+  const [maxArea, setMaxArea] = useState(searchParams.get("maxArea") || "")
+  const [bedroomsFilter, setBedroomsFilter] = useState(searchParams.get("bedrooms") || "all")
+  const [bathroomsFilter, setBathroomsFilter] = useState(searchParams.get("bathrooms") || "all")
+  const [neighborhoodFilter, setNeighborhoodFilter] = useState(searchParams.get("neighborhood") || "all")
+  const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "newest")
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
   // Fetch properties from Supabase
   useEffect(() => {
@@ -45,7 +62,8 @@ export default function PropiedadesPage() {
         const result = await PropertyService.getProperties({
           limit: 100, // Get all properties
           sort_by: "created_at",
-          sort_order: "desc"
+          sort_order: "desc",
+          status: "available" // Only show available properties
         })
 
         // Map properties to match the expected interface
@@ -61,6 +79,13 @@ export default function PropiedadesPage() {
 
         setProperties(mappedProperties)
         setFilteredProperties(mappedProperties)
+
+        // Extract unique neighborhoods
+        const neighborhoods = [...new Set(mappedProperties
+          .map(p => p.neighborhood)
+          .filter(n => n && n.trim() !== "")
+        )].sort()
+        setUniqueNeighborhoods(neighborhoods)
       } catch (error) {
         console.error("Error fetching properties:", error)
         setProperties([])
@@ -105,6 +130,14 @@ export default function PropiedadesPage() {
       filtered = filtered.filter((property) => property.price <= Number.parseInt(maxPrice))
     }
 
+    // Area filters
+    if (minArea) {
+      filtered = filtered.filter((property) => property.area_m2 && property.area_m2 >= Number.parseInt(minArea))
+    }
+    if (maxArea) {
+      filtered = filtered.filter((property) => property.area_m2 && property.area_m2 <= Number.parseInt(maxArea))
+    }
+
     // Bedrooms filter
     if (bedroomsFilter !== "all") {
       filtered = filtered.filter((property) => property.bedrooms && property.bedrooms >= Number.parseInt(bedroomsFilter))
@@ -113,6 +146,11 @@ export default function PropiedadesPage() {
     // Bathrooms filter
     if (bathroomsFilter !== "all") {
       filtered = filtered.filter((property) => property.bathrooms && property.bathrooms >= Number.parseInt(bathroomsFilter))
+    }
+
+    // Neighborhood filter
+    if (neighborhoodFilter !== "all") {
+      filtered = filtered.filter((property) => property.neighborhood === neighborhoodFilter)
     }
 
     // Sort
@@ -133,7 +171,29 @@ export default function PropiedadesPage() {
 
     setFilteredProperties(filtered)
     setCurrentPage(1)
-  }, [properties, searchTerm, operationFilter, typeFilter, minPrice, maxPrice, bedroomsFilter, bathroomsFilter, sortBy])
+  }, [properties, searchTerm, operationFilter, typeFilter, minPrice, maxPrice, minArea, maxArea, bedroomsFilter, bathroomsFilter, neighborhoodFilter, sortBy])
+
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams()
+
+    if (searchTerm) params.set("search", searchTerm)
+    if (operationFilter !== "all") params.set("operation", operationFilter)
+    if (typeFilter !== "all") params.set("type", typeFilter)
+    if (minPrice) params.set("minPrice", minPrice)
+    if (maxPrice) params.set("maxPrice", maxPrice)
+    if (minArea) params.set("minArea", minArea)
+    if (maxArea) params.set("maxArea", maxArea)
+    if (bedroomsFilter !== "all") params.set("bedrooms", bedroomsFilter)
+    if (bathroomsFilter !== "all") params.set("bathrooms", bathroomsFilter)
+    if (neighborhoodFilter !== "all") params.set("neighborhood", neighborhoodFilter)
+    if (sortBy !== "newest") params.set("sortBy", sortBy)
+
+    const queryString = params.toString()
+    const newUrl = queryString ? `/propiedades?${queryString}` : "/propiedades"
+
+    router.replace(newUrl, { scroll: false })
+  }, [searchTerm, operationFilter, typeFilter, minPrice, maxPrice, minArea, maxArea, bedroomsFilter, bathroomsFilter, neighborhoodFilter, sortBy, router])
 
   // Pagination
   const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE)
@@ -147,8 +207,11 @@ export default function PropiedadesPage() {
     setTypeFilter("all")
     setMinPrice("")
     setMaxPrice("")
+    setMinArea("")
+    setMaxArea("")
     setBedroomsFilter("all")
     setBathroomsFilter("all")
+    setNeighborhoodFilter("all")
     setSortBy("newest")
   }
 
@@ -186,510 +249,355 @@ export default function PropiedadesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(12)].map((_, i) => (
-              <div key={i} className="bg-gray-800 rounded-lg h-80 animate-pulse" />
-            ))}
+      <div className="min-h-screen bg-premium-main">
+        <Header />
+        <section className="section-premium">
+          <div className="container-premium">
+            <div className="text-center py-premium-xl">
+              <div className="animate-spin rounded-full h-20 w-20 border-4 border-support-gray/20 border-t-vibrant-orange mx-auto mb-premium-md shadow-xl"></div>
+              <p className="body-lg text-premium-primary pulse-premium">Cargando propiedades...</p>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      {/* Header - matching homepage */}
-      <header className="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-        <div className="w-full px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/assets/logos/marconi_header_orangewhite.png"
-                alt="Marconi Inmobiliaria"
-                width={140}
-                height={45}
-                className="h-8 md:h-10 w-auto"
-                priority
-              />
-            </Link>
+    <div className="min-h-screen bg-premium-main">
+      {/* Header Premium */}
+      <Header />
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link
-                href="/propiedades"
-                className="text-orange-500 border-b-2 border-orange-500 pb-1 font-medium transition-colors"
-              >
-                PROPIEDADES
-              </Link>
-              <Link
-                href="/agentes"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                AGENTES
-              </Link>
-              <Link
-                href="/contacto"
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                CONTACTO
-              </Link>
-            </nav>
+      <Hero
+        backgroundImage="/assets/hero/casa_llaves.png"
+        alt="Casa con llaves - Marconi Inmobiliaria"
+        title="NUESTRAS PROPIEDADES"
+        description=""
+        showCounter={false}
+      >
+        {/* Filters - Compact with Expandable Design */}
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-premium-card backdrop-blur-md rounded-2xl p-6 border border-support-gray/20 shadow-xl">
 
-            {/* Mobile Search Bar */}
-            <div className="md:hidden flex-1 max-w-xs ml-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Buscar propiedades..."
-                  className="pl-10 h-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm focus:border-brand-orange"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Decorative divider line */}
-        <div className="w-full h-1 bg-gradient-to-r from-transparent via-orange-500 to-transparent shadow-lg"></div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative py-12 md:py-20 overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <Image
-            src="/assets/hero/casa_llaves.png"
-            alt="Casa con llaves - Marconi Inmobiliaria"
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Dark overlay for better text readability */}
-          <div className="absolute inset-0 bg-black/70" />
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          {/* Page Title */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              NUESTRAS <span className="text-orange-500">PROPIEDADES</span>
-            </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-5xl mx-auto">
-              Descubrí las mejores propiedades cuidadosamente seleccionadas por nuestro equipo  <br/>
-              y encontrá tu propiedad ideal con nuestro acompañamiento profesional.
-            </p>
-            <div className="text-gray-400">
-              <p>{filteredProperties.length} propiedades disponibles</p>
-            </div>
-          </div>
-
-          {/* Filters - Inside Hero Section */}
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-black/60 backdrop-blur-sm rounded-xl p-6 border border-orange-500/30 shadow-2xl">
-              <div className="flex items-center mb-4">
-                <Filter className="w-5 h-5 text-orange-500 mr-2" />
-                <h2 className="text-lg font-semibold text-white">Filtros de búsqueda</h2>
+            {/* Basic Filters - Always Visible */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              {/* Search - Full width on mobile */}
+              <div className="md:col-span-2">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-support-gray w-4 h-4" />
+                  <Input
+                    placeholder="Buscar propiedades..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 bg-night-blue/60 border-support-gray/30 text-bone-white placeholder:text-subtle-gray focus:border-vibrant-orange backdrop-blur-sm rounded-xl focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300 h-11"
+                  />
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                {/* Search */}
-                <div className="lg:col-span-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              {/* Operation */}
+              <Select value={operationFilter} onValueChange={setOperationFilter}>
+                <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white backdrop-blur-sm rounded-xl focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300 h-11">
+                  <SelectValue placeholder="Alquiler/Venta" />
+                </SelectTrigger>
+                <SelectContent className="bg-night-blue border-support-gray/30">
+                  <SelectItem value="all">Alquiler/Venta</SelectItem>
+                  <SelectItem value="sale">Venta</SelectItem>
+                  <SelectItem value="rent">Alquiler</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Type */}
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white backdrop-blur-sm rounded-xl focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300 h-11">
+                  <SelectValue placeholder="Tipo" />
+                </SelectTrigger>
+                <SelectContent className="bg-night-blue border-support-gray/30">
+                  <SelectItem value="all">Tipo de propiedad</SelectItem>
+                  <SelectItem value="house">Casa</SelectItem>
+                  <SelectItem value="apartment">Departamento</SelectItem>
+                  <SelectItem value="terreno">Terreno</SelectItem>
+                  <SelectItem value="commercial">Comercial</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Expand/Collapse Button - Only show when collapsed */}
+            {!showAdvancedFilters && (
+              <div className="flex justify-center mb-4">
+                <Button
+                  onClick={() => setShowAdvancedFilters(true)}
+                  variant="outline"
+                  className="bg-night-blue/60 border-support-gray/30 text-bone-white hover:bg-vibrant-orange hover:border-vibrant-orange hover:text-white transition-all duration-300 rounded-xl px-4 py-2 flex items-center gap-2"
+                >
+                  <Filter className="w-4 h-4" />
+                  Más filtros
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
+
+            {/* Advanced Filters - Collapsible */}
+            {showAdvancedFilters && (
+              <div className="space-y-4 border-t border-support-gray/20 pt-4">
+                {/* Price and Area */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="secondary-text block mb-2 text-sm">Precio mínimo</label>
                     <Input
-                      placeholder="Buscar por título, dirección o barrio..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-gray-800/80 border-gray-600 text-white placeholder-gray-400 focus:border-orange-500 backdrop-blur-sm"
+                      placeholder="Ej: 50000"
+                      value={minPrice}
+                      onChange={(e) => setMinPrice(e.target.value)}
+                      className="bg-night-blue/60 border-support-gray/30 text-bone-white placeholder:text-subtle-gray rounded-xl h-11 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
+                    />
+                  </div>
+                  <div>
+                    <label className="secondary-text block mb-2 text-sm">Precio máximo</label>
+                    <Input
+                      placeholder="Ej: 200000"
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(e.target.value)}
+                      className="bg-night-blue/60 border-support-gray/30 text-bone-white placeholder:text-subtle-gray rounded-xl h-11 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
+                    />
+                  </div>
+                  <div>
+                    <label className="secondary-text block mb-2 text-sm">Metros² mín.</label>
+                    <Input
+                      placeholder="Ej: 50"
+                      value={minArea}
+                      onChange={(e) => setMinArea(e.target.value)}
+                      className="bg-night-blue/60 border-support-gray/30 text-bone-white placeholder:text-subtle-gray rounded-xl h-11 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
+                    />
+                  </div>
+                  <div>
+                    <label className="secondary-text block mb-2 text-sm">Metros² máx.</label>
+                    <Input
+                      placeholder="Ej: 200"
+                      value={maxArea}
+                      onChange={(e) => setMaxArea(e.target.value)}
+                      className="bg-night-blue/60 border-support-gray/30 text-bone-white placeholder:text-subtle-gray rounded-xl h-11 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300"
                     />
                   </div>
                 </div>
 
-                {/* Operation */}
-                <Select value={operationFilter} onValueChange={setOperationFilter}>
-                  <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white backdrop-blur-sm">
-                    <SelectValue placeholder="Operación" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
-                    <SelectItem value="all">Alquiler/Venta</SelectItem>
-                    <SelectItem value="sale">Venta</SelectItem>
-                    <SelectItem value="rent">Alquiler</SelectItem>
-                  </SelectContent>
-                </Select>
+                {/* Features and Location */}
+                <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+                  {/* Neighborhood */}
+                  <div className="col-span-2">
+                    <Select value={neighborhoodFilter} onValueChange={setNeighborhoodFilter}>
+                      <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white rounded-xl h-11 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
+                        <SelectValue placeholder="Barrio" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-night-blue border-support-gray/30">
+                        <SelectItem value="all">Todos los barrios</SelectItem>
+                        {uniqueNeighborhoods.map((neighborhood) => (
+                          <SelectItem key={neighborhood} value={neighborhood}>
+                            {neighborhood}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                {/* Type */}
-                <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white backdrop-blur-sm">
-                    <SelectValue placeholder="Tipo" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
-                    <SelectItem value="all">Tipo de propiedad</SelectItem>
-                    <SelectItem value="house">Casa</SelectItem>
-                    <SelectItem value="apartment">Departamento</SelectItem>
-                    <SelectItem value="terreno">Terreno</SelectItem>
-                    <SelectItem value="commercial">Comercial</SelectItem>
-                  </SelectContent>
-                </Select>
+                  {/* Bedrooms - Compact */}
+                  <Select value={bedroomsFilter} onValueChange={setBedroomsFilter}>
+                    <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white rounded-xl h-11 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
+                      <SelectValue placeholder="Hab." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-night-blue border-support-gray/30">
+                      <SelectItem value="all">Hab.</SelectItem>
+                      <SelectItem value="1">1+</SelectItem>
+                      <SelectItem value="2">2+</SelectItem>
+                      <SelectItem value="3">3+</SelectItem>
+                      <SelectItem value="4">4+</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* Bathrooms - Compact */}
+                  <Select value={bathroomsFilter} onValueChange={setBathroomsFilter}>
+                    <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white rounded-xl h-11 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
+                      <SelectValue placeholder="Baños" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-night-blue border-support-gray/30">
+                      <SelectItem value="all">Baños</SelectItem>
+                      <SelectItem value="1">1+</SelectItem>
+                      <SelectItem value="2">2+</SelectItem>
+                      <SelectItem value="3">3+</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* Sort */}
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="bg-night-blue/60 border-support-gray/30 text-bone-white rounded-xl h-11 focus:border-vibrant-orange focus:ring-2 focus:ring-vibrant-orange/20 transition-all duration-300">
+                      <SelectValue placeholder="Ordenar por" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-night-blue border-support-gray/30">
+                      <SelectItem value="newest">Más recientes</SelectItem>
+                      <SelectItem value="price-low">Precio: menor a mayor</SelectItem>
+                      <SelectItem value="price-high">Precio: mayor a menor</SelectItem>
+                      <SelectItem value="views">Más populares</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {/* Collapse Button - Moved to end */}
+                  <Button
+                    onClick={() => setShowAdvancedFilters(false)}
+                    variant="outline"
+                    className="bg-night-blue/60 border-support-gray/30 text-bone-white hover:bg-vibrant-orange hover:border-vibrant-orange hover:text-white transition-all duration-300 rounded-xl px-3 py-2 flex items-center gap-2 h-11"
+                  >
+                    <Filter className="w-4 h-4" />
+                    Menos filtros
+                    <ChevronUp className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </Hero>
+
+      {/* Properties Counter - Below filters */}
+      <div className="bg-premium-main py-6">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="bg-premium-card/50 backdrop-blur-sm rounded-xl px-6 py-4 border border-support-gray/20 shadow-lg inline-block">
+              <p className="text-vibrant-orange font-semibold text-lg">
+                {filteredProperties.length} propiedades disponibles
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Results - PREMIUM DESIGN */}
+      <section className="section-spacing bg-premium-main">
+        <div className="container-premium">
+          {/* Results header */}
+          <div className="component-spacing">
+            <h2 className="component-title mb-2">Resultados</h2>
+          </div>
+
+          {/* Properties Grid - DISEÑO EN MOSAICO RESPONSIVE */}
+          {currentProperties.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-premium-xl">
+              {currentProperties.map((property) => (
+                <PropertyCard key={property.id} property={property} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-premium-xl">
+              <Home className="w-16 h-16 text-premium-secondary mx-auto mb-premium-md opacity-40" />
+              <h3 className="heading-lg text-premium-primary mb-premium-sm">
+                No se encontraron propiedades
+              </h3>
+              <p className="body-md text-premium-secondary mb-premium-lg">
+                No se encontraron propiedades con los filtros seleccionados
+              </p>
+              <Button onClick={clearFilters}>
+                Limpiar filtros
+              </Button>
+            </div>
+          )}
+
+          {/* Pagination - Enhanced */}
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-premium-card/50 backdrop-blur-sm rounded-xl p-6 border border-vibrant-orange/10">
+              {/* Pagination Info */}
+              <div className="text-premium-secondary text-sm">
+                Mostrando {startIndex + 1}-{Math.min(endIndex, filteredProperties.length)} de {filteredProperties.length} propiedades
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {/* Price Range */}
-                <Input
-                  placeholder="Precio mín."
-                  value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
-                  className="bg-gray-800/80 border-gray-600 text-white placeholder-gray-400 backdrop-blur-sm"
-                />
-                <Input
-                  placeholder="Precio máx."
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
-                  className="bg-gray-800/80 border-gray-600 text-white placeholder-gray-400 backdrop-blur-sm"
-                />
-
-                {/* Bedrooms */}
-                <Select value={bedroomsFilter} onValueChange={setBedroomsFilter}>
-                  <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white backdrop-blur-sm">
-                    <SelectValue placeholder="Dormitorios" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
-                    <SelectItem value="all">Habitaciones</SelectItem>
-                    <SelectItem value="1">1+</SelectItem>
-                    <SelectItem value="2">2+</SelectItem>
-                    <SelectItem value="3">3+</SelectItem>
-                    <SelectItem value="4">4+</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {/* Bathrooms */}
-                <Select value={bathroomsFilter} onValueChange={setBathroomsFilter}>
-                  <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white backdrop-blur-sm">
-                    <SelectValue placeholder="Baños" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
-                    <SelectItem value="all">Baños</SelectItem>
-                    <SelectItem value="1">1+</SelectItem>
-                    <SelectItem value="2">2+</SelectItem>
-                    <SelectItem value="3">3+</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {/* Sort */}
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="bg-gray-800/80 border-gray-600 text-white backdrop-blur-sm">
-                    <SelectValue placeholder="Ordenar por" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-800 border-gray-600">
-                    <SelectItem value="newest">Más recientes</SelectItem>
-                    <SelectItem value="price-low">Precio menor</SelectItem>
-                    <SelectItem value="price-high">Precio mayor</SelectItem>
-                    <SelectItem value="views">Más vistas</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                {/* Clear Filters */}
+              {/* Pagination Controls */}
+              <div className="flex items-center space-x-2">
                 <Button
-                  onClick={clearFilters}
                   variant="outline"
-                  className="bg-gray-700/60 border-gray-500/40 text-gray-300 hover:bg-orange-500/80 hover:text-white hover:border-orange-500/60 backdrop-blur-sm transition-all duration-300"
+                  size="sm"
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="disabled:opacity-50 hover:bg-vibrant-orange/10 hover:border-vibrant-orange/30"
                 >
-                  Limpiar
+                  <ChevronLeft className="w-4 h-4" />
+                  Anterior
+                </Button>
+
+                {/* Smart pagination - show only relevant pages */}
+                {(() => {
+                  const pagesToShow = []
+                  const maxVisiblePages = 5
+
+                  if (totalPages <= maxVisiblePages) {
+                    // Show all pages if total is small
+                    for (let i = 1; i <= totalPages; i++) {
+                      pagesToShow.push(i)
+                    }
+                  } else {
+                    // Smart pagination logic
+                    let startPage = Math.max(1, currentPage - 2)
+                    let endPage = Math.min(totalPages, currentPage + 2)
+
+                    // Adjust if we're near the start or end
+                    if (currentPage <= 3) {
+                      endPage = Math.min(5, totalPages)
+                    }
+                    if (currentPage > totalPages - 3) {
+                      startPage = Math.max(1, totalPages - 4)
+                    }
+
+                    // Add first page and ellipsis if needed
+                    if (startPage > 1) {
+                      pagesToShow.push(1)
+                      if (startPage > 2) pagesToShow.push('...')
+                    }
+
+                    // Add middle pages
+                    for (let i = startPage; i <= endPage; i++) {
+                      pagesToShow.push(i)
+                    }
+
+                    // Add ellipsis and last page if needed
+                    if (endPage < totalPages) {
+                      if (endPage < totalPages - 1) pagesToShow.push('...')
+                      pagesToShow.push(totalPages)
+                    }
+                  }
+
+                  return pagesToShow.map((page, index) => {
+                    if (page === '...') {
+                      return <span key={`ellipsis-${index}`} className="px-2 text-premium-secondary">...</span>
+                    }
+                    return (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setCurrentPage(page as number)}
+                        className={currentPage === page
+                          ? "bg-gradient-to-r from-vibrant-orange to-orange-600 text-bone-white"
+                          : "hover:bg-vibrant-orange/10 hover:border-vibrant-orange/30"
+                        }
+                      >
+                        {page}
+                      </Button>
+                    )
+                  })
+                })()}
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="disabled:opacity-50 hover:bg-vibrant-orange/10 hover:border-vibrant-orange/30"
+                >
+                  Siguiente
+                  <ChevronRight className="w-4 h-4" />
                 </Button>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* Results */}
-      <div className="container mx-auto px-4 py-12 bg-gradient-to-b from-black to-gray-900">
-        {/* Results count */}
-        <div className="flex items-center justify-between mb-6">
-          <p className="text-gray-300">{filteredProperties.length} propiedades encontradas</p>
-        </div>
-
-        {/* Properties List */}
-        {currentProperties.length > 0 ? (
-          <div className="space-y-6 mb-8">
-            {currentProperties.map((property) => (
-              <Card
-                key={property.id}
-                className="bg-gray-800/95 border-gray-600/30 border overflow-hidden group hover:border-gray-500/50 hover:shadow-2xl transition-all duration-300 backdrop-blur-sm"
-              >
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
-                  {/* Image Section */}
-                  <div className="lg:col-span-2 relative">
-                    <Link href={`/propiedades/${property.id}`}>
-                      <div className="relative cursor-pointer h-64 lg:h-80">
-                        {property.images && property.images.length > 0 ? (
-                          <Image
-                            src={property.images[0]}
-                            alt={property.title}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                            onError={(e) => {
-                              const target = e.target as HTMLImageElement
-                              target.src = "/placeholder.svg"
-                            }}
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gray-700 flex items-center justify-center">
-                            <div className="text-gray-400 text-center">
-                              <div className="w-16 h-16 bg-gray-600 rounded mx-auto mb-3"></div>
-                              <p>Sin imagen</p>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Status badges */}
-                        <div className="absolute top-4 left-4">
-                          <div className="bg-gray-900/90 text-orange-300 border border-orange-400/30 px-4 py-2 rounded-xl font-medium text-sm backdrop-blur-md shadow-lg">
-                            {property.operation === "sale" ? "VENTA" : "ALQUILER"}
-                          </div>
-                        </div>
-
-                        {/* Featured badge */}
-                        {property.featured && (
-                          <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-600/90 to-yellow-500/90 text-white px-3 py-2 rounded-xl text-xs flex items-center gap-2 backdrop-blur-md shadow-lg">
-                            <Eye className="w-4 h-4" />
-                            DESTACADA
-                          </div>
-                        )}
-
-                        {/* Favorite button */}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className="absolute bottom-4 right-4 bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-white backdrop-blur-md rounded-xl p-3 shadow-lg"
-                        >
-                          <Heart className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    </Link>
-                  </div>
-
-                  {/* Content Section */}
-                  <div className="lg:col-span-3 p-6 lg:p-8 flex flex-col justify-between">
-                    <div>
-                      {/* Header */}
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex-1">
-                          <Link href={`/propiedades/${property.id}`}>
-                            <h3 className="font-bold text-white text-2xl mb-2 hover:text-orange-300 transition-colors cursor-pointer">
-                              {property.title}
-                            </h3>
-                          </Link>
-                          <div className="flex items-center text-orange-300 font-medium mb-1">
-                            <MapPin className="w-4 h-4 mr-2" />
-                            {property.neighborhood}, Reconquista
-                          </div>
-                        </div>
-                        <div className="text-right ml-4">
-                          <div className="text-3xl font-bold text-white mb-1">
-                            {property.currency}$ {property.price.toLocaleString()}
-                          </div>
-                          <div className="text-gray-400 text-sm">
-                            {property.operation === "rent" ? "por mes" : ""}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Property Details */}
-                      {(property.bedrooms || property.bathrooms || property.area_m2) && (
-                        <div className="flex items-center gap-6 text-gray-300 mb-6">
-                          {property.bedrooms && (
-                            <div className="flex items-center bg-gray-700/40 px-4 py-2 rounded-lg">
-                              <Bed className="w-5 h-5 mr-2 text-orange-300" />
-                              <span className="font-medium">{property.bedrooms} dormitorios</span>
-                            </div>
-                          )}
-                          {property.bathrooms && (
-                            <div className="flex items-center bg-gray-700/40 px-4 py-2 rounded-lg">
-                              <Bath className="w-5 h-5 mr-2 text-orange-300" />
-                              <span className="font-medium">{property.bathrooms} baños</span>
-                            </div>
-                          )}
-                          <div className="flex items-center bg-gray-700/40 px-4 py-2 rounded-lg">
-                            <Square className="w-5 h-5 mr-2 text-orange-300" />
-                            <span className="font-medium">{property.area_m2}m²</span>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Features */}
-                      {property.features && property.features.length > 0 && (
-                        <div className="mb-6">
-                          <h4 className="text-white font-medium mb-3">Características:</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {property.features.slice(0, 5).map((feature, i) => (
-                              <span key={i} className="bg-orange-500/15 text-orange-300 border border-orange-500/25 px-3 py-1 rounded-lg text-sm font-medium">
-                                {feature}
-                              </span>
-                            ))}
-                            {property.features.length > 5 && (
-                              <span className="text-gray-400 text-sm px-3 py-1">+{property.features.length - 5} más</span>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex gap-4 pt-4 border-t border-gray-700/50">
-                      <Link href={`/propiedades/${property.id}`} className="flex-1">
-                        <Button className="w-full bg-gradient-to-r from-orange-600/90 to-orange-500/90 hover:from-orange-600 hover:to-orange-500 text-white border border-orange-500/30 backdrop-blur-sm transition-all duration-300 py-3 text-base font-medium rounded-xl shadow-lg">
-                          Ver detalles completos <ArrowLeft className="w-5 h-5 ml-2 rotate-180" />
-                        </Button>
-                      </Link>
-                      <Button
-                        variant="outline"
-                        className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm px-6 rounded-xl"
-                      >
-                        <Heart className="w-5 h-5 mr-2" />
-                        Guardar
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="border-gray-500/40 text-gray-300 hover:bg-gray-700/60 hover:text-white bg-transparent backdrop-blur-sm px-6 rounded-xl"
-                      >
-                        Contactar
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-gray-400 text-lg mb-4">No se encontraron propiedades con los filtros seleccionados</p>
-            <Button onClick={clearFilters} className="bg-brand-orange hover:bg-brand-orange/90">
-              Limpiar filtros
-            </Button>
-          </div>
-        )}
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex items-center justify-center space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-              className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white disabled:opacity-50"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Anterior
-            </Button>
-
-            {[...Array(totalPages)].map((_, i) => (
-              <Button
-                key={i}
-                variant={currentPage === i + 1 ? "default" : "outline"}
-                size="sm"
-                onClick={() => setCurrentPage(i + 1)}
-                className={
-                  currentPage === i + 1
-                    ? "bg-brand-orange hover:bg-brand-orange/90"
-                    : "bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white"
-                }
-              >
-                {i + 1}
-              </Button>
-            ))}
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="bg-transparent border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white disabled:opacity-50"
-            >
-              Siguiente
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* Footer - matching homepage */}
-      <footer className="bg-gray-800 border-t border-gray-700 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <Image
-                  src="/assets/logos/marconi_title.svg"
-                  alt="Marconi Inmobiliaria"
-                  width={140}
-                  height={45}
-                  className="h-8 w-auto"
-                />
-              </div>
-              <p className="text-gray-400 mb-4">
-                La inmobiliaria líder en Reconquista, comprometida con encontrar
-                el hogar perfecto para cada familia.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-white font-semibold mb-4">Enlaces</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link
-                    href="/propiedades"
-                    className="hover:text-white transition-colors text-orange-500"
-                  >
-                    Propiedades
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/agentes"
-                    className="hover:text-white transition-colors"
-                  >
-                    Agentes
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contacto"
-                    className="hover:text-white transition-colors"
-                  >
-                    Contacto
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/"
-                    className="hover:text-white transition-colors"
-                  >
-                    Inicio
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="text-white font-semibold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Reconquista, Santa Fe</li>
-                <li>+54 9 3482 308100</li>
-                <li>marconinegociosinmobiliarios@hotmail.com</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>
-              &copy; 2025 Marconi Inmobiliaria. Todos los derechos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

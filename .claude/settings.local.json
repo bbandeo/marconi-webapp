@@ -11,7 +11,21 @@
       "Bash(mkdir:*)",
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
-      "Bash(pnpm dev:*)"
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(git pull:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(pnpm local:*)",
+      "WebSearch",
+      "WebSearch",
+      "Bash(pnpm add:*)",
+      "Bash(grep:*)",
+      "Read(//data/data/com.termux/files/home/**)",
+      "Bash(pnpm run:*)",
+      "mcp__serena__search_for_pattern",
+      "mcp__sequential-thinking__sequentialthinking"
     ],
     "deny": []
   }

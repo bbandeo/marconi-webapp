@@ -2,6 +2,7 @@
 
 ## Business Context
 
+
 **Company**: Marconi Inmobiliaria  
 **Location**: Reconquista, Santa Fe, Argentina  
 **Industry**: Real Estate  

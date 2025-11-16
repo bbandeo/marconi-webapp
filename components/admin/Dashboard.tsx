@@ -16,7 +16,10 @@ import {
   Target,
   Clock,
   BarChart3,
+  Activity,
+  ArrowRight
 } from "lucide-react"
+import Link from "next/link"
 import { useContacts } from "@/hooks/useContacts"
 import { useContactMetrics } from "@/hooks/useContactMetrics"
 
@@ -53,12 +56,12 @@ export default function Dashboard() {
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-gray-800 rounded-lg animate-pulse" />
+            <div key={i} className="h-32 analytics-skeleton" />
           ))}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-64 bg-gray-800 rounded-lg animate-pulse" />
+            <div key={i} className="h-64 analytics-skeleton" />
           ))}
         </div>
       </div>
@@ -69,13 +72,13 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Main Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Propiedades Activas</p>
-                <p className="text-2xl font-bold text-white">{properties.length}</p>
-                <p className="text-xs text-green-400">{properties.filter((p: any) => p.featured).length} destacadas</p>
+                <p className="kpi-label">Propiedades Activas</p>
+                <p className="kpi-number">{properties.length}</p>
+                <p className="trend-positive text-data-xs">{properties.filter((p: any) => p.featured).length} destacadas</p>
               </div>
               <div className="bg-blue-500 p-3 rounded-lg">
                 <Home className="w-6 h-6 text-white" />
@@ -84,13 +87,13 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Total Contactos</p>
-                <p className="text-2xl font-bold text-white">{metrics.totalContacts}</p>
-                <p className="text-xs text-blue-400">+{metrics.contactsThisWeek} esta semana</p>
+                <p className="kpi-label">Total Contactos</p>
+                <p className="kpi-number">{metrics.totalContacts}</p>
+                <p className="trend-positive text-data-xs">+{metrics.contactsThisWeek} esta semana</p>
               </div>
               <div className="bg-green-500 p-3 rounded-lg">
                 <Users className="w-6 h-6 text-white" />
@@ -99,13 +102,13 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Tasa de Conversión</p>
-                <p className="text-2xl font-bold text-white">{metrics.conversionRate.toFixed(1)}%</p>
-                <p className="text-xs text-purple-400">{metrics.convertedContacts} convertidos</p>
+                <p className="kpi-label">Tasa de Conversión</p>
+                <p className="kpi-number">{metrics.conversionRate.toFixed(1)}%</p>
+                <p className="status-info">{metrics.convertedContacts} convertidos</p>
               </div>
               <div className="bg-purple-500 p-3 rounded-lg">
                 <TrendingUp className="w-6 h-6 text-white" />
@@ -114,13 +117,13 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Puntuación Promedio</p>
-                <p className="text-2xl font-bold text-white">{metrics.averageScore.toFixed(1)}/10</p>
-                <p className="text-xs text-orange-400">{metrics.overdueActions} acciones vencidas</p>
+                <p className="kpi-label">Puntuación Promedio</p>
+                <p className="kpi-number">{metrics.averageScore.toFixed(1)}/10</p>
+                <p className="status-warning">{metrics.overdueActions} acciones vencidas</p>
               </div>
               <div className="bg-orange-500 p-3 rounded-lg">
                 <Target className="w-6 h-6 text-white" />
@@ -132,48 +135,48 @@ export default function Dashboard() {
 
       {/* Pipeline Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Nuevos</p>
-                <p className="text-xl font-bold text-blue-400">{metrics.newContacts}</p>
+                <p className="kpi-label">Nuevos</p>
+                <p className="text-data-lg font-bold text-chart-secondary">{metrics.newContacts}</p>
               </div>
               <MessageSquare className="w-5 h-5 text-blue-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Contactados</p>
-                <p className="text-xl font-bold text-yellow-400">{metrics.contactedContacts}</p>
+                <p className="kpi-label">Contactados</p>
+                <p className="text-data-lg font-bold text-status-warning">{metrics.contactedContacts}</p>
               </div>
               <Phone className="w-5 h-5 text-yellow-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Calificados</p>
-                <p className="text-xl font-bold text-purple-400">{metrics.qualifiedContacts}</p>
+                <p className="kpi-label">Calificados</p>
+                <p className="text-data-lg font-bold text-chart-quaternary">{metrics.qualifiedContacts}</p>
               </div>
               <Mail className="w-5 h-5 text-purple-400" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-400">Convertidos</p>
-                <p className="text-xl font-bold text-green-400">{metrics.convertedContacts}</p>
+                <p className="kpi-label">Convertidos</p>
+                <p className="text-data-lg font-bold text-status-success">{metrics.convertedContacts}</p>
               </div>
               <TrendingUp className="w-5 h-5 text-green-400" />
             </div>
@@ -181,10 +184,33 @@ export default function Dashboard() {
         </Card>
       </div>
 
+      {/* Quick Access to Analytics */}
+      {/* <Card className="bg-gradient-to-r from-blue-900 to-purple-900 border-blue-700">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-2">Analytics y Métricas Detalladas</h3>
+              <p className="text-blue-200 mb-4">
+                Ver análisis completo de tráfico, conversiones y rendimiento de propiedades
+              </p>
+              <Button asChild className="bg-white text-blue-900 hover:bg-blue-50">
+                <Link href="/admin/analytics">
+                  Ver Analytics Completo
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+              </Button>
+            </div>
+            <div className="hidden md:block">
+              <Activity className="w-16 h-16 text-blue-300" />
+            </div>
+          </div>
+        </CardContent>
+      </Card> */}
+
       {/* Charts and Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Weekly Activity Chart */}
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardHeader>
             <CardTitle className="flex items-center text-white">
               <BarChart3 className="w-5 h-5 mr-2" />
@@ -207,7 +233,7 @@ export default function Dashboard() {
         </Card>
 
         {/* Sources Distribution */}
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardHeader>
             <CardTitle className="flex items-center text-white">
               <Users className="w-5 h-5 mr-2" />
@@ -231,7 +257,7 @@ export default function Dashboard() {
 
       {/* Priority and Recent Activity */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="bg-gray-800 border-gray-700">
+        <Card className="widget-container">
           <CardHeader>
             <CardTitle className="flex items-center text-white">
               <AlertCircle className="w-5 h-5 mr-2" />
@@ -273,7 +299,7 @@ export default function Dashboard() {
                 <div key={contact.id} className="flex items-center justify-between p-3 bg-gray-700 rounded-lg">
                   <div>
                     <p className="font-medium text-white">{contact.name}</p>
-                    <p className="text-sm text-gray-400">{contact.property}</p>
+                    <p className="kpi-label">{contact.property}</p>
                   </div>
                   <div className="text-right">
                     <Badge
@@ -307,7 +333,7 @@ export default function Dashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button className="h-16 flex-col space-y-2 bg-brand-orange hover:bg-brand-orange/90">
+            <Button className="h-16 flex-col space-y-2 bg-vibrant-orange hover:bg-vibrant-orange/90">
               <Users className="w-6 h-6" />
               <span>Ver Todos los Contactos</span>
             </Button>

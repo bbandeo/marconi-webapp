@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { supabase } from "@/lib/supabase"
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { data, error } = await supabase.from("leads").select("*").eq("id", params.id).single()
+    const { id } = await params
+    const { data, error } = await supabase.from("leads").select("*").eq("id", id).single()
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
@@ -15,8 +16,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params
     const body = await request.json()
 
     const updateData: any = {
@@ -32,7 +34,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     if (body.nextActionDate !== undefined) updateData.next_action_date = body.nextActionDate
     if (body.lastContact !== undefined) updateData.last_contact = body.lastContact
 
-    const { data, error } = await supabase.from("leads").update(updateData).eq("id", params.id).select().single()
+    const { data, error } = await supabase.from("leads").update(updateData).eq("id", id).select().single()
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
@@ -44,9 +46,10 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { error } = await supabase.from("leads").delete().eq("id", params.id)
+    const { id } = await params
+    const { error } = await supabase.from("leads").delete().eq("id", id)
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 })
